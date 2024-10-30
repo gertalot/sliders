@@ -12,7 +12,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, "src/index.ts"), // Specifies the entry point for building the library.
-      name: "sliders", // Sets the name of the generated library.
+      name: "slider-hooks", // Sets the name of the generated library.
       fileName: (format) => `index.${format}.js`, // Generates the output file name based on the format.
       formats: ["cjs", "es"] // Specifies the output formats (CommonJS and ES modules).
     },

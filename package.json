@@ -1,7 +1,7 @@
 {
-  "name": "sliders",
+  "name": "slider-hooks",
   "version": "0.1.0",
-  "description": "React hooks to build all kinds of sliders, knobs, and dials",
+  "description": "React custom hooks (headless components) to build all kinds of sliders, knobs, and dials",
   "author": "Gert Verhoog",
   "keywords": [
     "react",
@@ -9,20 +9,20 @@
     "hook",
     "slider"
   ],
-  "homepage": "https://github.com/gertalot/sliders#readme",
-  "repository": "github:gertalot/sliders",
+  "homepage": "https://github.com/gertalot/slider-hooks#readme",
+  "repository": "github:gertalot/slider-hooks",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/gertalot"
   },
   "license": "ISC",
   "private": true,
   "type": "module",
-  "main": "./dist/sliders.umd.cjs",
-  "module": "./dist/sliders.js",
+  "main": "./dist/slider-hooks.umd.cjs",
+  "module": "./dist/slider-hooks.js",
   "exports": {
     ".": {
-      "import": "./dist/sliders.js",
-      "require": "./dist/sliders.umd.cjs"
+      "import": "./dist/slider-hooks.js",
+      "require": "./dist/slider-hooks.umd.cjs"
     }
   },
   "scripts": {
