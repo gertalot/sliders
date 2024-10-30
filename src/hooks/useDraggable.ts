@@ -28,11 +28,19 @@ const useDraggable = ({
   const [isStartDragOnTarget, setStartDragOnTarget] = useState(false);
   const [cursorPosition, setCursorPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
+  // set initial position of the target to the center of the container
+  useEffect(() => {
+    if (containerRef.current) {
+      const rect = containerRef.current?.getBoundingClientRect();
+      setCursorPosition({ x: rect.width / 2, y: rect.height / 2 });
+    }
+  }, [containerRef]);
+
   const handleMouseDown = useCallback(
     (e: unknown) => {
       const event = e as MouseEvent;
       const rect = containerRef.current?.getBoundingClientRect();
-      if (rect) {
+      if (rect && isOnTarget) {
         setStartDragOnTarget(() => isOnTarget);
         setDragging(true);
         setCursorPosition({ x: event.clientX - rect.x, y: event.clientY - rect.y });
@@ -46,9 +54,10 @@ const useDraggable = ({
       const event = e as TouchEvent;
       const rect = containerRef.current?.getBoundingClientRect();
       const touch = event.touches[0];
-      if (rect) {
-        setOnTarget(() => event.target === targetRef.current);
-        setStartDragOnTarget(() => event.target === targetRef.current);
+      const onTarget = event.target === targetRef.current;
+      if (rect && onTarget) {
+        setOnTarget(() => onTarget);
+        setStartDragOnTarget(() => onTarget);
         setDragging(true);
         setCursorPosition({ x: touch.clientX - rect.x, y: touch.clientY - rect.y });
       }
@@ -75,25 +84,25 @@ const useDraggable = ({
   const handleMouseMove = useCallback(
     (e: unknown) => {
       const rect = containerRef.current?.getBoundingClientRect();
-      if (rect && isDragging) {
+      if (rect && isDragging && isStartDragOnTarget) {
         const event = e as MouseEvent;
         setCursorPosition({ x: event.clientX - rect.x, y: event.clientY - rect.y });
       }
     },
-    [containerRef, isDragging]
+    [containerRef, isDragging, isStartDragOnTarget]
   );
 
   const handleTouchMove = useCallback(
     (e: unknown) => {
       const rect = containerRef.current?.getBoundingClientRect();
 
-      if (rect && isDragging) {
+      if (rect && isDragging && isStartDragOnTarget) {
         const event = e as TouchEvent;
         const touch = event.touches[0];
         setCursorPosition({ x: touch.clientX - rect.x, y: touch.clientY - rect.y });
       }
     },
-    [containerRef, isDragging]
+    [containerRef, isDragging, isStartDragOnTarget]
   );
 
   const handleMouseOver = useCallback(
@@ -104,48 +113,42 @@ const useDraggable = ({
     [targetRef]
   );
 
-  useEffect(
-    () => {
-      // Add event handlers to the slideable container and the sliding thingy itself
-      const container = containerRef.current;
+  useEffect(() => {
+    // Add event handlers to the slideable container and the sliding thingy itself
+    const container = containerRef.current;
 
-      const containerEvents = {
-        mousedown: handleMouseDown,
-        mouseup: handleMouseUp,
-        touchstart: handleTouchStart,
-        touchend: handleTouchEnd,
-        mousemove: handleMouseMove,
-        touchmove: handleTouchMove,
-        mouseover: handleMouseOver
-      };
+    const containerEvents = {
+      mousedown: handleMouseDown,
+      mouseup: handleMouseUp,
+      touchstart: handleTouchStart,
+      touchend: handleTouchEnd,
+      mousemove: handleMouseMove,
+      touchmove: handleTouchMove,
+      mouseover: handleMouseOver
+    };
+    for (const [event, handler] of Object.entries(containerEvents)) {
+      container?.addEventListener(event, handler);
+    }
+    return () => {
       for (const [event, handler] of Object.entries(containerEvents)) {
-        container?.addEventListener(event, handler);
+        container?.removeEventListener(event, handler);
       }
-      return () => {
-        for (const [event, handler] of Object.entries(containerEvents)) {
-          container?.removeEventListener(event, handler);
-        }
-      };
-    },
-    // we depend on the latest value of isOnTarget because the handleMouseDown and
-    // handleTouchStart event listeners set the isStartDragOnTarget state based on the
-    // value of isOnTarget.
-    [
-      containerRef,
-      handleMouseDown,
-      handleMouseMove,
-      handleMouseOver,
-      handleMouseUp,
-      handleTouchEnd,
-      handleTouchMove,
-      handleTouchStart,
-      isDragging,
-      isStartDragOnTarget,
-      targetRef
-    ]
-  );
+    };
+  }, [
+    containerRef,
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseOver,
+    handleMouseUp,
+    handleTouchEnd,
+    handleTouchMove,
+    handleTouchStart,
+    isDragging,
+    isStartDragOnTarget,
+    targetRef
+  ]);
 
-  return { isDragging, isOnTarget, isStartDragOnTarget, cursorPosition };
+  return { isDragging, isOnTarget, cursorPosition };
 };
 
 export default useDraggable;
