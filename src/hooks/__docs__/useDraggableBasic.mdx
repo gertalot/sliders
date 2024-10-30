@@ -1,7 +1,7 @@
 import { Canvas, Meta } from "@storybook/blocks";
-import * as basic from "./useDraggableBasic.stories";
+import * as useDraggableBasic from "./useDraggableBasic.stories";
 
-<Meta of={basic} title="Basic useDraggable Demo" />
+<Meta of={useDraggableBasic} title="Basic useDraggable Demo" />
 
 # the `useDraggable` custom React hook
 
@@ -61,4 +61,10 @@ useEffect(() => {
 
 This shows the basic functionality of the `useDraggable` custom hook, applied to a component
 
-<Canvas of={basic.BasicUseDraggable} />
+<Canvas of={useDraggableBasic.UseDraggableBasicExample} />
+
+# basic useDraggable custom hook on an SVG component
+
+A slightly fancier example, using an SVG with a draggable circle
+
+<Canvas of={useDraggableBasic.UseDraggableSVGDemo} />
