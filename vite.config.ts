@@ -4,7 +4,11 @@ import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 
 export default defineConfig({
-  plugins: [dts()],
+  plugins: [
+    dts({
+      exclude: ["**/__docs__", "**/__test__"]
+    })
+  ],
   build: {
     lib: {
       entry: resolve(__dirname, "src/index.ts"), // Specifies the entry point for building the library.
