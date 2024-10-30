@@ -41,7 +41,7 @@ export default [
 
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
 
-    ignores: ["!storybook", "dist"],
+    ignores: ["!storybook", "dist", "storybook-static"],
     files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
     rules: {
       ...reactHooks.configs.recommended.rules,
