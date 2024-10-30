@@ -31,8 +31,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "clean": "git clean -fXd \\!node_modules -e \\!node_modules/**/*",
-    "clean:dist": "git clean -fXd"
+    "clean": "git clean -fXd -e \\!node_modules -e \\!node_modules/**/*"
   },
   "dependencies": {
     "@types/jest": "^29.5.14",

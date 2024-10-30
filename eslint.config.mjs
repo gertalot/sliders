@@ -27,7 +27,8 @@ export default [
       "plugin:@typescript-eslint/eslint-recommended",
       "prettier",
       "plugin:prettier/recommended",
-      "plugin:react-hooks/recommended"
+      "plugin:react-hooks/recommended",
+      "plugin:react/jsx-runtime"
     )
   ),
   ...storybook.configs["flat/recommended"],
