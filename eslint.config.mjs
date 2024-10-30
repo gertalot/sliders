@@ -37,12 +37,15 @@ export default [
       "react-hooks": fixupPluginRules(reactHooks),
       prettier: fixupPluginRules(prettier),
       react: fixupPluginRules(react)
-    },
-
-    languageOptions: { globals: { ...globals.browser, ...globals.node } },
-
-    ignores: ["!storybook", "dist", "storybook-static"],
-    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+    }
+  },
+  {
+    languageOptions: { globals: { ...globals.browser, ...globals.node } }
+  },
+  {
+    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"]
+  },
+  {
     rules: {
       ...reactHooks.configs.recommended.rules,
       "@typescript-eslint/no-unused-vars": [
@@ -57,11 +60,16 @@ export default [
           ignoreRestSiblings: true
         }
       ]
-    },
+    }
+  },
+  {
     settings: {
       react: {
         version: "detect"
       }
     }
+  },
+  {
+    ignores: ["!storybook", "dist/", "storybook-static"]
   }
 ];

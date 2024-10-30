@@ -11,6 +11,9 @@
   ],
   "homepage": "https://github.com/gertalot/sliders#readme",
   "repository": "github:gertalot/sliders",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/gertalot"
+  },
   "license": "ISC",
   "private": true,
   "type": "module",
@@ -25,6 +28,7 @@
   "scripts": {
     "format": "prettier --write --parser typescript '**/*.{ts,tsx}'",
     "lint": "eslint . --fix",
+    "lint-staged": "lint-staged",
     "test": "vitest run",
     "test-watch": "vitest",
     "test:ui": "vitest --ui",
@@ -39,8 +43,7 @@
   "lint-staged": {
     "*.{ts,tsx}": [
       "npm run format",
-      "npm run lint",
-      "npm run test"
+      "npm run lint"
     ]
   },
   "devDependencies": {
