@@ -8,7 +8,8 @@ import { MouseEvent, TouchEvent, RefObject, useEffect, useState, useCallback } f
  * dragging (with either touch or mouse pointer), and a target element. This behaviour triggers
  * when the user initiates dragging on the target element.
  *
- * @param props - a `SliderProps` object
+ * @param containerRef - a ref to a DOM element acting as the container that contains the draggable
+ * @param targetRef - a ref to a DOM element acting as the draggable element
  * @returns An object with the following properties:
  *  * `isDragging` - `true` if the user is holding the mouse down or is touching the screen; `false` otherwise
  *  * `isOnTarget` - `true` if the cursor is currently over the target element; `false` otherwise
@@ -30,25 +31,42 @@ const useDraggable = ({
   const handleMouseDown = useCallback(
     (e: unknown) => {
       const event = e as MouseEvent;
-      setStartDragOnTarget(() => isOnTarget);
-      setDragging(true);
-      setCursorPosition({ x: event.clientX, y: event.clientY });
+      const rect = containerRef?.current?.getBoundingClientRect();
+      if (rect) {
+        setStartDragOnTarget(() => isOnTarget);
+        setDragging(true);
+        setCursorPosition({ x: event.clientX - rect.x, y: event.clientY - rect.y });
+      }
     },
-    [isOnTarget]
+    [containerRef, isOnTarget]
   );
 
   const handleTouchStart = useCallback(
     (e: unknown) => {
+      const rect = containerRef?.current?.getBoundingClientRect();
       const event = e as TouchEvent;
       const touch = event.touches[0];
-      setDragging(true);
-      setStartDragOnTarget(() => touch.target === targetRef?.current);
-      setCursorPosition({ x: touch.clientX, y: touch.clientY });
+      if (rect) {
+        setOnTarget(() => event.target === targetRef.current);
+        setStartDragOnTarget(() => event.target === targetRef.current);
+        setDragging(true);
+        setCursorPosition({ x: touch.clientX - rect.x, y: touch.clientY - rect.y });
+      }
+    },
+    [containerRef, targetRef]
+  );
+
+  const handleMouseUp = useCallback(
+    (e: unknown) => {
+      const event = e as MouseEvent;
+      setDragging(false);
+      setOnTarget(() => event.target === targetRef.current);
+      setStartDragOnTarget(false);
     },
     [targetRef]
   );
 
-  const handleDragEnd = useCallback(() => {
+  const handleTouchEnd = useCallback(() => {
     setDragging(false);
     setOnTarget(false);
     setStartDragOnTarget(false);
@@ -56,23 +74,26 @@ const useDraggable = ({
 
   const handleMouseMove = useCallback(
     (e: unknown) => {
-      if (isDragging) {
+      const rect = containerRef?.current?.getBoundingClientRect();
+      if (rect && isDragging) {
         const event = e as MouseEvent;
-        setCursorPosition({ x: event.clientX, y: event.clientY });
+        setCursorPosition({ x: event.clientX - rect.x, y: event.clientY - rect.y });
       }
     },
-    [isDragging]
+    [containerRef, isDragging]
   );
 
   const handleTouchMove = useCallback(
     (e: unknown) => {
-      if (isDragging) {
+      const rect = containerRef?.current?.getBoundingClientRect();
+
+      if (rect && isDragging) {
         const event = e as TouchEvent;
         const touch = event.touches[0];
-        setCursorPosition({ x: touch.clientX, y: touch.clientY });
+        setCursorPosition({ x: touch.clientX - rect.x, y: touch.clientY - rect.y });
       }
     },
-    [isDragging]
+    [containerRef, isDragging]
   );
 
   const handleMouseOver = useCallback(
@@ -90,9 +111,9 @@ const useDraggable = ({
 
       const containerEvents = {
         mousedown: handleMouseDown,
-        mouseup: handleDragEnd,
+        mouseup: handleMouseUp,
         touchstart: handleTouchStart,
-        touchend: handleDragEnd,
+        touchend: handleTouchEnd,
         mousemove: handleMouseMove,
         touchmove: handleTouchMove,
         mouseover: handleMouseOver
@@ -111,10 +132,11 @@ const useDraggable = ({
     // value of isOnTarget.
     [
       containerRef,
-      handleDragEnd,
       handleMouseDown,
       handleMouseMove,
       handleMouseOver,
+      handleMouseUp,
+      handleTouchEnd,
       handleTouchMove,
       handleTouchStart,
       isDragging,

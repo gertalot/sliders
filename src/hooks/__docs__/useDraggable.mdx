@@ -1,13 +1,63 @@
 import { Canvas, Meta } from "@storybook/blocks";
-import BasicDraggableDemo from "./BasicDraggableDemo.tsx";
-import * as useDraggable from "./useDraggable.stories.tsx";
+import BasicDraggableSVGDemo from "./BasicDraggableSVGDemo";
+import * as useDraggable from "./useDraggableBasic.stories";
 
-<Meta of={useDraggable} title="BasicDraggableDemo" />
+<Meta of={useDraggable} title="Basic useDraggable Demo" />
 
-# BasicDraggableDemo
+# the `useDraggable` custom React hook
 
-BasicDraggableDemo component with different props.
+This is a custom React hook (aka a "headless component") that provides very basic functionality to drag
+a target element around inside a container.
 
-#### Example
+```tsx
+import { useEffect, useRef, useState } from "react";
+import useDraggable from "slider";
 
-<Canvas of={BasicDraggableDemo.Primary} />
+export default function DraggableDemo {
+  // We need to pass a ref to a container element and a target element
+  const containerRef = useRef<Element>(null);
+  const targetRef = useRef<Element>(null);
+
+  // Use the custom hook to enable the functionality
+  const { isOnTarget, isDragging, isStartDragOnTarget, cursorPosition } = useDraggable({ containerRef, targetRef });
+
+  // The location of the target element, relative to the top-left corner of the container element
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
+
+  // Use the changing state of `isOnTarget`, `isDragging`, `isStartDragOnTarget`, and `cursorPosition` to
+  // update the position of the target element when the user drags it around
+  useEffect(() => {
+    const container = containerRef.current;
+    const target = targetRef.current;
+    console.log(target);
+    if (isDragging && isStartDragOnTarget && cursorPosition && container && target) {
+      setPosition({
+        x: cursorPosition.x - container.clientTop - target.clientWidth / 2,
+        y: cursorPosition.y - container.clientLeft - target.clientHeight / 2
+      });
+    }
+  }, [isStartDragOnTarget, cursorPosition, isDragging]);
+  return (
+    div
+      className="relative w-96 h-72 bg-gray-900  text-white p-0 border-white border-solid border-2 touch-none select-none"
+      ref={containerRef}
+    >
+      <span
+        className="absolute inline-block w-20 h-16 bg-red-900 text-sm text-center p-1"
+        style={{ top: position?.y, left: position?.x }}
+        ref={targetRef}
+      >
+        {isOnTarget ? "Drag me!" : "click here to drag"}
+      </span>
+    </div>
+  )
+
+}
+
+```
+
+# basic useDraggable custom hook
+
+This shows the basic functionality of the `useDraggable` custom hook, applied to a component
+
+<Canvas of={useDraggable.BasicDemo} />
