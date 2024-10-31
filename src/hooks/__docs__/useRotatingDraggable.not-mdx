@@ -1,9 +1,9 @@
 import { Canvas, Meta } from "@storybook/blocks";
-import * as useDraggableBasic from "./useDraggableBasic.stories";
+import * as useRotatingDraggable from "./useRotatingDraggable.stories";
 
-<Meta of={useDraggableBasic} title="Basic useDraggable Demo" />
+<Meta of={useRotatingDraggable} title="useDraggable custom Hook" />
 
-# the `useDraggable` custom React hook
+# the `useRotatingDraggable` custom React hook
 
 This is a custom React hook (aka a "headless component") that provides very basic functionality to drag
 a target element around inside a container. The project has no styles or components; instead you use
@@ -16,7 +16,7 @@ target element, and the current position of the cursor relative to the container
 
 ## Usage
 
-You use the `useDraggable` hook as follows:
+You use the `useRotatingDraggable` hook as follows:
 
 ```tsx
 // These are used in tsx code as `ref={containerRef}` and `ref={targetRef}`
@@ -30,15 +30,12 @@ const { isOnTarget, isDragging, isStartDragOnTarget, cursorPosition } = useDragg
 // ...
 ```
 
-`useDraggable` returns an object with the following properties:
+`useRotatingDraggable` returns an object with the following properties:
 
 - `isOnTarget` - `true` if the mouse is currently over the target
 - `isDragging` - `true` if the user is touching or holding the mouse and dragging across the container area
-- `isStartDragOnTarget` - `true` if the user started the dragging action while on the target container. This
-  differentiates between dragging actions that occur anywhere inside the container, and dragging the target element
-- `cursorPosition` - the `{x, y}` values of the mouse pointer or the touch event. This can be used to update the
-  position of the target element. This value is relative to the container element's top-left corner, e.g. when
-  the user clicks in the top-left corner of the container element, the position will be `{x: 0, y: 0}`.
+- `angle` - TBD
+- `fullRotations` - TBD
 
 You probably want to change your component based on these values, e.g. you want to update the position of the target
 element if the user is dragging it. You can do this with a `useEffect` handler that depends on the properties you
@@ -57,14 +54,8 @@ useEffect(() => {
 }, [isStartDragOnTarget, cursorPosition, isDragging]);
 ```
 
-# basic useDraggable custom hook complete example
+# basic useRotatingDraggable custom hook on an SVG component
 
-This shows the basic functionality of the `useDraggable` custom hook, applied to a component
+A slightly fancier example, using an SVG with a draggable circle that rotates around a center:
 
-<Canvas of={useDraggableBasic.UseDraggableBasicExample} />
-
-# basic useDraggable custom hook on an SVG component
-
-A slightly fancier example, using an SVG with a draggable circle
-
-<Canvas of={useDraggableBasic.UseDraggableSVGDemo} />
+<Canvas of={useRotatingDraggable.UseRotatingDraggableExample} />

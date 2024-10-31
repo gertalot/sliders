@@ -1,4 +1,5 @@
 import { MouseEvent, TouchEvent, RefObject, useEffect, useState, useCallback } from "react";
+import { Point2D } from "../utils";
 
 /**
  * Custom hook that provides slider behaviour for a multitude of slider-y and dial-y UI components.
@@ -26,7 +27,7 @@ const useDraggable = ({
   const [isOnTarget, setOnTarget] = useState(false);
   const [isDragging, setDragging] = useState(false);
   const [isStartDragOnTarget, setStartDragOnTarget] = useState(false);
-  const [cursorPosition, setCursorPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [cursorPosition, setCursorPosition] = useState<Point2D>({ x: 0, y: 0 });
 
   // set initial position of the target to the center of the container
   useEffect(() => {
