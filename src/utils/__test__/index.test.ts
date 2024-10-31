@@ -67,7 +67,7 @@ test("pointToAngle maps points on the unit circle to [0, 2*pi]", () => {
 });
 
 test("pointEquals", () => {
-  expect(pointEquals(null, null)).toBe(false);
+  expect(pointEquals(null, null)).toBe(true);
   expect(pointEquals(null, { x: 1, y: 2 })).toBe(false);
   expect(pointEquals({ x: 1, y: 2 }, null)).toBe(false);
   expect(pointEquals({ x: 0, y: 0 }, { x: 0, y: 0 })).toBe(true);
