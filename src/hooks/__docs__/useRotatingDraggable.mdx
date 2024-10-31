@@ -5,14 +5,15 @@ import * as useRotatingDraggable from "./useRotatingDraggable.stories";
 
 # the `useRotatingDraggable` custom React hook
 
-This is a custom React hook (aka a "headless component") that provides very basic functionality to drag
-a target element around inside a container. The project has no styles or components; instead you use
+This is a custom React hook (aka a "headless component") that provides basic functionality to rotate a target
+element around an origin inside a container. The project has no styles or components; instead you use
 these hooks in your own components to add functionality.
 
-`useDraggable` is the most basic functionality. You pass it refs to a container element and a target element.
-Event listeners on the container track mouse or touch events, and indicates whether the user is dragging (i.e.
-the user is touching or holding the mouse down in the container area), whether the dragging started on the
-target element, and the current position of the cursor relative to the container element.
+`useRotatingDraggable` gives you basic functionality: it lets you drag an element around an origin, and it will
+give you the angle in radians. It lets you rotate the target infinitely clockwise or anti-clockwise, and lets you
+keep track of You pass it refs to a container element and a target element.
+
+It uses `useDraggable` under the hood.
 
 ## Usage
 
@@ -24,7 +25,11 @@ const containerRef = useRef<Element>(null);
 const targetRef = useRef<Element>(null);
 
 // these properties will be updated automatically by the custom hook
-const { isOnTarget, isDragging, isStartDragOnTarget, cursorPosition } = useDraggable({ containerRef, targetRef });
+const { isDragging, isOnTarget, angle, totalAngle, fullRotations } = useRotatingDraggable({
+  containerRef,
+  targetRef
+  origin: { x: 0, y: 0 }
+});
 
 // add code that updates the component based on these properties
 // ...
@@ -34,28 +39,26 @@ const { isOnTarget, isDragging, isStartDragOnTarget, cursorPosition } = useDragg
 
 - `isOnTarget` - `true` if the mouse is currently over the target
 - `isDragging` - `true` if the user is touching or holding the mouse and dragging across the container area
-- `angle` - TBD
-- `fullRotations` - TBD
+- `angle` - The angle (in radians) between 0 and 2*pi, where 0 is at 3 o'clock, and 1/4*pi is at 6 o'clock
+  (so the angle increases clockwise)
+- `totalAngle` - The total angle, e.g. if you rotate past a full rotation, `angle` resets, while this keeps
+  increasing or decreasing.
+- `fullRotations` - The number of full rotations. Positive is clockwise, negative is anti-clockwise.
 
 You probably want to change your component based on these values, e.g. you want to update the position of the target
 element if the user is dragging it. You can do this with a `useEffect` handler that depends on the properties you
 want to track:
 
 ```tsx
+const [position, setPosition] = useState<Point2D | null>(null);
 useEffect(() => {
-  const container = containerRef.current;
-  const target = targetRef.current;
-  if (isDragging && isStartDragOnTarget && cursorPosition && container && target) {
-    setPosition({
-      x: cursorPosition.x - container.clientTop - target.clientWidth / 2,
-      y: cursorPosition.y - container.clientLeft - target.clientHeight / 2
-    });
-  }
-}, [isStartDragOnTarget, cursorPosition, isDragging]);
+  const newPosition = angleToPoint(angle, { x: 0, y: 0 }, 0.8);
+  setPosition((prev) => (pointEquals(prev, newPosition) ? prev : newPosition));
+}, [angle]);
 ```
 
-# basic useRotatingDraggable custom hook on an SVG component
+# Example
 
-A slightly fancier example, using an SVG with a draggable circle that rotates around a center:
+An example using an SVG with a draggable circle that rotates around a center:
 
 <Canvas of={useRotatingDraggable.UseRotatingDraggableExample} />

@@ -18,8 +18,6 @@ export const UseRotatingDraggableExample: StoryObj<BasicComponent> = {
     // const sliderRadius = 0.4;
     const containerRef = useRef<SVGSVGElement>(null);
     const targetRef = useRef<SVGCircleElement>(null);
-    // const [targetPosition, setTargetPosition] = useState<{ x: number; y: number } | null>(null);
-    // const [position, setPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
     const { isDragging, isOnTarget, angle, totalAngle, fullRotations } = useRotatingDraggable({
       containerRef,

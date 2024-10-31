@@ -18,6 +18,8 @@ const useRotatingDraggable = ({
   const [angle, setAngle] = useState(totalAngle % TAU);
   const [origin_, setOrigin] = useState<Point2D | null>(null);
 
+  // set the origin to what was passed in, or set it to the center of `fromRect`
+  // if we have one, or set it to 0,0 if all else fails.
   useEffect(() => {
     if (origin) {
       setOrigin(origin);
@@ -34,6 +36,7 @@ const useRotatingDraggable = ({
   // get the basic custom hook that takes care of dragging and sliding behaviour
   const { isDragging, isOnTarget, cursorPosition } = useDraggable({ containerRef, targetRef });
 
+  // update our angle and related state if the user is dragging the target
   useEffect(() => {
     if (origin_ && cursorPosition && isDragging) {
       const newAngle = pointToAngle(cursorPosition, origin_);
