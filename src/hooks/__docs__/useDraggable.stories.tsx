@@ -81,9 +81,9 @@ export const UseDraggableSVGDemo: StoryObj<BasicComponent> = {
         <svg className="w-full h-full" ref={containerRef}>
           <circle
             ref={targetRef}
-            className={`cursor-pointer transition-transform duration-100 ease-in-out active:opacity-70`}
-            cx={cursorPosition.x}
-            cy={cursorPosition.y}
+            className={`cursor-pointer transition-transform duration-100 ease-in-out active:opacity-70 ${cursorPosition ? "" : "invisible"}`}
+            cx={cursorPosition?.x}
+            cy={cursorPosition?.y}
             r={10}
             fill="white"
             stroke="#333"

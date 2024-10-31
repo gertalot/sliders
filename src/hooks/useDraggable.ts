@@ -27,15 +27,15 @@ const useDraggable = ({
   const [isOnTarget, setOnTarget] = useState(false);
   const [isDragging, setDragging] = useState(false);
   const [isStartDragOnTarget, setStartDragOnTarget] = useState(false);
-  const [cursorPosition, setCursorPosition] = useState<Point2D>({ x: 0, y: 0 });
+  const [cursorPosition, setCursorPosition] = useState<Point2D | null>(null);
 
   // set initial position of the target to the center of the container
   useEffect(() => {
-    if (containerRef.current) {
+    if (!cursorPosition && containerRef.current) {
       const rect = containerRef.current?.getBoundingClientRect();
       setCursorPosition({ x: rect.width / 2, y: rect.height / 2 });
     }
-  }, [containerRef]);
+  }, [containerRef, cursorPosition]);
 
   const handleMouseDown = useCallback(
     (e: unknown) => {
