@@ -41,7 +41,7 @@ expect.extend({
   }
 });
 
-test("angleToPoint", () => {
+test("angleToPoint maps angles in radians in [0, 2*pi] % 2*pi to points on the unit circle", () => {
   expect(angleToPoint(TAU * (0 / 4), ORIGIN, 1)).toBeCloseToPoint({ x: 1, y: 0 });
   expect(angleToPoint(TAU * (1 / 4), ORIGIN, 1)).toBeCloseToPoint({ x: 0, y: 1 });
   expect(angleToPoint(TAU * (2 / 4), ORIGIN, 1)).toBeCloseToPoint({ x: -1, y: 0 });
@@ -50,7 +50,7 @@ test("angleToPoint", () => {
   expect(angleToPoint(TAU * (6 / 4), ORIGIN, 1)).toBeCloseToPoint({ x: -1, y: 0 });
 });
 
-test("pointToAngle", () => {
+test("pointToAngle maps points on the unit circle to [0, 2*pi]", () => {
   for (const p of [
     [1, 0, TAU * (0 / 8)],
     [1, 1, TAU * (1 / 8)],
