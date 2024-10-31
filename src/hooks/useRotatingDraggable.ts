@@ -43,8 +43,6 @@ const useRotatingDraggable = ({
       const newFullRotations = fullRotations + incRotations + decRotations;
       const newTotalAngle = newAngle + TAU * newFullRotations;
 
-      console.log({ angle, newAngle, isClockwise, incRotations, decRotations, newFullRotations });
-
       setTotalAngle(newTotalAngle);
       setFullRotations(newFullRotations);
       setAngle(newAngle);

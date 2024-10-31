@@ -22,7 +22,8 @@ function angleToPoint(angle: number, origin: Point2D, radius: number): Point2D {
 }
 
 function pointToAngle(point: Point2D, origin: Point2D): number {
-  return Math.atan2(point.y - origin.y, point.x - origin.x);
+  const rad = Math.atan2(point.y - origin.y, point.x - origin.x);
+  return rad < 0 ? rad + TAU : rad;
 }
 
 function pointEquals(point: Point2D | null, otherPoint: Point2D | null): boolean {
