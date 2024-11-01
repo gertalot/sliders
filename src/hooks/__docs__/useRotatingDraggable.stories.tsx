@@ -15,14 +15,12 @@ export default meta;
 
 export const UseRotatingDraggableExample: StoryObj<BasicComponent> = {
   render: () => {
-    // const sliderRadius = 0.4;
     const containerRef = useRef<SVGSVGElement>(null);
     const targetRef = useRef<SVGCircleElement>(null);
 
-    const { isDragging, isOnTarget, angle, totalAngle, fullRotations } = useRotatingDraggable({
+    const { isRotating, isOnTarget, angle, totalAngle, fullRotations } = useRotatingDraggable({
       containerRef,
       targetRef
-      // origin: { x: 0, y: 0 }
     });
 
     const [position, setPosition] = useState<Point2D | null>(null);
@@ -60,7 +58,7 @@ export const UseRotatingDraggableExample: StoryObj<BasicComponent> = {
               <div>
                 angle: {totalAngle.toFixed(2)} ({fullRotations} full rotations)
               </div>
-              <div>{[isOnTarget ? "on target" : "", isDragging ? "rotating" : ""].filter(Boolean).join(", ")}</div>
+              <div>{[isOnTarget ? "on target" : "", isRotating ? "rotating" : ""].filter(Boolean).join(", ")}</div>
             </div>
           </div>
         </div>

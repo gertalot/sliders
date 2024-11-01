@@ -9,7 +9,7 @@ import { useEffect, useState, RefObject, useCallback, useRef } from "react";
  * @param props.sensitivity increase to reduce speed; default is 100
  * @returns props with `wheelDelta` representing the rotating speed of the mouse wheel
  */
-const useWheelSpeed = ({
+const useWheelAdjust = ({
   containerRef,
   sensitivity = 100
 }: {
@@ -23,36 +23,38 @@ const useWheelSpeed = ({
   const handleWheel = useCallback(
     (e: unknown) => {
       const event = e as WheelEvent;
-      event.preventDefault(); // don't scroll the page
+      if (event) {
+        event.preventDefault(); // don't scroll the page
 
-      // the more time has passed since the last wheel event, the slower
-      // it is rotating. Compute a new speed delta based on rotation speed
-      const currentTime = performance.now();
-      const timeDelta = currentTime - lastWheelEventTime.current;
-      const delta = event.deltaY / timeDelta / sensitivity;
+        // the more time has passed since the last wheel event, the slower
+        // it is rotating. Compute a new speed delta based on rotation speed
+        const currentTime = performance.now();
+        const timeDelta = currentTime - lastWheelEventTime.current;
+        const delta = event.deltaY / timeDelta / sensitivity;
 
-      setWheelDelta((prev) => (delta == prev ? prev : delta));
-      lastWheelEventTime.current = currentTime;
+        setWheelDelta((prev) => (delta == prev ? prev : delta));
+        lastWheelEventTime.current = currentTime;
+      }
     },
     [sensitivity]
   );
 
   useEffect(() => {
-    // Reset speed to 0 if no wheel event occurs for 500ms
-    const timer = setTimeout(() => setWheelDelta(0), 500);
+    // Reset speed to 0 if no wheel event occurs for 200ms
+    const timer = setTimeout(() => setWheelDelta(0), 200);
     return () => clearTimeout(timer);
   }, [wheelDelta]);
 
   // add an event listener on the container for wheel events
   useEffect(() => {
     const container = containerRef.current;
-    container?.addEventListener("wheel", handleWheel);
+    container?.addEventListener("wheel", handleWheel, { passive: false });
     return () => {
       container?.removeEventListener("wheel", handleWheel);
     };
   }, [containerRef, handleWheel]);
 
-  return { wheelDelta };
+  return { wheelDelta, isScrolling: wheelDelta != 0 };
 };
 
-export default useWheelSpeed;
+export default useWheelAdjust;

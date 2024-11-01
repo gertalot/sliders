@@ -56,7 +56,7 @@ const useDraggable = ({
       const rect = containerRef.current?.getBoundingClientRect();
       const touch = event.touches[0];
       const onTarget = event.target === targetRef.current;
-      if (rect && onTarget) {
+      if (rect && onTarget && event.touches.length === 1) {
         setOnTarget(() => onTarget);
         setStartDragOnTarget(() => onTarget);
         setDragging(true);
@@ -96,9 +96,9 @@ const useDraggable = ({
   const handleTouchMove = useCallback(
     (e: unknown) => {
       const rect = containerRef.current?.getBoundingClientRect();
+      const event = e as TouchEvent;
 
-      if (rect && isDragging && isStartDragOnTarget) {
-        const event = e as TouchEvent;
+      if (rect && isDragging && isStartDragOnTarget && event.touches.length === 1) {
         const touch = event.touches[0];
         setCursorPosition({ x: touch.clientX - rect.x, y: touch.clientY - rect.y });
       }

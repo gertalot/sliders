@@ -1,6 +1,7 @@
-import { useEffect, useState, RefObject, useCallback, useRef } from "react";
+import { useEffect, RefObject, useCallback, useRef } from "react";
 import useDraggable from "./useDraggable";
-import useWheelSpeed from "./useWheelSpeed";
+import useWheelAdjust from "./useWheelAdjust";
+import useDragAdjust from "./useDragAdjust";
 import { Point2D, TAU, pointToAngle } from "../utils";
 
 /**
@@ -31,19 +32,19 @@ const useRotatingDraggable = ({
   const totalAngle = useRef<number>(initialAngle);
   const angle = useRef<number>(totalAngle.current % TAU);
   const fullRotations = useRef<number>(Math.floor(totalAngle.current / TAU));
-  const [origin_, setOrigin] = useState<Point2D | null>(null);
+  const origin_ = useRef<Point2D | null>(null);
 
   // set the origin to what was passed in, or set it to the center of `fromRect`
   // if we have one, or set it to 0,0 if all else fails.
   useEffect(() => {
     if (origin) {
-      setOrigin(origin);
+      origin_.current = origin;
     } else {
       const fromRect = containerRef.current?.getBoundingClientRect();
       if (fromRect) {
-        setOrigin({ x: fromRect.width / 2, y: fromRect.height / 2 });
+        origin_.current = { x: fromRect.width / 2, y: fromRect.height / 2 };
       } else {
-        setOrigin({ x: 0, y: 0 });
+        origin_.current = { x: 0, y: 0 };
       }
     }
   }, [containerRef, origin]);
@@ -67,24 +68,32 @@ const useRotatingDraggable = ({
     [angle, fullRotations]
   );
 
-  // update the angle if the user is dragging the target
+  // update the angle when the user is dragging the target
   useEffect(() => {
-    if (origin_ && cursorPosition && isDragging) {
-      const newAngle = pointToAngle(cursorPosition, origin_);
+    if (origin_.current && cursorPosition && isDragging) {
+      const newAngle = pointToAngle(cursorPosition, origin_.current);
       updateAngle(newAngle);
     }
   }, [angle, cursorPosition, fullRotations, isDragging, origin_, updateAngle]);
 
   // update the angle when the user is rotating the mouse wheel
-  const { wheelDelta } = useWheelSpeed({ containerRef, sensitivity: 100 });
+  const { wheelDelta, isScrolling } = useWheelAdjust({ containerRef, sensitivity: 100 });
   useEffect(() => {
     const newAngle = angle.current + wheelDelta;
     const newNormalisedAngle = (newAngle < 0 ? newAngle + TAU : newAngle) % TAU;
     updateAngle(newNormalisedAngle);
   }, [wheelDelta, updateAngle]);
 
+  // do something clever when the user is dragging up or down
+  const { dragAdjust, isDragAdjusting } = useDragAdjust({ containerRef, sensitivity: 100, verticalDragging: true });
+  useEffect(() => {
+    const newAngle = angle.current + dragAdjust;
+    const newNormalisedAngle = (newAngle < 0 ? newAngle + TAU : newAngle) % TAU;
+    updateAngle(newNormalisedAngle);
+  }, [dragAdjust, updateAngle]);
+
   return {
-    isDragging,
+    isRotating: isDragging || isScrolling || isDragAdjusting,
     isOnTarget,
     angle: angle.current,
     fullRotations: fullRotations.current,
