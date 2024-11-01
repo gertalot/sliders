@@ -1,6 +1,6 @@
 import { useEffect, useState, RefObject, useCallback, useRef } from "react";
 import useDraggable from "./useDraggable";
-import useWheelDelta from "./useWheelDelta";
+import useWheelSpeed from "./useWheelSpeed";
 import { Point2D, TAU, pointToAngle } from "../utils";
 
 const useRotatingDraggable = ({
@@ -60,9 +60,8 @@ const useRotatingDraggable = ({
     }
   }, [angle, cursorPosition, fullRotations, isDragging, origin_, updateAngle]);
 
-  const { wheelDelta } = useWheelDelta({ containerRef, sensitivity: 100 });
-
   // update the angle when the user is rotating the mouse wheel
+  const { wheelDelta } = useWheelSpeed({ containerRef, sensitivity: 100 });
   useEffect(() => {
     const newAngle = angle.current + wheelDelta;
     const newNormalisedAngle = (newAngle < 0 ? newAngle + TAU : newAngle) % TAU;

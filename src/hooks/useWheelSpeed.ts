@@ -9,7 +9,7 @@ import { useEffect, useState, RefObject, useCallback, useRef } from "react";
  * @param props.sensitivity increase to reduce speed
  * @returns props with `wheelDelta` representing the rotating speed of the mouse wheel
  */
-const useWheelDelta = ({
+const useWheelSpeed = ({
   containerRef,
   sensitivity = 100
 }: {
@@ -54,4 +54,4 @@ const useWheelDelta = ({
   return { wheelDelta };
 };
 
-export default useWheelDelta;
+export default useWheelSpeed;
