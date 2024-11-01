@@ -3,6 +3,20 @@ import useDraggable from "./useDraggable";
 import useWheelSpeed from "./useWheelSpeed";
 import { Point2D, TAU, pointToAngle } from "../utils";
 
+/**
+ * A custom hook that can be used to rotate an element around a center and track the
+ * angle of rotation.
+ *
+ * @param props.containerRef the container element for the widget
+ * @param props.targetRef the element that can be dragged around a center
+ * @param props.initialAngle the initial angle in radians from 0 - 2*Math.PI, where 0 correponds
+ *                           to 3 o'clock, and 1/4*pi is 6 o'clock (angle increases clockwise)
+ * @param props.origin the center around which the rotation is being tracked
+ * @returns Props with `isDragging`, and `isOnTarget` from the `useDraggable` hook;
+ *          `angle` is the current angle of rotation in `[0,2*pi)`;
+ *          `fullRotations` is the number of full rotations clockwise or anti-clockwise;
+ *          `totalAngle` = `fullRotations * 2*pi + angle`
+ */
 const useRotatingDraggable = ({
   containerRef,
   targetRef,
@@ -37,6 +51,7 @@ const useRotatingDraggable = ({
   // get the basic custom hook that takes care of dragging and sliding behaviour
   const { isDragging, isOnTarget, cursorPosition } = useDraggable({ containerRef, targetRef });
 
+  // convenience function that updates this hook's internal state, used below
   const updateAngle = useCallback(
     (newAngle: number) => {
       const isClockwise = (angle.current - newAngle + TAU) % TAU > 0.5 * TAU;

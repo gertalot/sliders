@@ -13,7 +13,11 @@ these hooks in your own components to add functionality.
 give you the angle in radians. It lets you rotate the target infinitely clockwise or anti-clockwise, and lets you
 keep track of You pass it refs to a container element and a target element.
 
-It uses `useDraggable` under the hood.
+You can effect rotation either by dragging the target, or by using the mouse wheel when the pointer is over the
+container.
+
+It uses `useDraggable` under the hood to track when the user is dragging the target, and `useWheelSpeed` to
+respond to the mouse wheel being used.
 
 ## Usage
 

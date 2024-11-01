@@ -6,7 +6,7 @@ import { useEffect, useState, RefObject, useCallback, useRef } from "react";
  * to reflect how quickly wheel events are coming in (i.e. how fast the wheel is rotating).
  *
  * @param props.containerRef the element that listens to wheel events
- * @param props.sensitivity increase to reduce speed
+ * @param props.sensitivity increase to reduce speed; default is 100
  * @returns props with `wheelDelta` representing the rotating speed of the mouse wheel
  */
 const useWheelSpeed = ({
@@ -43,6 +43,7 @@ const useWheelSpeed = ({
     return () => clearTimeout(timer);
   }, [wheelDelta]);
 
+  // add an event listener on the container for wheel events
   useEffect(() => {
     const container = containerRef.current;
     container?.addEventListener("wheel", handleWheel);
