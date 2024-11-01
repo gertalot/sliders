@@ -1,12 +1,21 @@
 import { useEffect, useState, RefObject, useCallback, useRef } from "react";
 
 /**
+ * Custom hook that tracks how fast the mouse wheel is rotating. This hook adds a "wheel"
+ * event listener to the element referenced by `containerRef`, and sets the `wheelDelta`
+ * to reflect how quickly wheel events are coming in (i.e. how fast the wheel is rotating).
  *
- * @param props.containerRef
- * @param props.speed
+ * @param props.containerRef the element that listens to wheel events
+ * @param props.sensitivity increase to reduce speed
  * @returns props with `wheelDelta` representing the rotating speed of the mouse wheel
  */
-const useWheelDelta = ({ containerRef, speed = 10 }: { containerRef: RefObject<Element>; speed: number }) => {
+const useWheelDelta = ({
+  containerRef,
+  sensitivity = 100
+}: {
+  containerRef: RefObject<Element>;
+  sensitivity: number;
+}) => {
   const lastWheelEventTime = useRef<number>(0);
   const [wheelDelta, setWheelDelta] = useState<number>(0);
 
@@ -14,21 +23,23 @@ const useWheelDelta = ({ containerRef, speed = 10 }: { containerRef: RefObject<E
   const handleWheel = useCallback(
     (e: unknown) => {
       const event = e as WheelEvent;
-      event.preventDefault();
+      event.preventDefault(); // don't scroll the page
 
+      // the more time has passed since the last wheel event, the slower
+      // it is rotating. Compute a new speed delta based on rotation speed
       const currentTime = performance.now();
       const timeDelta = currentTime - lastWheelEventTime.current;
-      const delta = event.deltaY / timeDelta / (100 / speed);
+      const delta = event.deltaY / timeDelta / sensitivity;
 
       setWheelDelta((prev) => (delta == prev ? prev : delta));
       lastWheelEventTime.current = currentTime;
     },
-    [speed]
+    [sensitivity]
   );
 
   useEffect(() => {
     // Reset speed to 0 if no wheel event occurs for 500ms
-    const timer = setTimeout(() => setWheelDelta(0), 100);
+    const timer = setTimeout(() => setWheelDelta(0), 500);
     return () => clearTimeout(timer);
   }, [wheelDelta]);
 

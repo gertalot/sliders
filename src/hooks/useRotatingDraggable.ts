@@ -1,8 +1,7 @@
 import { useEffect, useState, RefObject, useCallback, useRef } from "react";
 import useDraggable from "./useDraggable";
-import { Point2D, TAU, pointToAngle } from "../utils";
 import useWheelDelta from "./useWheelDelta";
-import { maxHeaderSize } from "http";
+import { Point2D, TAU, pointToAngle } from "../utils";
 
 const useRotatingDraggable = ({
   containerRef,
@@ -15,9 +14,9 @@ const useRotatingDraggable = ({
   initialAngle?: number;
   origin?: Point2D | null;
 }) => {
-  const [totalAngle, setTotalAngle] = useState(initialAngle);
-  const [angle, setAngle] = useState(totalAngle % TAU);
-  const [fullRotations, setFullRotations] = useState(Math.floor(totalAngle / TAU));
+  const totalAngle = useRef<number>(initialAngle);
+  const angle = useRef<number>(totalAngle.current % TAU);
+  const fullRotations = useRef<number>(Math.floor(totalAngle.current / TAU));
   const [origin_, setOrigin] = useState<Point2D | null>(null);
 
   // set the origin to what was passed in, or set it to the center of `fromRect`
@@ -39,21 +38,21 @@ const useRotatingDraggable = ({
   const { isDragging, isOnTarget, cursorPosition } = useDraggable({ containerRef, targetRef });
 
   const updateAngle = useCallback(
-    (newAngle: number): void => {
-      const isClockwise = (angle - newAngle + TAU) % TAU > 0.5 * TAU;
-      const incRotations = isClockwise && newAngle < angle ? 1 : 0;
-      const decRotations = !isClockwise && newAngle > angle ? -1 : 0;
-      const newFullRotations = fullRotations + incRotations + decRotations;
+    (newAngle: number) => {
+      const isClockwise = (angle.current - newAngle + TAU) % TAU > 0.5 * TAU;
+      const incRotations = isClockwise && newAngle < angle.current ? 1 : 0;
+      const decRotations = !isClockwise && newAngle > angle.current ? -1 : 0;
+      const newFullRotations = fullRotations.current + incRotations + decRotations;
       const newTotalAngle = newAngle + TAU * newFullRotations;
 
-      setTotalAngle(newTotalAngle);
-      setFullRotations(newFullRotations);
-      setAngle(newAngle);
+      totalAngle.current = newTotalAngle;
+      fullRotations.current = newFullRotations;
+      angle.current = newAngle;
     },
     [angle, fullRotations]
   );
 
-  // update our angle and related state if the user is dragging the target
+  // update the angle if the user is dragging the target
   useEffect(() => {
     if (origin_ && cursorPosition && isDragging) {
       const newAngle = pointToAngle(cursorPosition, origin_);
@@ -61,15 +60,22 @@ const useRotatingDraggable = ({
     }
   }, [angle, cursorPosition, fullRotations, isDragging, origin_, updateAngle]);
 
-  const { wheelDelta } = useWheelDelta({ containerRef, speed: 2 });
+  const { wheelDelta } = useWheelDelta({ containerRef, sensitivity: 100 });
 
+  // update the angle when the user is rotating the mouse wheel
   useEffect(() => {
-    const newAngle = angle + wheelDelta;
+    const newAngle = angle.current + wheelDelta;
     const newNormalisedAngle = (newAngle < 0 ? newAngle + TAU : newAngle) % TAU;
     updateAngle(newNormalisedAngle);
-  }, [wheelDelta]);
+  }, [wheelDelta, updateAngle]);
 
-  return { isDragging, isOnTarget, angle, fullRotations, totalAngle };
+  return {
+    isDragging,
+    isOnTarget,
+    angle: angle.current,
+    fullRotations: fullRotations.current,
+    totalAngle: totalAngle.current
+  };
 };
 
 export default useRotatingDraggable;
