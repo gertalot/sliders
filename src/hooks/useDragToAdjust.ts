@@ -9,7 +9,7 @@ import { useEffect, useState, RefObject, useCallback } from "react";
  * @param props.sensitivity increase to reduce speed; default is 100
  * @returns props with `wheelDelta` representing the rotating speed of the mouse wheel
  */
-const useDragAdjust = ({
+const useDragToAdjust = ({
   containerRef,
   sensitivity = 100,
   verticalDragging = true
@@ -109,4 +109,4 @@ const useDragAdjust = ({
   return { dragAdjust, isDragAdjusting: dragAdjust != 0 };
 };
 
-export default useDragAdjust;
+export default useDragToAdjust;

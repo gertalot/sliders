@@ -1,7 +1,7 @@
 import { useEffect, RefObject, useCallback, useRef } from "react";
 import useDragToMove from "./useDragToMove";
 import useWheelToAdjust from "./useWheelToAdjust";
-import useDragAdjust from "./useDragAdjust";
+import useDragToAdjust from "./useDragToAdjust";
 import { Point2D, TAU, pointToAngle } from "../utils";
 
 /**
@@ -85,7 +85,7 @@ const useRotateToMove = ({
   }, [wheelDelta, updateAngle]);
 
   // do something clever when the user is dragging up or down
-  const { dragAdjust, isDragAdjusting } = useDragAdjust({ containerRef, sensitivity: 100, verticalDragging: true });
+  const { dragAdjust, isDragAdjusting } = useDragToAdjust({ containerRef, sensitivity: 100, verticalDragging: true });
   useEffect(() => {
     const newAngle = angle.current + dragAdjust;
     const newNormalisedAngle = (newAngle < 0 ? newAngle + TAU : newAngle) % TAU;
