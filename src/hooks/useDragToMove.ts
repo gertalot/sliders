@@ -66,7 +66,7 @@ const useDragToMove = ({
     [containerRef, targetRef]
   );
 
-  const handleMouseUp = useCallback(
+  const handleMouseStopDrag = useCallback(
     (e: unknown) => {
       const event = e as MouseEvent;
       setDragging(false);
@@ -76,7 +76,7 @@ const useDragToMove = ({
     [targetRef]
   );
 
-  const handleTouchEnd = useCallback(() => {
+  const handleStopDrag = useCallback(() => {
     setDragging(false);
     setOnTarget(false);
     setStartDragOnTarget(false);
@@ -120,12 +120,13 @@ const useDragToMove = ({
 
     const containerEvents = {
       mousedown: handleMouseDown,
-      mouseup: handleMouseUp,
+      mouseup: handleMouseStopDrag,
       touchstart: handleTouchStart,
-      touchend: handleTouchEnd,
+      touchend: handleStopDrag,
       mousemove: handleMouseMove,
       touchmove: handleTouchMove,
-      mouseover: handleMouseOver
+      mouseover: handleMouseOver,
+      mouseleave: handleStopDrag
     };
     for (const [event, handler] of Object.entries(containerEvents)) {
       container?.addEventListener(event, handler);
@@ -140,8 +141,8 @@ const useDragToMove = ({
     handleMouseDown,
     handleMouseMove,
     handleMouseOver,
-    handleMouseUp,
-    handleTouchEnd,
+    handleMouseStopDrag,
+    handleStopDrag,
     handleTouchMove,
     handleTouchStart,
     isDragging,
