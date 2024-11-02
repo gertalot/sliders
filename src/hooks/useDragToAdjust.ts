@@ -15,8 +15,8 @@ const useDragAdjust = ({
   verticalDragging = true
 }: {
   containerRef: RefObject<Element>;
-  sensitivity: number;
-  verticalDragging: boolean;
+  sensitivity?: number;
+  verticalDragging?: boolean;
 }) => {
   const [isDragging, setDragging] = useState(false);
   const [dragAdjust, setDragAdjust] = useState(0);
@@ -63,7 +63,7 @@ const useDragAdjust = ({
       if (rect && isDragging) {
         // maybe update the delta?
         const delta = verticalDragging ? event.clientY - dragStart : event.clientX - dragStart;
-        setDragAdjust(delta / (sensitivity * 2));
+        setDragAdjust(-delta / (sensitivity * 2));
         setDragStart(verticalDragging ? event.clientY : event.clientX);
       }
     },
@@ -77,7 +77,7 @@ const useDragAdjust = ({
       if (rect && isDragging && event.touches.length === 2) {
         const touch = event.touches[0];
         const delta = verticalDragging ? touch.clientY - dragStart : touch.clientX - dragStart;
-        setDragAdjust(delta / (sensitivity * 2));
+        setDragAdjust(-delta / (sensitivity * 2));
         setDragStart(verticalDragging ? touch.clientY : touch.clientX);
       }
     },
@@ -93,6 +93,7 @@ const useDragAdjust = ({
       mouseup: handleStopDragging,
       touchstart: handleTouchStart,
       touchend: handleStopDragging,
+      mouseleave: handleStopDragging,
       mousemove: handleMouseMove,
       touchmove: handleTouchMove
     };

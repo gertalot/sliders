@@ -1,22 +1,22 @@
 import { Canvas, Meta } from "@storybook/blocks";
-import * as useDraggable from "./useDraggable.stories";
+import * as useDragToMove from "./useDragToMove.stories";
 
-<Meta of={useDraggable} title="useDraggable custom Hook" />
+<Meta of={useDragToMove} title="useDragToMove custom Hook" />
 
-# the `useDraggable` custom React hook
+# the `useDragToMove` custom React hook
 
 This is a custom React hook (aka a "headless component") that provides very basic functionality to drag
 a target element around inside a container. The project has no styles or components; instead you use
 these hooks in your own components to add functionality.
 
-`useDraggable` is the most basic functionality. You pass it refs to a container element and a target element.
+`useDragToMove` is the most basic functionality. You pass it refs to a container element and a target element.
 Event listeners on the container track mouse or touch events, and indicates whether the user is dragging (i.e.
 the user is touching or holding the mouse down in the container area), whether the dragging started on the
 target element, and the current position of the cursor relative to the container element.
 
 ## Usage
 
-You use the `useDraggable` hook as follows:
+You use the `useDragToMove` hook as follows:
 
 ```tsx
 // These are used in tsx code as `ref={containerRef}` and `ref={targetRef}`
@@ -24,13 +24,13 @@ const containerRef = useRef<Element>(null);
 const targetRef = useRef<Element>(null);
 
 // these properties will be updated automatically by the custom hook
-const { isOnTarget, isDragging, isStartDragOnTarget, cursorPosition } = useDraggable({ containerRef, targetRef });
+const { isOnTarget, isDragging, isStartDragOnTarget, cursorPosition } = useDragToMove({ containerRef, targetRef });
 
 // add code that updates the component based on these properties
 // ...
 ```
 
-`useDraggable` returns an object with the following properties:
+`useDragToMove` returns an object with the following properties:
 
 - `isOnTarget` - `true` if the mouse is currently over the target
 - `isDragging` - `true` if the user is touching or holding the mouse and dragging across the container area
@@ -57,14 +57,14 @@ useEffect(() => {
 }, [isStartDragOnTarget, cursorPosition, isDragging]);
 ```
 
-# basic useDraggable custom hook complete example
+# basic useDragToMove custom hook complete example
 
-This shows the basic functionality of the `useDraggable` custom hook, applied to a component
+This shows the basic functionality of the `useDragToMove` custom hook, applied to a component
 
-<Canvas of={useDraggable.UseDraggableBasicExample} />
+<Canvas of={useDragToMove.UseDragToMoveBasicExample} />
 
-# basic useDraggable custom hook on an SVG component
+# basic useDragToMove custom hook on an SVG component
 
 A slightly fancier example, using an SVG with a draggable circle
 
-<Canvas of={useDraggable.UseDraggableSVGDemo} />
+<Canvas of={useDragToMove.UseDragToMoveSVGDemo} />

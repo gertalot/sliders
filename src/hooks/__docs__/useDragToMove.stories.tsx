@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from "@storybook/react";
 import { FC, useEffect, useRef, useState } from "react";
-import useDraggable from "../useDraggable";
+import useDragToMove from "../useDragToMove";
 
 // there are no props or anything, so this is simple
 type BasicComponent = FC;
 
 const meta: Meta<BasicComponent> = {
-  title: "useDraggable basic example"
+  title: "useDragToMove basic example"
 };
 
 export default meta;
@@ -15,11 +15,11 @@ export default meta;
 /**
  * A minimal example
  */
-export const UseDraggableBasicExample: StoryObj<BasicComponent> = {
+export const UseDragToMoveBasicExample: StoryObj<BasicComponent> = {
   render: () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const targetRef = useRef<HTMLSpanElement>(null);
-    const { isOnTarget, isDragging, cursorPosition } = useDraggable({ containerRef, targetRef });
+    const { isOnTarget, isDragging, cursorPosition } = useDragToMove({ containerRef, targetRef });
     const [position, setPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
     useEffect(() => {
@@ -64,11 +64,11 @@ export const UseDraggableBasicExample: StoryObj<BasicComponent> = {
 /**
  * A fancier example using an SVG
  */
-export const UseDraggableSVGDemo: StoryObj<BasicComponent> = {
+export const UseDragToMoveSVGDemo: StoryObj<BasicComponent> = {
   render: () => {
     const containerRef = useRef<SVGSVGElement>(null);
     const targetRef = useRef<SVGCircleElement>(null);
-    const { isOnTarget, isDragging, cursorPosition } = useDraggable({ containerRef, targetRef });
+    const { isOnTarget, isDragging, cursorPosition } = useDragToMove({ containerRef, targetRef });
 
     // Styles for when we're hovering or dragging the target
     useEffect(() => {

@@ -17,7 +17,7 @@ import { Point2D } from "../utils";
  *  * `isStartDragOnTarget` - `true` if the user started dragging while over the target; `false` otherwise
  *  * `position` - `{x,y}` coordinates of the cursor, in client coordinates
  */
-const useDraggable = ({
+const useDragToMove = ({
   containerRef,
   targetRef
 }: {
@@ -152,4 +152,4 @@ const useDraggable = ({
   return { isDragging, isOnTarget, cursorPosition };
 };
 
-export default useDraggable;
+export default useDragToMove;

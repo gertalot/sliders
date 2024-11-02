@@ -1,5 +1,5 @@
 import { useEffect, RefObject, useCallback, useRef } from "react";
-import useDraggable from "./useDraggable";
+import useDragToMove from "./useDragToMove";
 import useWheelAdjust from "./useWheelAdjust";
 import useDragAdjust from "./useDragAdjust";
 import { Point2D, TAU, pointToAngle } from "../utils";
@@ -13,12 +13,12 @@ import { Point2D, TAU, pointToAngle } from "../utils";
  * @param props.initialAngle the initial angle in radians from 0 - 2*Math.PI, where 0 correponds
  *                           to 3 o'clock, and 1/4*pi is 6 o'clock (angle increases clockwise)
  * @param props.origin the center around which the rotation is being tracked
- * @returns Props with `isDragging`, and `isOnTarget` from the `useDraggable` hook;
+ * @returns Props with `isDragging`, and `isOnTarget` from the `useDragToMove` hook;
  *          `angle` is the current angle of rotation in `[0,2*pi)`;
  *          `fullRotations` is the number of full rotations clockwise or anti-clockwise;
  *          `totalAngle` = `fullRotations * 2*pi + angle`
  */
-const useRotatingDraggable = ({
+const useRotateToMove = ({
   containerRef,
   targetRef,
   initialAngle = 0,
@@ -50,7 +50,7 @@ const useRotatingDraggable = ({
   }, [containerRef, origin]);
 
   // get the basic custom hook that takes care of dragging and sliding behaviour
-  const { isDragging, isOnTarget, cursorPosition } = useDraggable({ containerRef, targetRef });
+  const { isDragging, isOnTarget, cursorPosition } = useDragToMove({ containerRef, targetRef });
 
   // convenience function that updates this hook's internal state, used below
   const updateAngle = useCallback(
@@ -101,4 +101,4 @@ const useRotatingDraggable = ({
   };
 };
 
-export default useRotatingDraggable;
+export default useRotateToMove;

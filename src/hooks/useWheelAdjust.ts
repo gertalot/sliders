@@ -14,7 +14,7 @@ const useWheelAdjust = ({
   sensitivity = 100
 }: {
   containerRef: RefObject<Element>;
-  sensitivity: number;
+  sensitivity?: number;
 }) => {
   const lastWheelEventTime = useRef<number>(0);
   const [wheelDelta, setWheelDelta] = useState<number>(0);
@@ -30,7 +30,7 @@ const useWheelAdjust = ({
         // it is rotating. Compute a new speed delta based on rotation speed
         const currentTime = performance.now();
         const timeDelta = currentTime - lastWheelEventTime.current;
-        const delta = event.deltaY / timeDelta / sensitivity;
+        const delta = -event.deltaY / timeDelta / sensitivity;
 
         setWheelDelta((prev) => (delta == prev ? prev : delta));
         lastWheelEventTime.current = currentTime;

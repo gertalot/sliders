@@ -1,27 +1,27 @@
 import { Canvas, Meta } from "@storybook/blocks";
-import * as useRotatingDraggable from "./useRotatingDraggable.stories";
+import * as useRotateToMove from "./useRotateToMove.stories";
 
-<Meta of={useRotatingDraggable} title="useDraggable custom Hook" />
+<Meta of={useRotateToMove} title="useDragToMove custom Hook" />
 
-# the `useRotatingDraggable` custom React hook
+# the `useRotateToMove` custom React hook
 
 This is a custom React hook (aka a "headless component") that provides basic functionality to rotate a target
 element around an origin inside a container. The project has no styles or components; instead you use
 these hooks in your own components to add functionality.
 
-`useRotatingDraggable` gives you basic functionality: it lets you drag an element around an origin, and it will
+`useRotateToMove` gives you basic functionality: it lets you drag an element around an origin, and it will
 give you the angle in radians. It lets you rotate the target infinitely clockwise or anti-clockwise, and lets you
 keep track of You pass it refs to a container element and a target element.
 
 You can effect rotation either by dragging the target, or by using the mouse wheel when the pointer is over the
 container.
 
-It uses `useDraggable` under the hood to track when the user is dragging the target, and `useWheelSpeed` to
+It uses `useDragToMove` under the hood to track when the user is dragging the target, and `useWheelSpeed` to
 respond to the mouse wheel being used.
 
 ## Usage
 
-You use the `useRotatingDraggable` hook as follows:
+You use the `useRotateToMove` hook as follows:
 
 ```tsx
 // These are used in tsx code as `ref={containerRef}` and `ref={targetRef}`
@@ -29,7 +29,7 @@ const containerRef = useRef<Element>(null);
 const targetRef = useRef<Element>(null);
 
 // these properties will be updated automatically by the custom hook
-const { isDragging, isOnTarget, angle, totalAngle, fullRotations } = useRotatingDraggable({
+const { isDragging, isOnTarget, angle, totalAngle, fullRotations } = useRotateToMove({
   containerRef,
   targetRef
   origin: { x: 0, y: 0 }
@@ -39,7 +39,7 @@ const { isDragging, isOnTarget, angle, totalAngle, fullRotations } = useRotating
 // ...
 ```
 
-`useRotatingDraggable` returns an object with the following properties:
+`useRotateToMove` returns an object with the following properties:
 
 - `isOnTarget` - `true` if the mouse is currently over the target
 - `isDragging` - `true` if the user is touching or holding the mouse and dragging across the container area
@@ -65,4 +65,4 @@ useEffect(() => {
 
 An example using an SVG with a draggable circle that rotates around a center:
 
-<Canvas of={useRotatingDraggable.UseRotatingDraggableExample} />
+<Canvas of={useRotateToMove.UseRotateToMoveExample} />
