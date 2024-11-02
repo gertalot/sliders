@@ -1,6 +1,6 @@
 import { useEffect, RefObject, useCallback, useRef } from "react";
 import useDragToMove from "./useDragToMove";
-import useWheelAdjust from "./useWheelAdjust";
+import useWheelToAdjust from "./useWheelToAdjust";
 import useDragAdjust from "./useDragAdjust";
 import { Point2D, TAU, pointToAngle } from "../utils";
 
@@ -77,7 +77,7 @@ const useRotateToMove = ({
   }, [angle, cursorPosition, fullRotations, isDragging, origin_, updateAngle]);
 
   // update the angle when the user is rotating the mouse wheel
-  const { wheelDelta, isScrolling } = useWheelAdjust({ containerRef, sensitivity: 100 });
+  const { wheelDelta, isScrolling } = useWheelToAdjust({ containerRef, sensitivity: 100 });
   useEffect(() => {
     const newAngle = angle.current + wheelDelta;
     const newNormalisedAngle = (newAngle < 0 ? newAngle + TAU : newAngle) % TAU;

@@ -1,28 +1,28 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from "@storybook/react";
 import { FC, useEffect, useRef, useState } from "react";
-import useDragAdjust from "../useDragAdjust";
+import useWheelToAdjust from "../useWheelToAdjust";
 
 type BasicComponent = FC;
 
 const meta: Meta<BasicComponent> = {
-  title: "useDragAdjust example"
+  title: "useWheelToAdjust example"
 };
 
 export default meta;
 
-export const UseDragAdjustExample: StoryObj<BasicComponent> = {
+export const UseWheelToAdjustExample: StoryObj<BasicComponent> = {
   render: () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [value, setValue] = useState(0);
 
-    const { dragAdjust, isDragAdjusting } = useDragAdjust({ containerRef, sensitivity: 2 });
+    const { wheelDelta, isScrolling } = useWheelToAdjust({ containerRef, sensitivity: 2 });
 
     useEffect(() => {
-      if (isDragAdjusting) {
-        setValue((prev) => prev + dragAdjust);
+      if (isScrolling) {
+        setValue((prev) => prev + wheelDelta);
       }
-    }, [dragAdjust, isDragAdjusting]);
+    }, [wheelDelta, isScrolling]);
 
     return (
       <div
@@ -30,7 +30,7 @@ export const UseDragAdjustExample: StoryObj<BasicComponent> = {
         ref={containerRef}
       >
         <div className="flex flex-col items-center space-y-2">
-          <h2 className="text-xl">Drag vertically to scroll!</h2>
+          <h2 className="text-xl">Use the mouse wheel!</h2>
           <p className="text-center text-sm">Scroll faster for coarse adjustments, and slower for fine adjustments</p>
           <h1 className="text-2xl font-bold">{value.toFixed(1)}</h1>
         </div>
