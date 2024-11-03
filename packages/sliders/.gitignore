@@ -1,5 +1,5 @@
 # dependencies
-node_modules
+/node_modules
 /.pnp
 .pnp.js
 
@@ -7,10 +7,9 @@ node_modules
 /coverage
 
 # production
-build
-dist
-site
-storybook-static
+/build
+/dist
+/storybook-static
 
 # misc
 .DS_Store

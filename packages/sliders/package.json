@@ -1,0 +1,82 @@
+{
+  "name": "@sliders/sliders",
+  "version": "0.1.0",
+  "description": "React custom hooks (headless components) to build all kinds of sliders, knobs, and dials",
+  "author": "Gert Verhoog",
+  "keywords": [
+    "react",
+    "headless",
+    "hook",
+    "slider"
+  ],
+  "homepage": "https://github.com/gertalot/sliders#readme",
+  "repository": "github:gertalot/sliders",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/gertalot"
+  },
+  "license": "ISC",
+  "private": true,
+  "type": "module",
+  "main": "./dist/sliders.umd.cjs",
+  "module": "./dist/sliders.js",
+  "exports": {
+    ".": {
+      "import": "./dist/sliders.js",
+      "require": "./dist/sliders.umd.cjs"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "test-watch": "vitest",
+    "test:ui": "vitest --ui",
+    "lint": "eslint src --fix",
+    "lint-staged": "lint-staged",
+    "preview": "vite preview",
+    "clean": "git clean -fXd -e \\!node_modules -e \\!node_modules/**/*",
+    "format": "prettier --write --parser typescript '**/*.{ts,tsx}'",
+    "dev": "vite",
+    "prepare": "husky",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "npm run format",
+      "npm run lint"
+    ]
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^1.9.0",
+    "@storybook/addon-essentials": "^8.3.6",
+    "@storybook/addon-interactions": "^8.3.6",
+    "@storybook/addon-links": "^8.3.6",
+    "@storybook/blocks": "^8.3.6",
+    "@storybook/react-vite": "^8.3.6",
+    "@storybook/react": "^8.3.6",
+    "@storybook/test": "^8.3.6",
+    "@testing-library/jest-dom": "^6.6.2",
+    "@testing-library/react": "^16.0.1",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.8.4",
+    "@types/react-dom": "^18.3.1",
+    "@types/react": "^18.3.12",
+    "@vitejs/plugin-react": "^4.0.0",
+    "autoprefixer": "^10.4.20",
+    "husky": "^9.1.6",
+    "jsdom": "^25.0.1",
+    "lint-staged": "^15.2.10",
+    "postcss": "^8.4.47",
+    "react-dom": "^18.2.0",
+    "react": "^18.2.0",
+    "storybook": "^8.3.6",
+    "tailwindcss": "^3.4.14",
+    "vite-plugin-dts": "^4.3.0",
+    "vite": "^5.4.10",
+    "vitest": "^2.1.4"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
