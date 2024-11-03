@@ -37,6 +37,8 @@ const config: Config = {
       {
         docs: {
           sidebarPath: "./sidebars.ts",
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          remarkPlugins: [require("remark-mdx")],
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           // editUrl:
