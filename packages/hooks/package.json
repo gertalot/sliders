@@ -17,12 +17,18 @@
   "license": "ISC",
   "private": true,
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
+  "main": "dist/sliderhooks.umd.cjs",
+  "module": "dist/sliderhooks.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/sliderhooks.js",
+      "require": "./dist/sliderhooks.umd.cjs"
+    }
+  },
   "scripts": {
     "build": "vite build",
     "test": "vitest run",

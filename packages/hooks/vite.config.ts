@@ -4,23 +4,36 @@ import dts from "vite-plugin-dts";
 import { resolve } from "path";
 
 export default defineConfig({
-  plugins: [react(), dts()],
+  plugins: [
+    react(),
+    dts({
+      include: ["src/**/*"],
+      exclude: ["**/__docs__", "**/__test__"]
+    })
+  ],
   build: {
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
-      name: "SlidersHooks",
+      name: "SliderHooks",
       formats: ["es", "umd"],
-      fileName: (format) => `sliders-hooks.${format}.js`
+      fileName: (format) => `sliderhooks.${format}.js`
     },
     rollupOptions: {
-      external: ["react", "react-dom"],
+      external: ["react", "react-dom", "typescript"],
       output: {
         globals: {
           react: "React",
           "react-dom": "ReactDOM"
         }
       }
-    }
+    },
+    sourcemap: true, // Generates source maps for debugging.
+    emptyOutDir: true // Clears the output directory before building.
+  },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: "./setupTests.ts"
   }
 });
 
