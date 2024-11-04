@@ -17,14 +17,12 @@
   "license": "ISC",
   "private": true,
   "type": "module",
-  "main": "./dist/sliders.umd.cjs",
-  "module": "./dist/sliders.js",
-  "exports": {
-    ".": {
-      "import": "./dist/sliders.js",
-      "require": "./dist/sliders.umd.cjs"
-    }
-  },
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "vite build",
     "test": "vitest run",
@@ -34,6 +32,7 @@
     "lint-staged": "lint-staged",
     "preview": "vite preview",
     "clean": "git clean -fXd -e \\!node_modules -e \\!node_modules/**/*",
+    "distclean": "git clean -fXd",
     "format": "prettier --write --parser typescript '**/*.{ts,tsx}'",
     "dev": "vite",
     "prepare": "husky",

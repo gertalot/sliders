@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import useWheelToAdjust from "../../../../hooks/src/hooks/useWheelToAdjust";
+import { useWheelToAdjust } from "@sliders/hooks";
 
 const UseWheelToAdjustDemo = () => {
   const containerRef = useRef<HTMLDivElement>(null);

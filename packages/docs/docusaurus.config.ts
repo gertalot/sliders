@@ -67,39 +67,45 @@ const config: Config = {
     ],
   ],
 
-  webpack: {
-    jsLoader: (isServer) => ({
-      loader: require.resolve("ts-loader"),
-      options: {
-        jsc: {
-          parser: {
-            syntax: "typescript",
-            tsx: true,
-          },
-          target: "es2017",
-        },
-        module: {
-          type: isServer ? "commonjs" : "es6",
-        },
-      },
-    }),
-  },
-
   plugins: [
-    function customWebpackPlugin(_context, _options) {
+    async function resolveAliasesPlugin(_context, _options) {
       return {
-        name: "custom-webpack-plugin",
+        name: "resolve-aliases",
         configureWebpack(_config, _isServer, _utils) {
           return {
             resolve: {
               alias: {
-                "@sliders/hooks": path.resolve(__dirname, "../sliders/src/hooks"),
+                "@sliders/hooks": path.resolve(__dirname, "../hooks/src"),
               },
             },
           };
         },
       };
     },
+
+    // [
+    //   "docusaurus-plugin-module-alias",
+    //   {
+    //     alias: {
+    //       "@sliders/hooks": path.resolve(__dirname, "../sliders/src/"),
+    //     },
+    //   },
+    // ],
+
+    // function customWebpackPlugin(_context, _options) {
+    //   return {
+    //     name: "custom-webpack-plugin",
+    //     configureWebpack(_config, _isServer, _utils) {
+    //       return {
+    //         resolve: {
+    //           alias: {
+    //             "@sliders/hooks": path.resolve(__dirname, "../sliders/src/hooks"),
+    //           },
+    //         },
+    //       };
+    //     },
+    //   };
+    // },
   ],
 
   themeConfig: {

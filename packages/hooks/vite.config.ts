@@ -8,9 +8,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
-      name: "Sliders",
+      name: "SlidersHooks",
       formats: ["es", "umd"],
-      fileName: (format) => `sliders.${format}.js`
+      fileName: (format) => `sliders-hooks.${format}.js`
     },
     rollupOptions: {
       external: ["react", "react-dom"],
