@@ -1,68 +1,46 @@
 {
-  "name": "slider-hooks",
-  "version": "0.1.0",
-  "description": "React custom hooks (headless components) to build all kinds of sliders, knobs, and dials",
-  "author": "Gert Verhoog",
-  "keywords": [
-    "react",
-    "headless",
-    "hook",
-    "slider"
-  ],
-  "homepage": "https://github.com/gertalot/slider-hooks#readme",
-  "repository": "github:gertalot/slider-hooks",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/gertalot"
-  },
-  "license": "ISC",
+  "name": "sliders",
   "private": true,
-  "type": "module",
-  "main": "./dist/slider-hooks.umd.cjs",
-  "module": "./dist/slider-hooks.js",
-  "exports": {
-    ".": {
-      "import": "./dist/slider-hooks.js",
-      "require": "./dist/slider-hooks.umd.cjs"
-    }
-  },
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "format": "prettier --write --parser typescript '**/*.{ts,tsx}'",
-    "lint": "eslint . --fix",
-    "lint-staged": "lint-staged",
-    "test": "vitest run",
-    "test-watch": "vitest",
-    "test:ui": "vitest --ui",
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "prepare": "husky",
-    "clean": "git clean -fXd -e \\!node_modules -e \\!node_modules/**/*",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "npm run format",
-      "npm run lint"
-    ]
+    "build": "yarn workspaces run build",
+    "dev": "concurrently \"yarn workspace @sliders/hooks dev\" \"yarn workspace @sliders/docs start\"",
+    "test": "yarn workspaces run test",
+    "lint": "eslint .",
+    "clean": "yarn workspaces run clean",
+    "distclean": "yarn workspaces run distclean",
+    "docs:docusaurus": "yarn workspace @sliders/docs run docusaurus",
+    "docs:start": "yarn workspace @sliders/docs run docusaurus start",
+    "docs:build": "yarn workspace @sliders/docs run docusaurus build",
+    "docs:swizzle": "yarn workspace @sliders/docs run docusaurus swizzle",
+    "docs:deploy": "yarn workspace @sliders/docs run docusaurus deploy",
+    "docs:clear": "yarn workspace @sliders/docs run docusaurus clear",
+    "docs:serve": "yarn workspace @sliders/docs run docusaurus serve",
+    "docs:write-translations": "yarn workspace @sliders/docs run docusaurus write-translations",
+    "docs:write-heading-ids": "yarn workspace @sliders/docs run docusaurus write-heading-ids",
+    "docs:typecheck": "yarn workspace @sliders/docs run tsc",
+    "hooks:build": "yarn workspace @sliders/hooks run vite build",
+    "hooks:test": "yarn workspace @sliders/hooks run vitest run",
+    "hooks:test-watch": "yarn workspace @sliders/hooks run vitest",
+    "hooks:test:ui": "yarn workspace @sliders/hooks run vitest --ui",
+    "hooks:lint": "yarn workspace @sliders/hooks run eslint src --fix",
+    "hooks:lint-staged": "yarn workspace @sliders/hooks run lint-staged",
+    "hooks:preview": "yarn workspace @sliders/hooks run vite preview",
+    "hooks:clean": "yarn workspace @sliders/hooks run git clean -fXd -e \\!node_modules -e \\!node_modules/**/*",
+    "hooks:format": "yarn workspace @sliders/hooks run prettier --write --parser typescript '**/*.{ts,tsx}'",
+    "hooks:dev": "yarn workspace @sliders/hooks run vite",
+    "hooks:prepare": "yarn workspace @sliders/hooks run husky",
+    "hooks:storybook": "yarn workspace @sliders/hooks run storybook dev -p 6006",
+    "hooks:build-storybook": "yarn workspace @sliders/hooks run storybook build"
   },
   "devDependencies": {
-    "@chromatic-com/storybook": "^1.9.0",
     "@eslint/compat": "^1.2.2",
     "@eslint/js": "^9.13.0",
-    "@storybook/addon-essentials": "^8.3.6",
-    "@storybook/addon-interactions": "^8.3.6",
-    "@storybook/addon-links": "^8.3.6",
-    "@storybook/blocks": "^8.3.6",
-    "@storybook/react": "^8.3.6",
-    "@storybook/react-vite": "^8.3.6",
-    "@storybook/test": "^8.3.6",
-    "@testing-library/jest-dom": "^6.6.2",
-    "@testing-library/react": "^16.0.1",
-    "@types/jest": "^29.5.14",
     "@typescript-eslint/eslint-plugin": "^8.12.2",
     "@typescript-eslint/parser": "^8.12.2",
-    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.0.1",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",
@@ -73,24 +51,8 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-storybook": "^0.10.1",
     "globals": "^15.11.0",
-    "husky": "^9.1.6",
-    "jsdom": "^25.0.1",
-    "lint-staged": "^15.2.10",
-    "postcss": "^8.4.47",
     "prettier": "3.3.3",
-    "storybook": "^8.3.6",
-    "tailwindcss": "^3.4.14",
-    "typescript-eslint": "^8.12.2",
-    "vite": "^5.4.10",
-    "vite-plugin-dts": "^4.3.0",
-    "vitest": "^2.1.4"
-  },
-  "peerDependencies": {
-    "@types/node": "^22.8.4",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "typescript": "^5.6.3"
+    "typescript": "~5.5.2",
+    "typescript-eslint": "^8.12.2"
   }
 }

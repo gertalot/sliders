@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 const compat = new FlatCompat({
   baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
+  allConfig: js.configs.all
 });
 
 export default [
@@ -28,27 +28,27 @@ export default [
       "prettier",
       "plugin:prettier/recommended",
       "plugin:react-hooks/recommended",
-      "plugin:react/jsx-runtime",
-    ),
+      "plugin:react/jsx-runtime"
+    )
   ),
   ...storybook.configs["flat/recommended"],
   {
     plugins: {
       "react-hooks": fixupPluginRules(reactHooks),
       prettier: fixupPluginRules(prettier),
-      react: fixupPluginRules(react),
-    },
+      react: fixupPluginRules(react)
+    }
   },
   {
     languageOptions: {
       globals: {
         ...globals.browser,
-        ...globals.node,
-      },
-    },
+        ...globals.node
+      }
+    }
   },
   {
-    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"]
   },
   {
     rules: {
@@ -62,27 +62,19 @@ export default [
           caughtErrorsIgnorePattern: "^_",
           destructuredArrayIgnorePattern: "^_",
           varsIgnorePattern: "^_",
-          ignoreRestSiblings: true,
-        },
-      ],
-    },
+          ignoreRestSiblings: true
+        }
+      ]
+    }
   },
   {
     settings: {
       react: {
-        version: "detect",
-      },
-    },
+        version: "detect"
+      }
+    }
   },
   {
-    files: ["packages/docs/**/*.{js,mjs,cjs,ts,jsx,tsx}"],
-    ignores: ["packages/docs/build/**/*", "packages/docs/.docusaurus/**/*", "packages/docs/tsconfig.json"],
-  },
-  {
-    files: ["packages/hooks/**/*.{js,mjs,cjs,ts,jsx,tsx}"],
-    ignores: ["dist/**/*", "**/.storybook/**/*", "**/storybook-static/**/*", "**/.docusaurus/**/*"],
-  },
-  {
-    ignores: ["**/node_modules/**/*", "packages/*/dist/**/*", "packages/*/build/**/*"],
-  },
+    ignores: ["!storybook", "dist/", "storybook-static"]
+  }
 ];
