@@ -17,7 +17,8 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@site/*": ["./*"]
+      "@site/*": ["./*"],
+      "@sliders/hooks": ["../hooks/src"]
     },
     "skipLibCheck": true
   }

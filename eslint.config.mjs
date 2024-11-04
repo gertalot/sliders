@@ -79,7 +79,7 @@ export default [
     ignores: ["packages/docs/build/**/*", "packages/docs/.docusaurus/**/*", "packages/docs/tsconfig.json"],
   },
   {
-    files: ["packages/sliders/**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+    files: ["packages/hooks/**/*.{js,mjs,cjs,ts,jsx,tsx}"],
     ignores: ["dist/**/*", "**/.storybook/**/*", "**/storybook-static/**/*", "**/.docusaurus/**/*"],
   },
   {

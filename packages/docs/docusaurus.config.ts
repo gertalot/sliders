@@ -1,6 +1,7 @@
 import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
+import path from "path";
 
 const config: Config = {
   title: "Sliders Docs",
@@ -8,10 +9,10 @@ const config: Config = {
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
-  url: "https://your-docusaurus-site.example.com",
+  url: "https://gertalot.github.io",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/",
+  baseUrl: "/sliders/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -64,6 +65,41 @@ const config: Config = {
         },
       } satisfies Preset.Options,
     ],
+  ],
+
+  webpack: {
+    jsLoader: (isServer) => ({
+      loader: require.resolve("ts-loader"),
+      options: {
+        jsc: {
+          parser: {
+            syntax: "typescript",
+            tsx: true,
+          },
+          target: "es2017",
+        },
+        module: {
+          type: isServer ? "commonjs" : "es6",
+        },
+      },
+    }),
+  },
+
+  plugins: [
+    function customWebpackPlugin(_context, _options) {
+      return {
+        name: "custom-webpack-plugin",
+        configureWebpack(_config, _isServer, _utils) {
+          return {
+            resolve: {
+              alias: {
+                "@sliders/hooks": path.resolve(__dirname, "../sliders/src/hooks"),
+              },
+            },
+          };
+        },
+      };
+    },
   ],
 
   themeConfig: {

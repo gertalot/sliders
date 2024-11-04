@@ -1,5 +1,5 @@
 {
-  "name": "@sliders/sliders",
+  "name": "@sliders/hooks",
   "version": "0.1.0",
   "description": "React custom hooks (headless components) to build all kinds of sliders, knobs, and dials",
   "author": "Gert Verhoog",
