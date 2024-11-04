@@ -5,8 +5,8 @@
   "compilerOptions": {
     "allowJs": true,
     "esModuleInterop": true,
-    "jsx": "preserve",
-    "lib": ["DOM"],
+    "jsx": "react",
+    "lib": ["DOM", "ESNext"],
     "moduleResolution": "bundler",
     "module": "esnext",
     "noEmit": true,
@@ -20,6 +20,6 @@
       "@site/*": ["./*"],
       "@sliders/hooks": ["../hooks/src"]
     },
-    "skipLibCheck": true
+    "skipLibCheck": true,
   }
 }
