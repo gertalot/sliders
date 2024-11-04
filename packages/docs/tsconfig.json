@@ -18,7 +18,7 @@
     "baseUrl": ".",
     "paths": {
       "@site/*": ["./*"],
-      "@sliders/hooks": ["../hooks/src"]
+      "@gertalot/sliders": ["../sliders/src"]
     },
     "skipLibCheck": true,
   }

@@ -5,7 +5,7 @@ import path from "path";
 
 const config: Config = {
   title: "Sliders Docs",
-  tagline: "React custom hooks (headless components) to build all kinds of sliders, knobs, and dials",
+  tagline: "React library with custom hooks to build all kinds of sliders, knobs, and dials",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -71,41 +71,19 @@ const config: Config = {
     async function resolveAliasesPlugin(_context, _options) {
       return {
         name: "resolve-aliases",
+
         configureWebpack(_config, _isServer, _utils) {
           return {
+            cache: false,
             resolve: {
               alias: {
-                "@sliders/hooks": path.resolve(__dirname, "../hooks/src"),
+                "@gertalot/sliders": path.resolve(__dirname, "../sliders/src"),
               },
             },
           };
         },
       };
     },
-
-    // [
-    //   "docusaurus-plugin-module-alias",
-    //   {
-    //     alias: {
-    //       "@sliders/hooks": path.resolve(__dirname, "../sliders/src/"),
-    //     },
-    //   },
-    // ],
-
-    // function customWebpackPlugin(_context, _options) {
-    //   return {
-    //     name: "custom-webpack-plugin",
-    //     configureWebpack(_config, _isServer, _utils) {
-    //       return {
-    //         resolve: {
-    //           alias: {
-    //             "@sliders/hooks": path.resolve(__dirname, "../sliders/src/hooks"),
-    //           },
-    //         },
-    //       };
-    //     },
-    //   };
-    // },
   ],
 
   themeConfig: {
@@ -144,23 +122,6 @@ const config: Config = {
             },
           ],
         },
-        // {
-        //   title: 'Community',
-        //   items: [
-        //     {
-        //       label: 'Stack Overflow',
-        //       href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-        //     },
-        //     {
-        //       label: 'Discord',
-        //       href: 'https://discordapp.com/invite/docusaurus',
-        //     },
-        //     {
-        //       label: 'Twitter',
-        //       href: 'https://twitter.com/docusaurus',
-        //     },
-        //   ],
-        // },
         {
           title: "More",
           items: [
