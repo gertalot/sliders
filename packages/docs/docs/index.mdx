@@ -4,6 +4,7 @@ sidebar_position: 1
 
 import { useEffect, useRef, useState } from "react";
 import UseWheelToAdjustDemo from "@site/src/components/sliders/UseWheelToAdjustDemo";
+import gertalotSlidersRaw from "@gertalot/sliders?raw";
 
 # Slider Hooks
 
@@ -17,31 +18,6 @@ that make it easy to build React components such as sliders and dials.
 ### Demo
 
 <UseWheelToAdjustDemo />
-
-## live demo
-
-```jsx live
-function Clock(props) {
-  const [date, setDate] = useState(new Date());
-
-  useEffect(() => {
-    const timerID = setInterval(() => tick(), 1000);
-    return function cleanup() {
-      clearInterval(timerID);
-    };
-  });
-
-  function tick() {
-    setDate(new Date());
-  }
-
-  return (
-    <div>
-      <h2>It's {date.toLocaleTimeString()}</h2>
-    </div>
-  );
-}
-```
 
 ## When should I use this?
 

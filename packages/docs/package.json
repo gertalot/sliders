@@ -17,6 +17,7 @@
     "distclean": "docusaurus clear && git clean -fXd"
   },
   "dependencies": {
+    "@codesandbox/sandpack-react": "^2.19.9",
     "@docusaurus/core": "^3.6.0",
     "@docusaurus/preset-classic": "^3.6.0",
     "@docusaurus/theme-live-codeblock": "^3.6.0",
@@ -26,6 +27,7 @@
     "clsx": "^2.0.0",
     "postcss": "^8.4.47",
     "prism-react-renderer": "^2.3.0",
+    "raw-loader": "^4.0.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "remark-mdx": "^3.1.0",
