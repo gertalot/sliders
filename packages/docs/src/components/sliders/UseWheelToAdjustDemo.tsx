@@ -15,7 +15,7 @@ const UseWheelToAdjustDemo = () => {
 
   return (
     <div
-      className="w-96 h-72 flex items-center justify-center bg-gray-900 p-0 border-white border-solid border-2 touch-none select-none"
+      className="w-96 h-72 flex items-center justify-center font-mono bg-gray-900 p-0 border-white border-solid border-2 touch-none select-none"
       ref={containerRef}
     >
       <div className="flex flex-col items-center space-y-2">

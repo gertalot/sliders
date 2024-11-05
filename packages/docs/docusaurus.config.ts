@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 import path from "path";
 
 const config: Config = {
-  title: "Sliders Docs",
-  tagline: "React library with custom hooks to build all kinds of sliders, knobs, and dials",
+  title: "@gertalot/sliders",
+  tagline: "React (headless) components with custom hooks to build all kinds of sliders, knobs, and dials",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -37,28 +38,10 @@ const config: Config = {
       "classic",
       {
         docs: {
+          routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
+
           remarkPlugins: [require("remark-mdx")],
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          // editUrl:
-          //   'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-        },
-        blog: {
-          showReadingTime: true,
-          feedOptions: {
-            type: ["rss", "atom"],
-            xslt: true,
-          },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          // editUrl:
-          //   'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-          // Useful options to enforce blogging best practices
-          onInlineTags: "warn",
-          onInlineAuthors: "warn",
-          onUntruncatedBlogPosts: "warn",
         },
         theme: {
           customCss: "./src/css/custom.css",
@@ -71,7 +54,6 @@ const config: Config = {
     async function resolveAliasesPlugin(_context, _options) {
       return {
         name: "resolve-aliases",
-
         configureWebpack(_config, _isServer, _utils) {
           return {
             cache: false,
@@ -84,25 +66,34 @@ const config: Config = {
         },
       };
     },
+    async function tailwindCssPlugin(_context, _options) {
+      return {
+        name: "docusaurus-tailwindcss",
+        configurePostCss(postcssOptions) {
+          postcssOptions.plugins.push(require("tailwindcss"));
+          postcssOptions.plugins.push(require("autoprefixer"));
+          return postcssOptions;
+        },
+      };
+    },
   ],
 
   themeConfig: {
     // Replace with your project's social card
     image: "img/docusaurus-social-card.jpg",
     navbar: {
-      title: "Sliders Docs",
+      title: "@gertalot/sliders",
       logo: {
-        alt: "My Site Logo",
-        src: "img/logo.svg",
+        alt: "Sliders Logo",
+        src: "img/sliders-logo.svg",
       },
       items: [
         {
           type: "docSidebar",
-          sidebarId: "tutorialSidebar",
+          sidebarId: "docsSidebar",
           position: "left",
-          label: "Tutorial",
+          label: "Docs",
         },
-        { to: "/blog", label: "Blog", position: "left" },
         {
           href: "https://github.com/gertalot/sliders",
           label: "GitHub",
@@ -112,31 +103,7 @@ const config: Config = {
     },
     footer: {
       style: "dark",
-      links: [
-        {
-          title: "Docs",
-          items: [
-            {
-              label: "Tutorial",
-              to: "/docs/intro",
-            },
-          ],
-        },
-        {
-          title: "More",
-          items: [
-            {
-              label: "Blog",
-              to: "/blog",
-            },
-            {
-              label: "GitHub",
-              href: "https://github.com/gertalot/sliders",
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} Sliders Docs. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Gert Verhoog. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
