@@ -5,6 +5,51 @@ sidebar_position: 1
 import { useEffect, useRef, useState } from "react";
 import UseWheelToAdjustDemo from "@site/src/components/sliders/UseWheelToAdjustDemo";
 
-# Getting Started
+# Slider Hooks
+
+React (headless) components with custom hooks to build all kinds of sliders, knobs, and dials.
+
+## What is this?
+
+This package provides a number of [React Custom Hooks](https://react.dev/learn/reusing-logic-with-custom-hooks)
+that make it easy to build React components such as sliders and dials.
+
+### Demo
 
 <UseWheelToAdjustDemo />
+
+## live demo
+
+```jsx live
+function Clock(props) {
+  const [date, setDate] = useState(new Date());
+
+  useEffect(() => {
+    const timerID = setInterval(() => tick(), 1000);
+    return function cleanup() {
+      clearInterval(timerID);
+    };
+  });
+
+  function tick() {
+    setDate(new Date());
+  }
+
+  return (
+    <div>
+      <h2>It's {date.toLocaleTimeString()}</h2>
+    </div>
+  );
+}
+```
+
+## When should I use this?
+
+This package is useful if you want to create React components that respond to the user dragging or scrolling,
+such as sliders (e.g. a volume slider), or dials (e.g. a thermostat).
+
+## Install
+
+tbd
+
+## Use
