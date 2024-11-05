@@ -48,9 +48,6 @@ export default [
     },
   },
   {
-    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
-  },
-  {
     rules: {
       ...reactHooks.configs.recommended.rules,
       "@typescript-eslint/no-unused-vars": [
@@ -75,14 +72,19 @@ export default [
     },
   },
   {
-    files: ["packages/docs/**/*.{js,mjs,cjs,ts,jsx,tsx}"],
-    ignores: ["packages/docs/build/**/*", "packages/docs/.docusaurus/**/*", "packages/docs/tsconfig.json"],
+    ignores: [
+      "**/node_modules/**/*",
+      "**/.storybook/",
+      "**/storybook-static/",
+      "packages/docs/build/",
+      "packages/docs/.docusaurus/",
+      "packages/docs/tsconfig.json",
+      "packages/sliders/dist/",
+      "packages/sliders/.husky/",
+      "packages/sliders/.storybook",
+    ],
   },
   {
-    files: ["packages/hooks/**/*.{js,mjs,cjs,ts,jsx,tsx}"],
-    ignores: ["dist/**/*", "**/.storybook/**/*", "**/storybook-static/**/*", "**/.docusaurus/**/*"],
-  },
-  {
-    ignores: ["**/node_modules/**/*", "packages/*/dist/**/*", "packages/*/build/**/*"],
+    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
   },
 ];
