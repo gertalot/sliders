@@ -81,8 +81,6 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Replace with your project's social card
-    image: "img/docusaurus-social-card.jpg",
     navbar: {
       title: "@gertalot/sliders",
       logo: {
@@ -103,14 +101,12 @@ const config: Config = {
         },
       ],
     },
-    themeConfig: {
-      liveCodeBlock: {
-        /**
-         * The position of the live playground, above or under the editor
-         * Possible values: "top" | "bottom"
-         */
-        playgroundPosition: "top",
-      },
+    liveCodeBlock: {
+      /**
+       * The position of the live playground, above or under the editor
+       * Possible values: "top" | "bottom"
+       */
+      playgroundPosition: "top",
     },
     footer: {
       style: "dark",

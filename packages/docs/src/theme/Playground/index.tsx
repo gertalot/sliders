@@ -1,126 +1,80 @@
-import React from "react";
-import clsx from "clsx";
-import useIsBrowser from "@docusaurus/useIsBrowser";
-import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
-import Translate from "@docusaurus/Translate";
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import BrowserOnly from "@docusaurus/BrowserOnly";
-import { ErrorBoundaryErrorMessageFallback, usePrismTheme } from "@docusaurus/theme-common";
-import ErrorBoundary from "@docusaurus/ErrorBoundary";
+/* eslint-disable react/prop-types */
+import { Sandpack } from "@codesandbox/sandpack-react";
 
-import type { Props } from "@theme/Playground";
-import type { ThemeConfig } from "@docusaurus/theme-live-codeblock";
+// a bit of magic here: loading the raw sliders code from the dist folder
+// so we can use it in the live demo
+import gertalotSlidersRaw from "!!raw-loader!../../../../sliders/dist/index.umd";
 
-import styles from "./styles.module.css";
+function stringToDictionary(inputString) {
+  const result = {};
+  const items = inputString.split(" ");
 
-function Header({ children }: { children: React.ReactNode }) {
-  return <div className={clsx(styles.playgroundHeader)}>{children}</div>;
+  for (const item of items) {
+    if (item.includes("=")) {
+      const [key, value] = item.split("=");
+      result[key] = value;
+    } else {
+      result[item] = true;
+    }
+  }
+
+  return result;
 }
 
-function LivePreviewLoader() {
-  // Is it worth improving/translating?
-  return <div>Loading...</div>;
-}
+export default function Playground({ children, transformCode, ...props }): JSX.Element {
+  const metaProps = stringToDictionary(props.metastring);
 
-function Preview() {
-  // No SSR for the live preview
-  // See https://github.com/facebook/docusaurus/issues/5747
+  const componentName = metaProps["component"];
+  const componentCode = children?.replace(/\n$/, "");
+
+  const appCode = `import React from 'react';
+import ${componentName} from './${componentName}';
+
+export default function App() {
   return (
-    <BrowserOnly fallback={<LivePreviewLoader />}>
-      {() => (
-        <>
-          <ErrorBoundary fallback={(params) => <ErrorBoundaryErrorMessageFallback {...params} />}>
-            <LivePreview />
-          </ErrorBoundary>
-          <LiveError />
-        </>
-      )}
-    </BrowserOnly>
-  );
-}
-
-function ResultWithHeader() {
-  return (
-    <>
-      <Header>
-        <Translate id="theme.Playground.result" description="The result label of the live codeblocks">
-          Result
-        </Translate>
-      </Header>
-      {/* https://github.com/facebook/docusaurus/issues/5747 */}
-      <div className={styles.playgroundPreview}>
-        <Preview />
+    <div className="flex items-start justify-center pt-4 h-screen bg-gray-700  text-white">
+      <div className="w-96 h-96 bg-gray-900 p-0 touch-none select-none">
+        <${componentName} />
       </div>
-    </>
-  );
-}
-
-function ThemedLiveEditor() {
-  const isBrowser = useIsBrowser();
-  return (
-    <LiveEditor
-      // We force remount the editor on hydration,
-      // otherwise dark prism theme is not applied
-      key={String(isBrowser)}
-      className={styles.playgroundEditor}
-    />
-  );
-}
-
-function EditorWithHeader() {
-  return (
-    <>
-      <Header>
-        <Translate id="theme.Playground.liveEditor" description="The live editor label of the live codeblocks">
-          Live Editor
-        </Translate>
-      </Header>
-      <ThemedLiveEditor />
-    </>
-  );
-}
-
-// this should rather be a stable function
-// see https://github.com/facebook/docusaurus/issues/9630#issuecomment-1855682643
-const DEFAULT_TRANSFORM_CODE = (code: string) => `${code};`;
-
-export default function Playground({ children, transformCode, ...props }: Props): JSX.Element {
-  // const {
-  //   siteConfig: { themeConfig },
-  // } = useDocusaurusContext();
-  // const {
-  //   liveCodeBlock: { playgroundPosition },
-  // } = themeConfig as ThemeConfig;
-  const prismTheme = usePrismTheme();
-  const isBrowser = useIsBrowser();
-
-  const noInline = props.metastring?.includes("noInline") ?? false;
-
-  return (
-    <div className={styles.playgroundContainer}>
-      <LiveProvider
-        code={children?.replace(/\n$/, "")}
-        noInline={noInline}
-        transformCode={transformCode ?? DEFAULT_TRANSFORM_CODE}
-        theme={prismTheme}
-        {...props}
-      >
-        <div className="grid grid-cols-2 gap-2 mt-4 mb-4  bg-gray-900">
-          <div>
-            <Header>Code</Header>
-            <LiveEditor
-              // We force remount the editor on hydration,
-              // otherwise dark prism theme is not applied
-              key={String(isBrowser)}
-              className={styles.playgroundEditor}
-            />
-          </div>
-          <div>
-            <Header>Demo</Header>
-            <Preview />
-          </div>
-        </div>
-      </LiveProvider>
     </div>
+  );
+}
+  `;
+
+  const componentProps = {};
+  componentProps[`${componentName}.tsx`] = {
+    active: true,
+    code: componentCode,
+  };
+
+  return (
+    <Sandpack
+      theme={"dark"}
+      template={"react-ts"}
+      files={{
+        ...componentProps,
+        "/App.tsx": {
+          code: appCode,
+        },
+        "/node_modules/@gertalot/sliders/package.json": {
+          hidden: true,
+          code: JSON.stringify({
+            name: "@gertalot/sliders",
+            main: "./index.es.js",
+          }),
+        },
+        "/node_modules/@gertalot/sliders/index.es.js": {
+          hidden: true,
+          code: gertalotSlidersRaw,
+        },
+      }}
+      options={{
+        externalResources: ["https://cdn.tailwindcss.com"],
+        showLineNumbers: true,
+        showInlineErrors: true,
+        editorHeight: 500,
+        editorWidthPercentage: 60,
+      }}
+    />
   );
 }
