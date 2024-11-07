@@ -11,6 +11,15 @@ const config: StorybookConfig = {
   framework: {
     name: "@storybook/react-vite",
     options: {}
+  },
+  viteFinal: (config) => {
+    return {
+      ...config,
+      build: {
+        ...config.build,
+        sourcemap: true
+      }
+    };
   }
 };
 
