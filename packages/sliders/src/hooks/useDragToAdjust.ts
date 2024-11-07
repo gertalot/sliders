@@ -62,7 +62,7 @@ const useDragToAdjust = ({
       const rect = containerRef.current;
       if (rect && isDragging) {
         // maybe update the delta?
-        const delta = verticalDragging ? event.clientY - dragStart : event.clientX - dragStart;
+        const delta = verticalDragging ? event.clientY - dragStart : dragStart - event.clientX;
         setDragAdjust(-delta / (sensitivity * 2));
         setDragStart(verticalDragging ? event.clientY : event.clientX);
       }

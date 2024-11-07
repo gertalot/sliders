@@ -1,4 +1,4 @@
-import { MouseEvent, TouchEvent, RefObject, useEffect, useState, useCallback } from "react";
+import { MouseEvent, TouchEvent, RefObject, useEffect, useState, useCallback, useLayoutEffect } from "react";
 import { Point2D } from "../utils";
 
 /**
@@ -30,7 +30,7 @@ const useDragToMove = ({
   const [cursorPosition, setCursorPosition] = useState<Point2D | null>(null);
 
   // set initial position of the target to the center of the container
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!cursorPosition && containerRef.current) {
       const rect = containerRef.current?.getBoundingClientRect();
       setCursorPosition({ x: rect.width / 2, y: rect.height / 2 });
@@ -41,13 +41,14 @@ const useDragToMove = ({
     (e: unknown) => {
       const event = e as MouseEvent;
       const rect = containerRef.current?.getBoundingClientRect();
-      if (rect && isOnTarget) {
-        setStartDragOnTarget(() => isOnTarget);
+      const onTarget = event.target === targetRef.current;
+      if (rect && onTarget) {
+        setStartDragOnTarget(() => onTarget);
         setDragging(true);
         setCursorPosition({ x: event.clientX - rect.x, y: event.clientY - rect.y });
       }
     },
-    [containerRef, isOnTarget]
+    [containerRef, targetRef]
   );
 
   const handleTouchStart = useCallback(
