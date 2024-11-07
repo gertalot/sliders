@@ -23,7 +23,11 @@ export const UseSliderExample: StoryObj<BasicComponent> = {
       sensitivity: 100
     });
 
-    const { isOnTarget, isDragging, cursorPosition } = useDragToMove({ containerRef, targetRef });
+    const { isOnTarget, isOnContainer, isDragging, position } = useDragToMove({
+      containerRef,
+      targetRef,
+      shouldStartDragOnTarget: false
+    });
 
     useEffect(() => {
       if (isScrolling) {
@@ -32,10 +36,10 @@ export const UseSliderExample: StoryObj<BasicComponent> = {
     }, [wheelDelta, isScrolling]);
 
     useEffect(() => {
-      if (isDragging && cursorPosition && targetRef.current) {
-        setVolume(() => Math.max(0, Math.min((cursorPosition.x - 16) / 212, 1.0)));
+      if (isDragging && position && targetRef.current) {
+        setVolume(() => Math.max(0, Math.min((position.x - 16) / 212, 1.0)));
       }
-    }, [isDragging, cursorPosition]);
+    }, [isDragging, position]);
 
     return (
       <div className="w-96 h-72 flex items-center justify-center bg-gray-900 p-0 border-white border-solid border-2 touch-none select-none">
@@ -53,7 +57,7 @@ export const UseSliderExample: StoryObj<BasicComponent> = {
             style={{
               fill: "none",
               stroke: "white",
-              strokeWidth: isScrolling || isDragging || isOnTarget ? 18 : 12,
+              strokeWidth: isScrolling || isDragging || isOnTarget ? 18 : isOnContainer ? 14 : 12,
               strokeLinecap: "round"
             }}
             d={`M 8,16 ${8 + 240 * volume},16`}

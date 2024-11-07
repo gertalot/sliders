@@ -50,7 +50,7 @@ const useRotateToMove = ({
   }, [containerRef, origin]);
 
   // get the basic custom hook that takes care of dragging and sliding behaviour
-  const { isDragging, isOnTarget, cursorPosition } = useDragToMove({ containerRef, targetRef });
+  const { isDragging, isOnTarget, position } = useDragToMove({ containerRef, targetRef });
 
   // convenience function that updates this hook's internal state, used below
   const updateAngle = useCallback(
@@ -70,11 +70,11 @@ const useRotateToMove = ({
 
   // update the angle when the user is dragging the target
   useEffect(() => {
-    if (origin_.current && cursorPosition && isDragging) {
-      const newAngle = pointToAngle(cursorPosition, origin_.current);
+    if (origin_.current && position && isDragging) {
+      const newAngle = pointToAngle(position, origin_.current);
       updateAngle(newAngle);
     }
-  }, [angle, cursorPosition, fullRotations, isDragging, origin_, updateAngle]);
+  }, [angle, position, fullRotations, isDragging, origin_, updateAngle]);
 
   // update the angle when the user is rotating the mouse wheel
   const { wheelDelta, isScrolling } = useWheelToAdjust({ containerRef, sensitivity: 100 });
