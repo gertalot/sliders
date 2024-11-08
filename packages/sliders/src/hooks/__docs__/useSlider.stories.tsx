@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from "@storybook/react";
-import { FC, useEffect, useRef } from "react";
+import { FC, useRef } from "react";
 import { useSlider } from "..";
 import Speaker from "./Speaker";
 

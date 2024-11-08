@@ -1,11 +1,5 @@
 import { MouseEvent, TouchEvent, RefObject, useEffect, useState, useCallback, useLayoutEffect } from "react";
-import { Point2D } from "../utils";
-
-const isPointInRect = (point: Point2D, rect?: DOMRect) => {
-  return Boolean(
-    rect && rect.left <= point.x && rect.right >= point.x && rect.top <= point.y && rect.bottom >= point.y
-  );
-};
+import { Point2D, isPointInRect } from "../utils";
 
 /**
  * Custom hook that provides slider behaviour for a multitude of slider-y and dial-y UI components.

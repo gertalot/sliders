@@ -85,5 +85,11 @@ function pointEquals(point: Point2D | null, otherPoint: Point2D | null): boolean
   return point?.x == otherPoint?.x && point?.y == otherPoint?.y;
 }
 
-export { TAU, angleToValue, valueToAngle, angleToPoint, pointEquals, pointToAngle };
+const isPointInRect = (point: Point2D, rect?: DOMRect) => {
+  return Boolean(
+    rect && rect.left <= point.x && rect.right >= point.x && rect.top <= point.y && rect.bottom >= point.y
+  );
+};
+
+export { TAU, angleToValue, valueToAngle, angleToPoint, pointEquals, pointToAngle, isPointInRect };
 export type { Point2D };

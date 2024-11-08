@@ -1,4 +1,5 @@
 import { useEffect, useState, RefObject, useCallback, useRef } from "react";
+import { isPointInRect } from "../utils";
 
 /**
  * Custom hook that tracks how fast the mouse wheel is rotating. This hook adds a "wheel"
@@ -23,8 +24,12 @@ const useWheelToAdjust = ({
   const handleWheel = useCallback(
     (e: unknown) => {
       const event = e as WheelEvent;
-      const path = event.composedPath();
-      const onContainer = Boolean(event.target && containerRef.current && path.includes(containerRef.current));
+      const containerRect = containerRef.current?.getBoundingClientRect();
+      const position = { x: event.clientX, y: event.clientY };
+
+      // there might be other elements the pointer is over, so we can't rely
+      // on event.target or event.composedPath to determine if we're on the container or target
+      const onContainer = isPointInRect(position, containerRect);
 
       if (onContainer) {
         event.preventDefault(); // don't scroll the page
