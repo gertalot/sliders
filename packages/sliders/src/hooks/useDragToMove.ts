@@ -1,6 +1,12 @@
 import { MouseEvent, TouchEvent, RefObject, useEffect, useState, useCallback, useLayoutEffect } from "react";
 import { Point2D } from "../utils";
 
+const isPointInRect = (point: Point2D, rect?: DOMRect) => {
+  return Boolean(
+    rect && rect.left <= point.x && rect.right >= point.x && rect.top <= point.y && rect.bottom >= point.y
+  );
+};
+
 /**
  * Custom hook that provides slider behaviour for a multitude of slider-y and dial-y UI components.
  *
@@ -44,26 +50,27 @@ const useDragToMove = ({
   // Called by both the handleMouseDown and handleTouchStart event listeners; determines if the user
   // is actually initiating a dragging action, and sets the hook's state accordingly.
   const handleDragStart = useCallback(
-    (event: Event, position: Point2D) => {
-      const rect = containerRef.current?.getBoundingClientRect();
-      const path = event.composedPath();
-      const onTarget = Boolean(event.target && targetRef.current && path.includes(targetRef.current));
-      const onContainer = Boolean(event.target && containerRef.current && path.includes(containerRef.current));
-      if (rect && (shouldStartDragOnTarget ? onTarget : onTarget || onContainer)) {
-        setOnTarget(onTarget);
-        setOnContainer(onContainer);
-        setStartDragOnTarget(() => onTarget);
+    (position: Point2D) => {
+      const containerRect = containerRef.current?.getBoundingClientRect();
+      const targetRect = targetRef.current?.getBoundingClientRect();
+      // there might be other elements the pointer is over, so we can't rely
+      // on event.target or event.composedPath to determine if we're on the container or target
+      setOnContainer(() => isPointInRect(position, containerRect));
+      setOnTarget(() => isPointInRect(position, targetRect));
+
+      if (containerRect && (shouldStartDragOnTarget ? isOnTarget : isOnTarget || isOnContainer)) {
+        setStartDragOnTarget(() => isOnTarget);
         setDragging(true);
-        setPosition({ x: position.x - rect.x, y: position.y - rect.y });
+        setPosition({ x: position.x - containerRect.x, y: position.y - containerRect.y });
       }
     },
-    [containerRef, shouldStartDragOnTarget, targetRef]
+    [containerRef, isOnContainer, isOnTarget, shouldStartDragOnTarget, targetRef]
   );
 
   const handleMouseDown = useCallback(
     (e: unknown) => {
       const event = e as MouseEvent;
-      handleDragStart(e as Event, { x: event.clientX, y: event.clientY });
+      handleDragStart({ x: event.clientX, y: event.clientY });
     },
     [handleDragStart]
   );
@@ -73,7 +80,7 @@ const useDragToMove = ({
       const event = e as TouchEvent;
       const touch = event.touches[0];
       if (event.touches.length === 1) {
-        handleDragStart(e as Event, { x: touch.clientX, y: touch.clientY });
+        handleDragStart({ x: touch.clientX, y: touch.clientY });
       }
     },
     [handleDragStart]
@@ -81,11 +88,14 @@ const useDragToMove = ({
 
   // event listener for mouseUp and touchEnd events; sets the hook's state to reflect that
   // the user has ended their dragging action.
-  const handleStopDrag = useCallback(
+  const handleDragEnd = useCallback(
     (e: unknown) => {
       const event = e as Event;
       setDragging(false);
-      setOnTarget(() => event.target === targetRef.current);
+      const path = event.composedPath();
+      const onTarget = Boolean(event.target && targetRef.current && path.includes(targetRef.current));
+
+      setOnTarget(onTarget);
       setStartDragOnTarget(false);
     },
     [targetRef]
@@ -95,13 +105,20 @@ const useDragToMove = ({
   // position when necessary.
   const handleMove = useCallback(
     (position: Point2D) => {
-      const rect = containerRef.current?.getBoundingClientRect();
+      const containerRect = containerRef.current?.getBoundingClientRect();
+      const targetRect = targetRef.current?.getBoundingClientRect();
 
-      if (isDragging && (isStartDragOnTarget || !shouldStartDragOnTarget) && rect) {
-        setPosition({ x: position.x - rect.x, y: position.y - rect.y });
+      // there might be other elements the pointer is over, so we can't rely
+      // on event.target or event.composedPath to determine if we're on the container or target
+      setOnContainer(() => isPointInRect(position, containerRect));
+      setOnTarget(() => isPointInRect(position, targetRect));
+
+      // update the position if the user is dragging
+      if (isDragging && (isStartDragOnTarget || !shouldStartDragOnTarget) && containerRect) {
+        setPosition({ x: position.x - containerRect.x, y: position.y - containerRect.y });
       }
     },
-    [containerRef, isDragging, isStartDragOnTarget, shouldStartDragOnTarget]
+    [containerRef, isDragging, isStartDragOnTarget, shouldStartDragOnTarget, targetRef]
   );
 
   const handleMouseMove = useCallback(
@@ -123,53 +140,26 @@ const useDragToMove = ({
     [handleMove]
   );
 
-  // updates the isTarget and isContainer states, so components using this hook can react to mouseOver
-  // events without having to configure their own event listener if they want to do something outside
-  // of pure css with pseudo-selectors
-  const handleMouseOver = useCallback(
-    (e: unknown) => {
-      const event = e as Event;
-      const path = event.composedPath();
-      const onTarget = Boolean(event.target && targetRef.current && path.includes(targetRef.current));
-      const onContainer = Boolean(event.target && containerRef.current && path.includes(containerRef.current));
-      setOnTarget(onTarget);
-      setOnContainer(onContainer);
-    },
-    [containerRef, targetRef]
-  );
-
   // Run once when the hook initializes and sets up the event listeners.
   useEffect(() => {
-    const eventListeners = {
+    const windowEventListeners = {
       mousedown: handleMouseDown,
-      mouseup: handleStopDrag,
+      mouseup: handleDragEnd,
       touchstart: handleTouchStart,
-      touchend: handleStopDrag,
+      touchend: handleDragEnd,
       mousemove: handleMouseMove,
-      touchmove: handleTouchMove,
-      mouseover: handleMouseOver,
-      mouseleave: handleStopDrag
+      touchmove: handleTouchMove
     };
-    for (const [event, handler] of Object.entries(eventListeners)) {
+
+    for (const [event, handler] of Object.entries(windowEventListeners)) {
       window.addEventListener(event, handler);
     }
     return () => {
-      for (const [event, handler] of Object.entries(eventListeners)) {
+      for (const [event, handler] of Object.entries(windowEventListeners)) {
         window.removeEventListener(event, handler);
       }
     };
-  }, [
-    containerRef,
-    handleMouseDown,
-    handleMouseMove,
-    handleMouseOver,
-    handleStopDrag,
-    handleTouchMove,
-    handleTouchStart,
-    isDragging,
-    isStartDragOnTarget,
-    targetRef
-  ]);
+  }, [containerRef, handleMouseDown, handleMouseMove, handleDragEnd, handleTouchMove, handleTouchStart]);
 
   return { isDragging, isOnTarget, isOnContainer, isStartDragOnTarget, position };
 };

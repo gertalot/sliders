@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from "@storybook/react";
-import { FC, useEffect, useRef, useState } from "react";
-import { useDragToMove, useWheelToAdjust } from "..";
+import { FC, useEffect, useRef } from "react";
+import { useSlider } from "..";
 import Speaker from "./Speaker";
 
 type BasicComponent = FC;
@@ -14,53 +14,47 @@ export default meta;
 
 export const UseSliderExample: StoryObj<BasicComponent> = {
   render: () => {
-    const containerRef = useRef<SVGSVGElement>(null);
+    const containerRef = useRef<SVGRectElement>(null);
     const targetRef = useRef<SVGPathElement>(null);
-    const [volume, setVolume] = useState(0.4);
 
-    const { wheelDelta, isScrolling } = useWheelToAdjust({
-      containerRef: containerRef,
-      sensitivity: 100
-    });
-
-    const { isOnTarget, isOnContainer, isDragging, position } = useDragToMove({
+    const { value, isAdjusting, isOnContainer, isOnTarget } = useSlider({
       containerRef,
       targetRef,
-      shouldStartDragOnTarget: false
+      minValue: 0,
+      maxValue: 1,
+      initialValue: 0.4,
+      sensitivity: 100,
+      isVertical: false
     });
-
-    useEffect(() => {
-      if (isScrolling) {
-        setVolume((prev) => Math.max(0, Math.min(prev + wheelDelta, 1.0)));
-      }
-    }, [wheelDelta, isScrolling]);
-
-    useEffect(() => {
-      if (isDragging && position && targetRef.current) {
-        setVolume(() => Math.max(0, Math.min((position.x - 16) / 212, 1.0)));
-      }
-    }, [isDragging, position]);
 
     return (
       <div className="w-96 h-72 flex items-center justify-center bg-gray-900 p-0 border-white border-solid border-2 touch-none select-none">
-        <Speaker volume={volume} />
+        <Speaker volume={value} color={isAdjusting || isOnContainer ? "#ccc" : "#444"} />
         <svg
           width="256"
           height="32"
           viewBox="0 0 256 32"
           className="flex border-gray-800 border-solid border-2 rounded-2xl"
-          ref={containerRef}
         >
-          <path style={{ fill: "none", stroke: "#666", strokeWidth: 12, strokeLinecap: "round" }} d="M 8,16 248,16" />
+          <rect x="8" y="0" width="240" height="32" fill="transparent" ref={containerRef} />
+          <path
+            style={{
+              fill: "none",
+              stroke: isAdjusting || isOnContainer ? "#666" : "#444",
+              strokeWidth: isAdjusting || isOnContainer ? 14 : 10,
+              strokeLinecap: "round"
+            }}
+            d="M 8,16 248,16"
+          />
           <path
             ref={targetRef}
             style={{
               fill: "none",
-              stroke: "white",
-              strokeWidth: isScrolling || isDragging || isOnTarget ? 18 : isOnContainer ? 14 : 12,
+              stroke: isAdjusting || isOnTarget ? "white" : "#ccc",
+              strokeWidth: isAdjusting || isOnTarget ? 18 : isOnContainer ? 14 : 10,
               strokeLinecap: "round"
             }}
-            d={`M 8,16 ${8 + 240 * volume},16`}
+            d={`M 8,16 ${8 + value * 240},16`}
           />
         </svg>
       </div>

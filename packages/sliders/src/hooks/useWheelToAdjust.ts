@@ -23,7 +23,10 @@ const useWheelToAdjust = ({
   const handleWheel = useCallback(
     (e: unknown) => {
       const event = e as WheelEvent;
-      if (event) {
+      const path = event.composedPath();
+      const onContainer = Boolean(event.target && containerRef.current && path.includes(containerRef.current));
+
+      if (onContainer) {
         event.preventDefault(); // don't scroll the page
 
         // the more time has passed since the last wheel event, the slower
@@ -36,7 +39,7 @@ const useWheelToAdjust = ({
         lastWheelEventTime.current = currentTime;
       }
     },
-    [sensitivity]
+    [containerRef, sensitivity]
   );
 
   useEffect(() => {
@@ -47,10 +50,9 @@ const useWheelToAdjust = ({
 
   // add an event listener on the container for wheel events
   useEffect(() => {
-    const container = containerRef.current;
-    container?.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("wheel", handleWheel, { passive: false });
     return () => {
-      container?.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("wheel", handleWheel);
     };
   }, [containerRef, handleWheel]);
 
