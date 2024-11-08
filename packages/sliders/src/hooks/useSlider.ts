@@ -4,7 +4,7 @@ import useDragToMove from "./useDragToMove";
 
 const useSlider = ({
   targetRef,
-  containerRef,
+  dragAreaRef,
   minValue = 0,
   maxValue = 1,
   initialValue = 0,
@@ -12,7 +12,7 @@ const useSlider = ({
   isVertical = true
 }: {
   targetRef: RefObject<Element>;
-  containerRef: RefObject<Element>;
+  dragAreaRef: RefObject<Element>;
   minValue?: number;
   maxValue?: number;
   initialValue?: number;
@@ -22,12 +22,12 @@ const useSlider = ({
   const [value, setValue] = useState(initialValue);
 
   const { wheelDelta, isScrolling } = useWheelToAdjust({
-    containerRef,
+    dragAreaRef,
     sensitivity
   });
 
-  const { isOnTarget, isOnContainer, isDragging, position } = useDragToMove({
-    containerRef,
+  const { isOnTarget, isOnDragArea, isDragging, position } = useDragToMove({
+    dragAreaRef,
     targetRef,
     shouldStartDragOnTarget: false
   });
@@ -39,7 +39,7 @@ const useSlider = ({
   }, [wheelDelta, isScrolling, minValue, maxValue]);
 
   useEffect(() => {
-    const rect = containerRef.current?.getBoundingClientRect();
+    const rect = dragAreaRef.current?.getBoundingClientRect();
     if (isDragging && position && rect) {
       setValue(() =>
         Math.max(
@@ -53,9 +53,9 @@ const useSlider = ({
         )
       );
     }
-  }, [containerRef, isDragging, isVertical, maxValue, minValue, position]);
+  }, [dragAreaRef, isDragging, isVertical, maxValue, minValue, position]);
 
-  return { value, isAdjusting: isScrolling || isDragging, isOnTarget, isOnContainer };
+  return { value, isAdjusting: isScrolling || isDragging, isOnTarget, isOnDragArea };
 };
 
 export default useSlider;

@@ -13,10 +13,10 @@ export default meta;
 
 export const UseWheelToAdjustExample: StoryObj<BasicComponent> = {
   render: () => {
-    const containerRef = useRef<HTMLDivElement>(null);
+    const dragAreaRef = useRef<HTMLDivElement>(null);
     const [value, setValue] = useState(0);
 
-    const { wheelDelta, isScrolling } = useWheelToAdjust({ containerRef, sensitivity: 2 });
+    const { wheelDelta, isScrolling } = useWheelToAdjust({ dragAreaRef, sensitivity: 2 });
 
     useEffect(() => {
       if (isScrolling) {
@@ -27,7 +27,7 @@ export const UseWheelToAdjustExample: StoryObj<BasicComponent> = {
     return (
       <div
         className="w-96 h-72 flex items-center justify-center bg-gray-900 p-0 border-white border-solid border-2 touch-none select-none"
-        ref={containerRef}
+        ref={dragAreaRef}
       >
         <div className="flex flex-col items-center space-y-2">
           <h2 className="text-xl">Use the mouse wheel!</h2>

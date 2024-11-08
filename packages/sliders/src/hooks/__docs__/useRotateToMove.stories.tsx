@@ -15,11 +15,11 @@ export default meta;
 
 export const UseRotateToMoveExample: StoryObj<BasicComponent> = {
   render: () => {
-    const containerRef = useRef<SVGSVGElement>(null);
+    const dragAreaRef = useRef<SVGSVGElement>(null);
     const targetRef = useRef<SVGCircleElement>(null);
 
     const { isRotating, isOnTarget, angle, totalAngle, fullRotations } = useRotateToMove({
-      containerRef,
+      dragAreaRef,
       targetRef
     });
 
@@ -33,7 +33,7 @@ export const UseRotateToMoveExample: StoryObj<BasicComponent> = {
     return (
       <>
         <div className="relative w-96 h-72 bg-gray-900 p-0 border-white border-solid border-2 touch-none">
-          <svg className="w-full h-full" viewBox="-1 -1 2 2" ref={containerRef}>
+          <svg className="w-full h-full" viewBox="-1 -1 2 2" ref={dragAreaRef}>
             <line
               x1={0}
               y1={0}

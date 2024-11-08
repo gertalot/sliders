@@ -6,25 +6,25 @@ import * as useDragToMove from "./useDragToMove.stories";
 # the `useDragToMove` custom React hook
 
 This is a custom React hook (aka a "headless component") that provides very basic functionality to drag
-a target element around inside a container. The project has no styles or components; instead you use
+a target element around inside a dragArea. The project has no styles or components; instead you use
 these hooks in your own components to add functionality.
 
-`useDragToMove` is the most basic functionality. You pass it refs to a container element and a target element.
-Event listeners on the container track mouse or touch events, and indicates whether the user is dragging (i.e.
-the user is touching or holding the mouse down in the container area), whether the dragging started on the
-target element, and the current position of the cursor relative to the container element.
+`useDragToMove` is the most basic functionality. You pass it refs to a dragArea element and a target element.
+Event listeners on the dragArea track mouse or touch events, and indicates whether the user is dragging (i.e.
+the user is touching or holding the mouse down in the dragArea area), whether the dragging started on the
+target element, and the current position of the cursor relative to the dragArea element.
 
 ## Usage
 
 You use the `useDragToMove` hook as follows:
 
 ```tsx
-// These are used in tsx code as `ref={containerRef}` and `ref={targetRef}`
-const containerRef = useRef<Element>(null);
+// These are used in tsx code as `ref={dragAreaRef}` and `ref={targetRef}`
+const dragAreaRef = useRef<Element>(null);
 const targetRef = useRef<Element>(null);
 
 // these properties will be updated automatically by the custom hook
-const { isOnTarget, isDragging, isStartDragOnTarget, cursorPosition } = useDragToMove({ containerRef, targetRef });
+const { isOnTarget, isDragging, isStartDragOnTarget, cursorPosition } = useDragToMove({ dragAreaRef, targetRef });
 
 // add code that updates the component based on these properties
 // ...
@@ -33,12 +33,12 @@ const { isOnTarget, isDragging, isStartDragOnTarget, cursorPosition } = useDragT
 `useDragToMove` returns an object with the following properties:
 
 - `isOnTarget` - `true` if the mouse is currently over the target
-- `isDragging` - `true` if the user is touching or holding the mouse and dragging across the container area
-- `isStartDragOnTarget` - `true` if the user started the dragging action while on the target container. This
-  differentiates between dragging actions that occur anywhere inside the container, and dragging the target element
+- `isDragging` - `true` if the user is touching or holding the mouse and dragging across the dragArea area
+- `isStartDragOnTarget` - `true` if the user started the dragging action while on the target dragArea. This
+  differentiates between dragging actions that occur anywhere inside the dragArea, and dragging the target element
 - `cursorPosition` - the `{x, y}` values of the mouse pointer or the touch event. This can be used to update the
-  position of the target element. This value is relative to the container element's top-left corner, e.g. when
-  the user clicks in the top-left corner of the container element, the position will be `{x: 0, y: 0}`.
+  position of the target element. This value is relative to the dragArea element's top-left corner, e.g. when
+  the user clicks in the top-left corner of the dragArea element, the position will be `{x: 0, y: 0}`.
 
 You probably want to change your component based on these values, e.g. you want to update the position of the target
 element if the user is dragging it. You can do this with a `useEffect` handler that depends on the properties you
@@ -46,12 +46,12 @@ want to track:
 
 ```tsx
 useEffect(() => {
-  const container = containerRef.current;
+  const dragArea = dragAreaRef.current;
   const target = targetRef.current;
-  if (isDragging && isStartDragOnTarget && cursorPosition && container && target) {
+  if (isDragging && isStartDragOnTarget && cursorPosition && dragArea && target) {
     setPosition({
-      x: cursorPosition.x - container.clientTop - target.clientWidth / 2,
-      y: cursorPosition.y - container.clientLeft - target.clientHeight / 2
+      x: cursorPosition.x - dragArea.clientTop - target.clientWidth / 2,
+      y: cursorPosition.y - dragArea.clientLeft - target.clientHeight / 2
     });
   }
 }, [isStartDragOnTarget, cursorPosition, isDragging]);

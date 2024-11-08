@@ -85,6 +85,12 @@ function pointEquals(point: Point2D | null, otherPoint: Point2D | null): boolean
   return point?.x == otherPoint?.x && point?.y == otherPoint?.y;
 }
 
+/**
+ * Tests whether point is inside rect.
+ * @param point a 2D point with x and y values
+ * @param rect a rect with top,left - bottom,right coordinates
+ * @returns true if the point is within the bounds of the rectangle
+ */
 const isPointInRect = (point: Point2D, rect?: DOMRect) => {
   return Boolean(
     rect && rect.left <= point.x && rect.right >= point.x && rect.top <= point.y && rect.bottom >= point.y

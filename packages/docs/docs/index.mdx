@@ -16,13 +16,13 @@ import { useEffect, useRef, useState } from "react";
 import { useRotateToMove, Point2D, angleToPoint, pointEquals } from "@gertalot/sliders";
 
 const UseDragToMoveSVGDemo = () => {
-  const containerRef = useRef<SVGSVGElement>(null);
+  const dragAreaRef = useRef<SVGSVGElement>(null);
   const targetRef = useRef<SVGCircleElement>(null);
   const center = { x: 0, y: 0 };
   const radius = 0.8;
 
   const { isRotating, isOnTarget, angle, totalAngle, fullRotations } = useRotateToMove({
-    containerRef,
+    dragAreaRef,
     targetRef,
   });
 
@@ -35,7 +35,7 @@ const UseDragToMoveSVGDemo = () => {
 
   return (
     <>
-      <svg className="w-full h-full stroke-red-900" viewBox="-1 -1 2 2" ref={containerRef}>
+      <svg className="w-full h-full stroke-red-900" viewBox="-1 -1 2 2" ref={dragAreaRef}>
         <line
           x1={center.x}
           y1={center.y}

@@ -3,18 +3,18 @@ import { isPointInRect } from "../utils";
 
 /**
  * Custom hook that tracks how fast the mouse wheel is rotating. This hook adds a "wheel"
- * event listener to the element referenced by `containerRef`, and sets the `wheelDelta`
+ * event listener to the element referenced by `dragAreaRef`, and sets the `wheelDelta`
  * to reflect how quickly wheel events are coming in (i.e. how fast the wheel is rotating).
  *
- * @param props.containerRef the element that listens to wheel events
+ * @param props.dragAreaRef the element that listens to wheel events
  * @param props.sensitivity increase to reduce speed; default is 100
  * @returns props with `wheelDelta` representing the rotating speed of the mouse wheel
  */
 const useWheelToAdjust = ({
-  containerRef,
+  dragAreaRef,
   sensitivity = 100
 }: {
-  containerRef: RefObject<Element>;
+  dragAreaRef: RefObject<Element>;
   sensitivity?: number;
 }) => {
   const lastWheelEventTime = useRef<number>(0);
@@ -24,14 +24,14 @@ const useWheelToAdjust = ({
   const handleWheel = useCallback(
     (e: unknown) => {
       const event = e as WheelEvent;
-      const containerRect = containerRef.current?.getBoundingClientRect();
+      const dragAreaRect = dragAreaRef.current?.getBoundingClientRect();
       const position = { x: event.clientX, y: event.clientY };
 
       // there might be other elements the pointer is over, so we can't rely
-      // on event.target or event.composedPath to determine if we're on the container or target
-      const onContainer = isPointInRect(position, containerRect);
+      // on event.target or event.composedPath to determine if we're on the dragArea or target
+      const onDragArea = isPointInRect(position, dragAreaRect);
 
-      if (onContainer) {
+      if (onDragArea) {
         event.preventDefault(); // don't scroll the page
 
         // the more time has passed since the last wheel event, the slower
@@ -44,7 +44,7 @@ const useWheelToAdjust = ({
         lastWheelEventTime.current = currentTime;
       }
     },
-    [containerRef, sensitivity]
+    [dragAreaRef, sensitivity]
   );
 
   useEffect(() => {
@@ -53,13 +53,13 @@ const useWheelToAdjust = ({
     return () => clearTimeout(timer);
   }, [wheelDelta]);
 
-  // add an event listener on the container for wheel events
+  // add an event listener on the dragArea for wheel events
   useEffect(() => {
     window.addEventListener("wheel", handleWheel, { passive: false });
     return () => {
       window.removeEventListener("wheel", handleWheel);
     };
-  }, [containerRef, handleWheel]);
+  }, [dragAreaRef, handleWheel]);
 
   return { wheelDelta, isScrolling: wheelDelta != 0 };
 };
