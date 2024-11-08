@@ -9,6 +9,7 @@ import prettier from "eslint-plugin-prettier";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import storybook from "eslint-plugin-storybook";
+import reactCompiler from "eslint-plugin-react-compiler";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,11 +24,11 @@ export default [
     compat.extends(
       "eslint:recommended",
       "plugin:react/recommended",
+      "plugin:react-hooks/recommended",
       "plugin:@typescript-eslint/recommended",
       "plugin:@typescript-eslint/eslint-recommended",
       "prettier",
       "plugin:prettier/recommended",
-      "plugin:react-hooks/recommended",
       "plugin:react/jsx-runtime"
     )
   ),
@@ -36,7 +37,8 @@ export default [
     plugins: {
       "react-hooks": fixupPluginRules(reactHooks),
       prettier: fixupPluginRules(prettier),
-      react: fixupPluginRules(react)
+      react: fixupPluginRules(react),
+      "react-compiler": reactCompiler
     }
   },
   {
@@ -53,6 +55,7 @@ export default [
   {
     rules: {
       ...reactHooks.configs.recommended.rules,
+      "react-compiler/react-compiler": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
