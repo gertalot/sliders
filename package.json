@@ -14,7 +14,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "yarn workspaces run build",
+    "build": "yarn run sliders:build && yarn run docs:build",
     "clean": "yarn workspaces run clean",
     "dev": "concurrently \"yarn workspace @gertalot/sliders dev\" \"yarn workspace @gertalot/sliders-docs start\"",
     "lint": "eslint .",
@@ -31,9 +31,10 @@
     "docs:write-heading-ids": "yarn workspace @gertalot/sliders-docs run docusaurus write-heading-ids",
     "docs:write-translations": "yarn workspace @gertalot/sliders-docs run docusaurus write-translations",
     "sliders:build-storybook": "yarn workspace @gertalot/sliders run storybook build",
-    "sliders:build": "yarn workspace @gertalot/sliders run vite build",
+    "sliders:build": "yarn workspace @gertalot/sliders run vite build && yarn workspace @gertalot/sliders run docs",
     "sliders:clean": "yarn workspace @gertalot/sliders run clean",
     "sliders:dev": "yarn workspace @gertalot/sliders run vite",
+    "sliders:docs": "yarn workspace @gertalot/sliders run docs",
     "sliders:format": "yarn workspace @gertalot/sliders run format",
     "sliders:lint-staged": "yarn workspace @gertalot/sliders run lint-staged",
     "sliders:lint": "yarn workspace @gertalot/sliders run eslint src --fix",
@@ -62,6 +63,7 @@
     "eslint-plugin-storybook": "^0.10.1",
     "globals": "^15.11.0",
     "prettier": "3.3.3",
+    "typedoc": "^0.26.11",
     "typescript": "~5.5.2",
     "typescript-eslint": "^8.12.2"
   }

@@ -31,6 +31,7 @@
   },
   "scripts": {
     "build": "vite build",
+    "docs": "typedoc --options ./typedoc.json",
     "test": "vitest run",
     "test-watch": "vitest",
     "test:ui": "vitest --ui",

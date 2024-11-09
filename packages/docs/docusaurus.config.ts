@@ -50,6 +50,17 @@ const config: Config = {
         },
       } satisfies Preset.Options,
     ],
+    // [
+    //   "docusaurus-plugin-typedoc",
+    //   {
+    //     out: "./docs/api",
+    //     entryPoints: ["../sliders/src/index.ts"],
+    //     tsconfig: "../sliders/tsconfig.json",
+    //     hideBreadcrumbs: true,
+    //     hidePageHeader: true,
+    //     entryFileName: "index.md",
+    //   },
+    // ],
   ],
 
   plugins: [
@@ -93,6 +104,11 @@ const config: Config = {
           sidebarId: "docsSidebar",
           position: "left",
           label: "Docs",
+        },
+        {
+          to: "api/",
+          label: "API",
+          position: "left",
         },
         {
           href: "https://github.com/gertalot/sliders",
