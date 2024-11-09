@@ -1,36 +1,87 @@
 import { RefObject, useEffect, useState, useCallback, useLayoutEffect } from "react";
 import { Point2D, isPointInRect } from "../utils";
 
+/**
+ * Interface for `useDragToMove`
+ * @see useDragToMove
+ */
 interface UseDragToMoveProps {
+  /** When the pointer is over this element, this hook will respond to dragging */
   dragAreaRef: RefObject<Element>;
+  /** a ref to the draggable element */
   targetRef: RefObject<Element>;
+  /** true if dragging actions are only registered when the action started on the target element
+   * @default true
+   */
   shouldStartDragOnTarget?: boolean;
 }
 
+/**
+ * Interface for the result of the `useDragToMove` hook
+ */
 interface UseDragToMoveResult {
+  /** true if the user is currently dragging */
   isDragging: boolean;
+  /** true if the pointer is currently over the target element */
   isOnTarget: boolean;
+  /** true if the pointer is currently over the dragArea element */
   isOnDragArea: boolean;
+  /** true if the dragging action started on the target element */
   isStartDragOnTarget: boolean;
+  /** the current `{x,y}` coordinates of the cursor, relative to the dragArea element */
   position: Point2D | null;
 }
 
 /**
- * Custom hook that provides slider behaviour for a multitude of slider-y and dial-y UI components.
+ * A custom React hook that registers "dragging" actions from the user that occur on the target element
+ * referenced by `targetRef`. This hook responds to touch and mouse events, and will return the position
+ * of the pointer relative to the dragArea element, where top-left is `{x:0, y:0}`.
  *
- * @remarks
- * This behaviour uses an area (like a div with a non-zero width and height) that responds to
- * dragging (with either touch or mouse pointer), and a target element. This behaviour triggers
- * when the user initiates dragging on the target element.
+ * This hook can be configured to only respond to dragging actions that started on the target element, or
+ * to respond to dragging actions anywhere on the target element. In the latter scenario, the `position`
+ * that is returned represents the position of the pointer relative to the `dragArea` element. This can
+ * be used, for example, to immediately move the target to the position indicated by the location where
+ * the mouse was clicked or the screen was touched.
  *
- * @param dragAreaRef - a ref to a DOM element acting as the dragArea that contains the draggable
- * @param targetRef - a ref to a DOM element acting as the draggable element
- * @param shouldStartDragOnTarget - true if dragging should only work when the dragging started on the target element
- * @returns An object with the following properties:
- *  * `isDragging` - `true` if the user is holding the mouse down or is touching the screen; `false` otherwise
- *  * `isOnTarget` - `true` if the cursor is currently over the target element; `false` otherwise
- *  * `isStartDragOnTarget` - `true` if the user started dragging while over the target; `false` otherwise
- *  * `position` - `{x,y}` coordinates of the cursor, in client coordinates
+ * This custom hooks allows for creating UI elements that can be adjusted by dragging, such as
+ * sliders, or values that change in response to user input. It handles all event listeners and logic to
+ * detect dragging actions, and forms the basis for the other custom hooks in this library.
+ *
+ * Note that the `dragArea` and `target` elements don't necessarily have to be the target of the pointer
+ * events, or be in the composed path of the event. As long as the relevant events occur within the bounds
+ * of these elements, dragging actions will be registered.
+ *
+ * @param {UseDragToMoveProps} props - the configuration options for this hook
+ * @param {RefObject<Element>} props.dragAreaRef - this hook will register dragging actions that occur on this element.
+ * @param {RefObject<Element>} props.targetRef - the target element, i.e. the element that the user is dragging
+ * @param {boolean} [props.shouldStartDragOnTarget=true] - true if dragging actions are only registered when the action
+ * started on the target element
+ * @returns {UseDragToMoveResult} Properties that indicate the current state of the hook, such as whether the user
+ * is currently dragging, and the position of the pointer relative to the `dragArea` element
+ *
+ * @todo consider whether the initial `position` value should be the targetArea element position, and maybe
+ * this should be configurable by the user with a prop.
+ *
+ * @example
+ * const MyComponent = () => {
+ *     const dragAreaRef = useRef(null);
+ *  const targetRef = useRef<SVGCircleElement>(null);
+ *  const { isOnTarget, isDragging, position } = useDragToMove({
+ *    dragAreaRef,
+ *    targetRef,
+ *    shouldStartDragOnTarget: false
+ *  });
+ *
+ *  useEffect(() => {
+ *    targetRef.current?.setAttribute("r", isOnTarget || isDragging ? "15" : "10");
+ *  }, [isDragging, isOnTarget]);
+ *
+ *  return (
+ *    <svg style={{ width: "90vw", height: "90vh", backgroundColor: "#333" }} ref={dragAreaRef}>
+ *      <circle ref={targetRef} style={{ cursor: "pointer" }} cx={position?.x} cy={position?.y} r={10} fill="white" />
+ *    </svg>
+ *  );
+ * }
  */
 const useDragToMove = ({
   dragAreaRef,
@@ -45,7 +96,7 @@ const useDragToMove = ({
     position: null as Point2D | null
   });
 
-  // set initial position of the target to the center of the dragArea
+  // After the first render, set initial position of the target to the center of the dragArea
   useLayoutEffect(() => {
     if (!state.position && dragAreaRef.current) {
       const rect = dragAreaRef.current.getBoundingClientRect();

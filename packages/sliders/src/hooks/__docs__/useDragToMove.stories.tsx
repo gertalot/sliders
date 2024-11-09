@@ -12,6 +12,29 @@ const meta: Meta<BasicComponent> = {
 
 export default meta;
 
+export const UseDragToMoveMinimalSVGDemo: StoryObj<BasicComponent> = {
+  render: () => {
+    const dragAreaRef = useRef(null);
+    const targetRef = useRef<SVGCircleElement>(null);
+    const { isOnTarget, isDragging, position } = useDragToMove({
+      dragAreaRef,
+      targetRef,
+      shouldStartDragOnTarget: false
+    });
+
+    // Styles for when we're hovering or dragging the target
+    useEffect(() => {
+      targetRef.current?.setAttribute("r", isOnTarget || isDragging ? "15" : "10");
+    }, [isDragging, isOnTarget]);
+
+    return (
+      <svg style={{ width: "90vw", height: "90vh", backgroundColor: "#333" }} ref={dragAreaRef}>
+        <circle ref={targetRef} style={{ cursor: "pointer" }} cx={position?.x} cy={position?.y} r={10} fill="white" />
+      </svg>
+    );
+  }
+};
+
 /**
  * A fancier example using an SVG
  */

@@ -11,6 +11,27 @@ const meta: Meta<BasicComponent> = {
 
 export default meta;
 
+export const UseWheelToAdjustMinimalExample: StoryObj<BasicComponent> = {
+  render: () => {
+    const dragAreaRef = useRef<HTMLDivElement>(null);
+    const [value, setValue] = useState(0);
+
+    const { wheelDelta, isScrolling } = useWheelToAdjust({ dragAreaRef, sensitivity: 2 });
+
+    useEffect(() => {
+      if (isScrolling) {
+        setValue((prev) => prev + wheelDelta);
+      }
+    }, [wheelDelta, isScrolling]);
+
+    return (
+      <div style={{ width: "90vw", height: "90vh", backgroundColor: "#333" }} ref={dragAreaRef}>
+        <h1 style={{ textAlign: "center" }}>{value.toFixed(1)}</h1>
+      </div>
+    );
+  }
+};
+
 export const UseWheelToAdjustExample: StoryObj<BasicComponent> = {
   render: () => {
     const dragAreaRef = useRef<HTMLDivElement>(null);

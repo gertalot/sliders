@@ -2,21 +2,65 @@ import { useEffect, useState, RefObject, useCallback, useRef } from "react";
 import { isPointInRect } from "../utils";
 
 /**
- * Custom hook that tracks how fast the mouse wheel is rotating. This hook adds a "wheel"
- * event listener to the element referenced by `dragAreaRef`, and sets the `wheelDelta`
- * to reflect how quickly wheel events are coming in (i.e. how fast the wheel is rotating).
- *
- * @param props.dragAreaRef the element that listens to wheel events
- * @param props.sensitivity increase to reduce speed; default is 100
- * @returns props with `wheelDelta` representing the rotating speed of the mouse wheel
+ * Interface for the `useWheelToAdjust` hook
  */
-const useWheelToAdjust = ({
-  dragAreaRef,
-  sensitivity = 100
-}: {
+interface useWheelToAdjustProps {
+  /** When the pointer is over this element, this hook will respond to dragging */
   dragAreaRef: RefObject<Element>;
+  /**
+   * Determines quickly the resulting value changes in response to the user dragging
+   * Higher sensitivity values result in smaller adjustments for the same dragging distance
+   * @default 100
+   */
   sensitivity?: number;
-}) => {
+}
+
+/**
+ * Interface for the result of the `useWheelToAdjust` hook
+ */
+interface UseWheelToAdjustResult {
+  /** a value corresponding to the current speed of the mouse wheel */
+  wheelDelta: number;
+  /** whether the mouse wheel is currently rotating */
+  isScrolling: boolean;
+}
+
+/**
+ * A custom React hook that registers mouse wheel rotation from the user that start on the element
+ * referenced by `dragAreaRef`. This hook detects how fast the user is rotating the mouse wheel and
+ * returns a value corresponding to the speed of the mouse wheel.
+ *
+ * This custom hooks allows for creating UI elements that can be adjusted by using the mouse wheel,
+ * such as sliders, or values that change in response to user input.
+ *
+ * @param {useWheelToAdjustProps} props
+ * @param {RefObject<Element>} props.dragAreaRef a reference to the element that will be dragged
+ * @param {number} [props.sensitivity=100] the sensitivity of the mouse wheel; higher values mean slower changes
+ *
+ * @returns {UseWheelToAdjustResult} An object containing the current wheel speed and whether the mouse wheel
+ * is currently rotating
+ *
+ * @example
+ * const MyComponent = () => {
+ *   const dragAreaRef = useRef<HTMLDivElement>(null);
+ *   const [value, setValue] = useState(0);
+ *
+ *   const { wheelDelta, isScrolling } = useWheelToAdjust({ dragAreaRef, sensitivity: 2 });
+ *
+ *   useEffect(() => {
+ *     if (isScrolling) {
+ *       setValue((prev) => prev + wheelDelta);
+ *     }
+ *   }, [wheelDelta, isScrolling]);
+ *
+ *   return (
+ *     <div style={{ width: "90vw", height: "90vh", backgroundColor: "#333" }} ref={dragAreaRef}>
+ *       <h1 style={{ textAlign: "center" }}>{value.toFixed(1)}</h1>
+ *     </div>
+ *   );
+ * }
+ */
+const useWheelToAdjust = ({ dragAreaRef, sensitivity = 100 }: useWheelToAdjustProps): UseWheelToAdjustResult => {
   const lastWheelEventTime = useRef<number>(0);
   const [wheelDelta, setWheelDelta] = useState<number>(0);
 

@@ -12,6 +12,16 @@ type Point2D = {
 const TAU = 2 * Math.PI;
 
 /**
+ * Takes an angle in radians, possibly negative, and normalises it to be between 0 and 2*Math.PI
+ * @param angle angle in radians
+ * @returns an angle in radians between 0 and 2*Math.PI
+ */
+const normalisedAngle = (angle: number) => {
+  const modAngle = angle % TAU;
+  return (modAngle < 0 ? modAngle + TAU : modAngle) % TAU;
+};
+
+/**
  * Maps an angle in radians to a numeric value. Used for rotating draggable widgets.
  *
  * @param angle the angle in radians
@@ -97,5 +107,5 @@ const isPointInRect = (point: Point2D, rect?: DOMRect) => {
   );
 };
 
-export { TAU, angleToValue, valueToAngle, angleToPoint, pointEquals, pointToAngle, isPointInRect };
+export { TAU, normalisedAngle, angleToValue, valueToAngle, angleToPoint, pointEquals, pointToAngle, isPointInRect };
 export type { Point2D };

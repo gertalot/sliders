@@ -2,38 +2,93 @@ import { useEffect, RefObject, useState, useMemo, useLayoutEffect } from "react"
 import useDragToMove from "./useDragToMove";
 import useWheelToAdjust from "./useWheelToAdjust";
 import useDragToAdjust from "./useDragToAdjust";
-import { Point2D, TAU, pointToAngle } from "../utils";
-
-const normalisedAngle = (angle: number) => {
-  const modAngle = angle % TAU;
-  return (modAngle < 0 ? modAngle + TAU : modAngle) % TAU;
-};
+import { Point2D, TAU, normalisedAngle, pointToAngle } from "../utils";
 
 /**
- * A custom hook that can be used to rotate an element around a center and track the
- * angle of rotation.
+ * Interface for the `useRotateToAdjust` hook
+ */
+interface UseRotateToAdjustProps {
+  /** When the pointer is over this element, this hook will respond to dragging */
+  dragAreaRef: RefObject<Element>;
+  /** The target element whose position is being adjusted */
+  targetRef: RefObject<Element>;
+  /** Initial angle of the position of the target element relative to the origin, in radians from 0 to 2*Math.PI
+   * @default 0
+   */
+  initialAngle?: number;
+  /** coordinates of the center of rotation, relative to the dragArea bounding box
+   * @default the center of the dragArea
+   */
+  origin?: Point2D | null;
+}
+
+/**
+ * Interface for the result of the `useRotateToAdjust` hook
+ */
+interface UseRotateToAdjustResult {
+  isRotating: boolean;
+  isOnTarget: boolean;
+  angle: number;
+  fullRotations: number;
+  totalAngle: number;
+}
+
+/**
+ * A custom react hook that registers dragging and mouse wheel actions and returns an angle representing
+ * a rotation of the target element relative to the origin.
  *
- * @param props.dragAreaRef the dragArea element for the widget
- * @param props.targetRef the element that can be dragged around a center
- * @param props.initialAngle the initial angle in radians from 0 - 2*Math.PI, where 0 correponds
- *                           to 3 o'clock, and 1/4*pi is 6 o'clock (angle increases clockwise)
- * @param props.origin the center around which the rotation is being tracked
- * @returns Props with `isDragging`, and `isOnTarget` from the `useDragToMove` hook;
- *          `angle` is the current angle of rotation in `[0,2*pi)`;
- *          `fullRotations` is the number of full rotations clockwise or anti-clockwise;
- *          `totalAngle` = `fullRotations * 2*pi + angle`
+ * This custom hook allows for creating UI elements such as knobs and dials that can be adjusted by dragging
+ * or using the mouse wheel.
+ *
+ * @param {UseRotateToAdjustProps} props - the configuration options for this hook
+ * @param {RefObject<Element>} props.dragAreaRef - this hook will register dragging actions that occur on this element.
+ * @param {RefObject<Element>} props.targetRef - the target element, i.e. the element that the user is rotating
+ * @param {number} [props.initialAngle=0] - the initial angle of the target element relative to the origin
+ * @param {Point2D} [props.origin=null] - the center of rotation, relative to the dragArea bounding box
+ *
+ * @returns {UseRotateToAdjustResult} Properties that indicate the current state of the hook, such as whether the user
+ * is currently rotating, and the angle of the target element relative to the origin
+ *
+ * @example
+ * const MyComponent = () => {
+ *  const dragAreaRef = useRef<SVGSVGElement>(null);
+ *  const targetRef = useRef<SVGCircleElement>(null);
+ *
+ *  const { isRotating, isOnTarget, angle, totalAngle } = useRotateToAdjust({
+ *    dragAreaRef,
+ *    targetRef
+ *  });
+ *
+ *  const [position, setPosition] = useState<Point2D | null>(null);
+ *
+ *  // Show when we're hovering or dragging the target
+ *  useEffect(() => {
+ *    targetRef.current?.setAttribute("r", isOnTarget ? "12" : "10");
+ *  }, [isOnTarget]);
+ *
+ *  useEffect(() => {
+ *    const newPosition = angleToPoint(angle, { x: 0, y: 0 }, 80);
+ *    setPosition((prev) => (pointEquals(prev, newPosition) ? prev : newPosition));
+ *  }, [angle]);
+ *
+ *  return (
+ *    <svg
+ *      style={{ width: "90vw", height: "90vh", backgroundColor: "#333" }}
+ *      viewBox="-100 -100 200 200"
+ *      ref={dragAreaRef}
+ *    >
+ *      <circle ref={targetRef} cx={position?.x} cy={position?.y} r={10} fill="white" />
+ *      <text fill="white">{totalAngle.toFixed(2)}</text>
+ *    </svg>
+ *  );
+ *}
  */
 const useRotateToAdjust = ({
   dragAreaRef,
   targetRef,
   initialAngle = 0,
   origin = null
-}: {
-  dragAreaRef: RefObject<Element>;
-  targetRef: RefObject<Element>;
-  initialAngle?: number;
-  origin?: Point2D | null;
-}) => {
+}: UseRotateToAdjustProps): UseRotateToAdjustResult => {
   const [totalAngle, setTotalAngle] = useState<number>(initialAngle);
   const [origin_, setOrigin] = useState<Point2D | null>(null);
 
