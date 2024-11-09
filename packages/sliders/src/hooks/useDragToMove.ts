@@ -1,5 +1,19 @@
-import { MouseEvent, TouchEvent, RefObject, useEffect, useState, useCallback, useLayoutEffect } from "react";
+import { RefObject, useEffect, useState, useCallback, useLayoutEffect } from "react";
 import { Point2D, isPointInRect } from "../utils";
+
+interface UseDragToMoveProps {
+  dragAreaRef: RefObject<Element>;
+  targetRef: RefObject<Element>;
+  shouldStartDragOnTarget?: boolean;
+}
+
+interface UseDragToMoveResult {
+  isDragging: boolean;
+  isOnTarget: boolean;
+  isOnDragArea: boolean;
+  isStartDragOnTarget: boolean;
+  position: Point2D | null;
+}
 
 /**
  * Custom hook that provides slider behaviour for a multitude of slider-y and dial-y UI components.
@@ -22,24 +36,22 @@ const useDragToMove = ({
   dragAreaRef,
   targetRef,
   shouldStartDragOnTarget = true
-}: {
-  dragAreaRef: RefObject<Element>;
-  targetRef: RefObject<Element>;
-  shouldStartDragOnTarget?: boolean;
-}) => {
-  const [isOnTarget, setOnTarget] = useState(false);
-  const [isOnDragArea, setOnDragArea] = useState(false);
-  const [isDragging, setDragging] = useState(false);
-  const [isStartDragOnTarget, setStartDragOnTarget] = useState(false);
-  const [position, setPosition] = useState<Point2D | null>(null);
+}: UseDragToMoveProps): UseDragToMoveResult => {
+  const [state, setState] = useState({
+    isOnTarget: false,
+    isOnDragArea: false,
+    isDragging: false,
+    isStartDragOnTarget: false,
+    position: null as Point2D | null
+  });
 
   // set initial position of the target to the center of the dragArea
   useLayoutEffect(() => {
-    if (!position && dragAreaRef.current) {
-      const rect = dragAreaRef.current?.getBoundingClientRect();
-      setPosition({ x: rect.width / 2, y: rect.height / 2 });
+    if (!state.position && dragAreaRef.current) {
+      const rect = dragAreaRef.current.getBoundingClientRect();
+      setState((prev) => ({ ...prev, position: { x: rect.width / 2, y: rect.height / 2 } }));
     }
-  }, [dragAreaRef, position]);
+  }, [dragAreaRef, state.position]);
 
   // Called by both the handleMouseDown and handleTouchStart event listeners; determines if the user
   // is actually initiating a dragging action, and sets the hook's state accordingly.
@@ -47,56 +59,36 @@ const useDragToMove = ({
     (position: Point2D) => {
       const dragAreaRect = dragAreaRef.current?.getBoundingClientRect();
       const targetRect = targetRef.current?.getBoundingClientRect();
+
       // there might be other elements the pointer is over, so we can't rely
       // on event.target or event.composedPath to determine if we're on the dragArea or target
-      setOnDragArea(() => isPointInRect(position, dragAreaRect));
-      setOnTarget(() => isPointInRect(position, targetRect));
+      const isOnTarget = isPointInRect(position, targetRect);
+      const isOnDragArea = isPointInRect(position, dragAreaRect);
 
       if (dragAreaRect && (shouldStartDragOnTarget ? isOnTarget : isOnTarget || isOnDragArea)) {
-        setStartDragOnTarget(() => isOnTarget);
-        setDragging(true);
-        setPosition({ x: position.x - dragAreaRect.x, y: position.y - dragAreaRect.y });
+        setState((prev) => ({
+          ...prev,
+          isOnTarget,
+          isOnDragArea,
+          isDragging: true,
+          isStartDragOnTarget: isOnTarget,
+          position: { x: position.x - dragAreaRect.x, y: position.y - dragAreaRect.y }
+        }));
       }
     },
-    [dragAreaRef, isOnDragArea, isOnTarget, shouldStartDragOnTarget, targetRef]
-  );
-
-  const handleMouseDown = useCallback(
-    (e: unknown) => {
-      const event = e as MouseEvent;
-      handleDragStart({ x: event.clientX, y: event.clientY });
-    },
-    [handleDragStart]
-  );
-
-  const handleTouchStart = useCallback(
-    (e: unknown) => {
-      const event = e as TouchEvent;
-      const touch = event.touches[0];
-      if (event.touches.length === 1) {
-        handleDragStart({ x: touch.clientX, y: touch.clientY });
-      }
-    },
-    [handleDragStart]
+    [dragAreaRef, shouldStartDragOnTarget, targetRef]
   );
 
   // event listener for mouseUp and touchEnd events; sets the hook's state to reflect that
   // the user has ended their dragging action.
-  const handleDragEnd = useCallback(
-    (e: unknown) => {
-      const event = e as Event;
-      setDragging(false);
-      const path = event.composedPath();
-      const onTarget = Boolean(event.target && targetRef.current && path.includes(targetRef.current));
+  const handleDragEnd = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      isDragging: false,
+      isStartDragOnTarget: false
+    }));
+  }, []);
 
-      setOnTarget(onTarget);
-      setStartDragOnTarget(false);
-    },
-    [targetRef]
-  );
-
-  // called by the handleMouseMove and handleTouchMove event listeners; updates the cursor
-  // position when necessary.
   const handleMove = useCallback(
     (position: Point2D) => {
       const dragAreaRect = dragAreaRef.current?.getBoundingClientRect();
@@ -104,58 +96,43 @@ const useDragToMove = ({
 
       // there might be other elements the pointer is over, so we can't rely
       // on event.target or event.composedPath to determine if we're on the dragArea or target
-      setOnDragArea(() => isPointInRect(position, dragAreaRect));
-      setOnTarget(() => isPointInRect(position, targetRect));
+      const isOnTarget = isPointInRect(position, targetRect);
+      const isOnDragArea = isPointInRect(position, dragAreaRect);
 
       // update the position if the user is dragging
-      if (isDragging && (isStartDragOnTarget || !shouldStartDragOnTarget) && dragAreaRect) {
-        setPosition({ x: position.x - dragAreaRect.x, y: position.y - dragAreaRect.y });
-      }
+      setState((prev) => {
+        if (prev.isDragging && (prev.isStartDragOnTarget || !shouldStartDragOnTarget) && dragAreaRect) {
+          return {
+            ...prev,
+            isOnTarget,
+            isOnDragArea,
+            position: { x: position.x - dragAreaRect.x, y: position.y - dragAreaRect.y }
+          };
+        }
+        return { ...prev, isOnTarget, isOnDragArea };
+      });
     },
-    [dragAreaRef, isDragging, isStartDragOnTarget, shouldStartDragOnTarget, targetRef]
-  );
-
-  const handleMouseMove = useCallback(
-    (e: unknown) => {
-      const event = e as MouseEvent;
-      handleMove({ x: event.clientX, y: event.clientY });
-    },
-    [handleMove]
-  );
-
-  const handleTouchMove = useCallback(
-    (e: unknown) => {
-      const event = e as TouchEvent;
-      const touch = event.touches[0];
-      if (event.touches.length === 1) {
-        handleMove({ x: touch.clientX, y: touch.clientY });
-      }
-    },
-    [handleMove]
+    [dragAreaRef, targetRef, shouldStartDragOnTarget]
   );
 
   // Run once when the hook initializes and sets up the event listeners.
   useEffect(() => {
-    const windowEventListeners = {
-      mousedown: handleMouseDown,
-      mouseup: handleDragEnd,
-      touchstart: handleTouchStart,
-      touchend: handleDragEnd,
-      mousemove: handleMouseMove,
-      touchmove: handleTouchMove
-    };
+    const handlePointerDown = (e: PointerEvent) => handleDragStart({ x: e.clientX, y: e.clientY });
+    const handlePointerUp = () => handleDragEnd();
+    const handlePointerMove = (e: PointerEvent) => handleMove({ x: e.clientX, y: e.clientY });
 
-    for (const [event, handler] of Object.entries(windowEventListeners)) {
-      window.addEventListener(event, handler);
-    }
+    window.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointermove", handlePointerMove);
+
     return () => {
-      for (const [event, handler] of Object.entries(windowEventListeners)) {
-        window.removeEventListener(event, handler);
-      }
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointermove", handlePointerMove);
     };
-  }, [dragAreaRef, handleMouseDown, handleMouseMove, handleDragEnd, handleTouchMove, handleTouchStart]);
+  }, [handleDragStart, handleDragEnd, handleMove]);
 
-  return { isDragging, isOnTarget, isOnDragArea, isStartDragOnTarget, position };
+  return state;
 };
 
 export default useDragToMove;
