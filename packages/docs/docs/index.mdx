@@ -13,7 +13,7 @@ that make it easy to build React components such as sliders and dials.
 
 ```tsx live component=UseDragToMoveSVGDemo
 import { useEffect, useRef, useState } from "react";
-import { useRotateToMove, Point2D, angleToPoint, pointEquals } from "@gertalot/sliders";
+import { useRotateToAdjust, Point2D, angleToPoint, pointEquals } from "@gertalot/sliders";
 
 const UseDragToMoveSVGDemo = () => {
   const dragAreaRef = useRef<SVGSVGElement>(null);
@@ -21,7 +21,7 @@ const UseDragToMoveSVGDemo = () => {
   const center = { x: 0, y: 0 };
   const radius = 0.8;
 
-  const { isRotating, isOnTarget, angle, totalAngle, fullRotations } = useRotateToMove({
+  const { isRotating, isOnTarget, angle, totalAngle, fullRotations } = useRotateToAdjust({
     dragAreaRef,
     targetRef,
   });

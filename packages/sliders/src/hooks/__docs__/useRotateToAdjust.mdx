@@ -1,15 +1,15 @@
 import { Canvas, Meta } from "@storybook/blocks";
-import * as useRotateToMove from "./useRotateToMove.stories";
+import * as useRotateToAdjust from "./useRotateToAdjust.stories";
 
-<Meta of={useRotateToMove} title="useDragToMove custom Hook" />
+<Meta of={useRotateToAdjust} title="useRotateToAdjust custom Hook" />
 
-# the `useRotateToMove` custom React hook
+# the `useRotateToAdjust` custom React hook
 
 This is a custom React hook (aka a "headless component") that provides basic functionality to rotate a target
 element around an origin inside a dragArea. The project has no styles or components; instead you use
 these hooks in your own components to add functionality.
 
-`useRotateToMove` gives you basic functionality: it lets you drag an element around an origin, and it will
+`useRotateToAdjust` gives you basic functionality: it lets you drag an element around an origin, and it will
 give you the angle in radians. It lets you rotate the target infinitely clockwise or anti-clockwise, and lets you
 keep track of You pass it refs to a dragArea element and a target element.
 
@@ -21,7 +21,7 @@ respond to the mouse wheel being used.
 
 ## Usage
 
-You use the `useRotateToMove` hook as follows:
+You use the `useRotateToAdjust` hook as follows:
 
 ```tsx
 // These are used in tsx code as `ref={dragAreaRef}` and `ref={targetRef}`
@@ -29,7 +29,7 @@ const dragAreaRef = useRef<Element>(null);
 const targetRef = useRef<Element>(null);
 
 // these properties will be updated automatically by the custom hook
-const { isDragging, isOnTarget, angle, totalAngle, fullRotations } = useRotateToMove({
+const { isDragging, isOnTarget, angle, totalAngle, fullRotations } = useRotateToAdjust({
   dragAreaRef,
   targetRef
   origin: { x: 0, y: 0 }
@@ -39,7 +39,7 @@ const { isDragging, isOnTarget, angle, totalAngle, fullRotations } = useRotateTo
 // ...
 ```
 
-`useRotateToMove` returns an object with the following properties:
+`useRotateToAdjust` returns an object with the following properties:
 
 - `isOnTarget` - `true` if the mouse is currently over the target
 - `isDragging` - `true` if the user is touching or holding the mouse and dragging across the dragArea area
@@ -65,4 +65,4 @@ useEffect(() => {
 
 An example using an SVG with a draggable circle that rotates around a center:
 
-<Canvas of={useRotateToMove.UseRotateToMoveExample} />
+<Canvas of={useRotateToAdjust.UseRotateToAdjustExample} />

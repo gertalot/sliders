@@ -23,7 +23,7 @@ const normalisedAngle = (angle: number) => {
  *          `fullRotations` is the number of full rotations clockwise or anti-clockwise;
  *          `totalAngle` = `fullRotations * 2*pi + angle`
  */
-const useRotateToMove = ({
+const useRotateToAdjust = ({
   dragAreaRef,
   targetRef,
   initialAngle = 0,
@@ -95,4 +95,4 @@ const useRotateToMove = ({
   return returnValue;
 };
 
-export default useRotateToMove;
+export default useRotateToAdjust;

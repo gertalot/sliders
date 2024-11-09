@@ -1,24 +1,24 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from "@storybook/react";
 import { FC, useEffect, useRef, useState } from "react";
-import useRotateToMove from "../useRotateToMove";
+import useRotateToAdjust from "../useRotateToAdjust";
 import { angleToPoint, Point2D, pointEquals } from "../../utils";
 
 // there are no props or anything, so this is simple
 type BasicComponent = FC;
 
 const meta: Meta<BasicComponent> = {
-  title: "useRotateToMove example"
+  title: "useRotateToAdjust example"
 };
 
 export default meta;
 
-export const UseRotateToMoveExample: StoryObj<BasicComponent> = {
+export const UseRotateToAdjustExample: StoryObj<BasicComponent> = {
   render: () => {
     const dragAreaRef = useRef<SVGSVGElement>(null);
     const targetRef = useRef<SVGCircleElement>(null);
 
-    const { isRotating, isOnTarget, angle, totalAngle, fullRotations } = useRotateToMove({
+    const { isRotating, isOnTarget, angle, totalAngle, fullRotations } = useRotateToAdjust({
       dragAreaRef,
       targetRef
     });
