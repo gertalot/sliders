@@ -48,6 +48,10 @@ const useRotateToAdjust = ({
     });
   }, [dragAreaRef, origin]);
 
+  // allow the user to change the angle by either dragging the target element, or
+  // by using the scroll wheel, or by dragging up or down in the dragArea. Use these
+  // custom hooks to take care of handling all these UI events and just look at the values
+  // that they return
   const { isDragging, isOnTarget, position } = useDragToMove({ dragAreaRef, targetRef });
   const { wheelDelta, isScrolling } = useWheelToAdjust({ dragAreaRef, sensitivity: 100 });
   const { dragAdjust, isDragAdjusting } = useDragToAdjust({ dragAreaRef, sensitivity: 100, verticalDragging: true });
