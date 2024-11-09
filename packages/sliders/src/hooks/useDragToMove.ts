@@ -53,8 +53,8 @@ const useDragToMove = ({
     }
   }, [dragAreaRef, state.position]);
 
-  // Called by both the handleMouseDown and handleTouchStart event listeners; determines if the user
-  // is actually initiating a dragging action, and sets the hook's state accordingly.
+  // Determines if the user is actually initiating a dragging action,
+  // and sets the hook's state accordingly.
   const handleDragStart = useCallback(
     (position: Point2D) => {
       const dragAreaRect = dragAreaRef.current?.getBoundingClientRect();
@@ -79,8 +79,7 @@ const useDragToMove = ({
     [dragAreaRef, shouldStartDragOnTarget, targetRef]
   );
 
-  // event listener for mouseUp and touchEnd events; sets the hook's state to reflect that
-  // the user has ended their dragging action.
+  // sets the hook's state to reflect that the user has ended their dragging action.
   const handleDragEnd = useCallback(() => {
     setState((prev) => ({
       ...prev,
@@ -115,7 +114,7 @@ const useDragToMove = ({
     [dragAreaRef, targetRef, shouldStartDragOnTarget]
   );
 
-  // Run once when the hook initializes and sets up the event listeners.
+  // Set up the event listeners we're interested in
   useEffect(() => {
     const handlePointerDown = (e: PointerEvent) => handleDragStart({ x: e.clientX, y: e.clientY });
     const handlePointerUp = () => handleDragEnd();

@@ -1,4 +1,15 @@
-import { useEffect, useState, RefObject, useCallback } from "react";
+import { useEffect, useState, RefObject, useCallback, useRef } from "react";
+
+interface UseDragToAdjustProps {
+  dragAreaRef: RefObject<Element>;
+  sensitivity?: number;
+  verticalDragging?: boolean;
+}
+
+interface UseDragToAdjustResult {
+  dragAdjust: number;
+  isDragAdjusting: boolean;
+}
 
 /**
  * Custom hook that two-finger touch scrolling and dragging the mouse up or down (or left or right
@@ -13,24 +24,21 @@ const useDragToAdjust = ({
   dragAreaRef,
   sensitivity = 100,
   verticalDragging = true
-}: {
-  dragAreaRef: RefObject<Element>;
-  sensitivity?: number;
-  verticalDragging?: boolean;
-}) => {
+}: UseDragToAdjustProps): UseDragToAdjustResult => {
   const [isDragging, setDragging] = useState(false);
   const [dragAdjust, setDragAdjust] = useState(0);
-  const [dragStart, setDragStart] = useState(0);
+  const dragStartRef = useRef(0);
 
   const handleMouseDown = useCallback(
     (e: unknown) => {
       const event = e as MouseEvent;
       const rect = dragAreaRef.current;
       if (rect) {
-        // maybe record the start coordinate so we can know the delta?
+        // track where the user started dragging by storing the relevant coordinate
+        // of the cursor
         setDragging(true);
         setDragAdjust(0);
-        setDragStart(verticalDragging ? event.clientY : event.clientX);
+        dragStartRef.current = verticalDragging ? event.clientY : event.clientX;
       }
     },
     [dragAreaRef, verticalDragging]
@@ -42,9 +50,11 @@ const useDragToAdjust = ({
       const rect = dragAreaRef.current;
       if (rect && event.touches.length === 2) {
         const touch = event.touches[0];
+        // track where the user started dragging by storing the relevant coordinate
+        // of the cursor
         setDragging(true);
         setDragAdjust(0);
-        setDragStart(verticalDragging ? touch.clientY : touch.clientX);
+        dragStartRef.current = verticalDragging ? touch.clientY : touch.clientX;
       }
     },
     [dragAreaRef, verticalDragging]
@@ -52,7 +62,7 @@ const useDragToAdjust = ({
 
   const handleStopDragging = () => {
     setDragging(false);
-    setDragStart(0);
+    dragStartRef.current = 0;
     setDragAdjust(0);
   };
 
@@ -61,13 +71,12 @@ const useDragToAdjust = ({
       const event = e as MouseEvent;
       const rect = dragAreaRef.current;
       if (rect && isDragging) {
-        // maybe update the delta?
-        const delta = verticalDragging ? event.clientY - dragStart : dragStart - event.clientX;
+        const delta = verticalDragging ? event.clientY - dragStartRef.current : dragStartRef.current - event.clientX;
         setDragAdjust(-delta / (sensitivity * 2));
-        setDragStart(verticalDragging ? event.clientY : event.clientX);
+        dragStartRef.current = verticalDragging ? event.clientY : event.clientX;
       }
     },
-    [dragAreaRef, dragStart, isDragging, sensitivity, verticalDragging]
+    [dragAreaRef, dragStartRef, isDragging, sensitivity, verticalDragging]
   );
 
   const handleTouchMove = useCallback(
@@ -76,16 +85,15 @@ const useDragToAdjust = ({
       const rect = dragAreaRef.current;
       if (rect && isDragging && event.touches.length === 2) {
         const touch = event.touches[0];
-        const delta = verticalDragging ? touch.clientY - dragStart : touch.clientX - dragStart;
+        const delta = verticalDragging ? touch.clientY - dragStartRef.current : touch.clientX - dragStartRef.current;
         setDragAdjust(-delta / (sensitivity * 2));
-        setDragStart(verticalDragging ? touch.clientY : touch.clientX);
+        dragStartRef.current = verticalDragging ? touch.clientY : touch.clientX;
       }
     },
-    [dragAreaRef, dragStart, isDragging, sensitivity, verticalDragging]
+    [dragAreaRef, dragStartRef, isDragging, sensitivity, verticalDragging]
   );
 
   useEffect(() => {
-    // Add event handlers that listen for dragging
     const dragArea = dragAreaRef.current;
 
     const dragAreaEvents = {
