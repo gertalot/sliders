@@ -1,8 +1,13 @@
-import { useEffect, RefObject, useCallback, useRef } from "react";
+import { useEffect, RefObject, useState, useMemo, useLayoutEffect } from "react";
 import useDragToMove from "./useDragToMove";
 import useWheelToAdjust from "./useWheelToAdjust";
 import useDragToAdjust from "./useDragToAdjust";
 import { Point2D, TAU, pointToAngle } from "../utils";
+
+const normalisedAngle = (angle: number) => {
+  const modAngle = angle % TAU;
+  return (modAngle < 0 ? modAngle + TAU : modAngle) % TAU;
+};
 
 /**
  * A custom hook that can be used to rotate an element around a center and track the
@@ -29,76 +34,65 @@ const useRotateToMove = ({
   initialAngle?: number;
   origin?: Point2D | null;
 }) => {
-  const totalAngle = useRef<number>(initialAngle);
-  const angle = useRef<number>(totalAngle.current % TAU);
-  const fullRotations = useRef<number>(Math.floor(totalAngle.current / TAU));
-  const origin_ = useRef<Point2D | null>(null);
+  const [totalAngle, setTotalAngle] = useState<number>(initialAngle);
+  const [origin_, setOrigin] = useState<Point2D | null>(null);
 
   // set the origin to what was passed in, or set it to the center of `fromRect`
   // if we have one, or set it to 0,0 if all else fails.
-  useEffect(() => {
-    if (origin) {
-      origin_.current = origin;
-    } else {
+  useLayoutEffect(() => {
+    setOrigin(() => {
+      if (origin) return origin;
       const fromRect = dragAreaRef.current?.getBoundingClientRect();
-      if (fromRect) {
-        origin_.current = { x: fromRect.width / 2, y: fromRect.height / 2 };
-      } else {
-        origin_.current = { x: 0, y: 0 };
-      }
-    }
+      if (fromRect) return { x: fromRect.width / 2, y: fromRect.height / 2 };
+      return { x: 0, y: 0 };
+    });
   }, [dragAreaRef, origin]);
 
-  // get the basic custom hook that takes care of dragging and sliding behaviour
   const { isDragging, isOnTarget, position } = useDragToMove({ dragAreaRef, targetRef });
+  const { wheelDelta, isScrolling } = useWheelToAdjust({ dragAreaRef, sensitivity: 100 });
+  const { dragAdjust, isDragAdjusting } = useDragToAdjust({ dragAreaRef, sensitivity: 100, verticalDragging: true });
 
-  // convenience function that updates this hook's internal state, used below
-  const updateAngle = useCallback(
-    (newAngle: number) => {
-      const isClockwise = (angle.current - newAngle + TAU) % TAU > 0.5 * TAU;
-      const incRotations = isClockwise && newAngle < angle.current ? 1 : 0;
-      const decRotations = !isClockwise && newAngle > angle.current ? -1 : 0;
-      const newFullRotations = fullRotations.current + incRotations + decRotations;
-      const newTotalAngle = newAngle + TAU * newFullRotations;
+  useEffect(() => {
+    setTotalAngle((prevTotalAngle) => {
+      // pick apart the total angle into an angle between 0-2*PI,
+      // and the number of full rotations the totalAngle represents
+      const angle = normalisedAngle(prevTotalAngle);
+      const fullRotations = Math.floor(prevTotalAngle / TAU);
 
-      totalAngle.current = newTotalAngle;
-      fullRotations.current = newFullRotations;
-      angle.current = newAngle;
-    },
-    [angle, fullRotations]
+      // calculate the new angle based on one of the following:
+      // - a new cursor position from useDragToMove if the user is dragging the target element
+      // - a difference in scroll wheel rotation from useWheelToAdjust
+      // - a difference in cursor position from useDragToAdjust if the user is dragging up or down
+      const newNormalisedAngle = normalisedAngle(
+        origin_ && isDragging ? pointToAngle(position || { x: 0, y: 0 }, origin_) : angle + wheelDelta + dragAdjust
+      );
+
+      // If the new angle is "past" the point where angle=0, the user has rotated past a full rotation,
+      // and we need to figure out if the rotation was clockwise or anti-clockwise, and update the
+      // number of full rotations accordingly
+      const isClockwise = (angle - newNormalisedAngle + TAU) % TAU > 0.5 * TAU;
+      const incRotations = isClockwise && newNormalisedAngle < angle ? 1 : 0;
+      const decRotations = !isClockwise && newNormalisedAngle > angle ? -1 : 0;
+      const newFullRotations = fullRotations + incRotations + decRotations;
+
+      // finally we can determine the new angle
+      const newTotalAngle = newNormalisedAngle + TAU * newFullRotations;
+      return newTotalAngle;
+    });
+  }, [wheelDelta, dragAdjust, position, isDragging, origin_]);
+
+  const returnValue = useMemo(
+    () => ({
+      isRotating: isDragging || isScrolling || isDragAdjusting,
+      isOnTarget,
+      angle: normalisedAngle(totalAngle),
+      fullRotations: Math.floor(totalAngle / TAU),
+      totalAngle
+    }),
+    [isDragging, isScrolling, isDragAdjusting, isOnTarget, totalAngle]
   );
 
-  // update the angle when the user is dragging the target
-  useEffect(() => {
-    if (origin_.current && position && isDragging) {
-      const newAngle = pointToAngle(position, origin_.current);
-      updateAngle(newAngle);
-    }
-  }, [angle, position, fullRotations, isDragging, origin_, updateAngle]);
-
-  // update the angle when the user is rotating the mouse wheel
-  const { wheelDelta, isScrolling } = useWheelToAdjust({ dragAreaRef, sensitivity: 100 });
-  useEffect(() => {
-    const newAngle = angle.current + wheelDelta;
-    const newNormalisedAngle = (newAngle < 0 ? newAngle + TAU : newAngle) % TAU;
-    updateAngle(newNormalisedAngle);
-  }, [wheelDelta, updateAngle]);
-
-  // do something clever when the user is dragging up or down
-  const { dragAdjust, isDragAdjusting } = useDragToAdjust({ dragAreaRef, sensitivity: 100, verticalDragging: true });
-  useEffect(() => {
-    const newAngle = angle.current + dragAdjust;
-    const newNormalisedAngle = (newAngle < 0 ? newAngle + TAU : newAngle) % TAU;
-    updateAngle(newNormalisedAngle);
-  }, [dragAdjust, updateAngle]);
-
-  return {
-    isRotating: isDragging || isScrolling || isDragAdjusting,
-    isOnTarget,
-    angle: angle.current,
-    fullRotations: fullRotations.current,
-    totalAngle: totalAngle.current
-  };
+  return returnValue;
 };
 
 export default useRotateToMove;
