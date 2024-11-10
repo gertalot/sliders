@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from "@storybook/react";
 import { FC, useEffect, useRef, useState } from "react";
-import useRotateToAdjust from "../useRotateToAdjust";
+import { useRotateToAdjust } from "..";
 import { angleToPoint, Point2D, pointEquals } from "../../utils";
 
 // there are no props or anything, so this is simple

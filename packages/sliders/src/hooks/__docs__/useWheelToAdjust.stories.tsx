@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from "@storybook/react";
 import { FC, useEffect, useRef, useState } from "react";
-import useWheelToAdjust from "../useWheelToAdjust";
+import { useWheelToAdjust } from "..";
 
 type BasicComponent = FC;
 

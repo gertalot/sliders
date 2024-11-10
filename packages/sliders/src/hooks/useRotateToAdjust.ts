@@ -1,7 +1,7 @@
 import { useEffect, RefObject, useState, useMemo, useLayoutEffect } from "react";
-import useDragToMove from "./useDragToMove";
-import useWheelToAdjust from "./useWheelToAdjust";
-import useDragToAdjust from "./useDragToAdjust";
+import { useDragToMove } from "./useDragToMove";
+import { useWheelToAdjust } from "./useWheelToAdjust";
+import { useDragToAdjust } from "./useDragToAdjust";
 import { Point2D, TAU, normalisedAngle, pointToAngle } from "../utils";
 
 /**
@@ -154,4 +154,5 @@ const useRotateToAdjust = ({
   return returnValue;
 };
 
-export default useRotateToAdjust;
+export { useRotateToAdjust };
+export type { UseRotateToAdjustProps, UseRotateToAdjustResult };

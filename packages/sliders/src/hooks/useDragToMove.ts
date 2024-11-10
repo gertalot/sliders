@@ -185,4 +185,5 @@ const useDragToMove = ({
   return state;
 };
 
-export default useDragToMove;
+export { useDragToMove };
+export type { UseDragToMoveProps, UseDragToMoveResult };

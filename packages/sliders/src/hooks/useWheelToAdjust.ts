@@ -4,7 +4,7 @@ import { isPointInRect } from "../utils";
 /**
  * Interface for the `useWheelToAdjust` hook
  */
-interface useWheelToAdjustProps {
+interface UseWheelToAdjustProps {
   /** When the pointer is over this element, this hook will respond to dragging */
   dragAreaRef: RefObject<Element>;
   /**
@@ -60,7 +60,7 @@ interface UseWheelToAdjustResult {
  *   );
  * }
  */
-const useWheelToAdjust = ({ dragAreaRef, sensitivity = 100 }: useWheelToAdjustProps): UseWheelToAdjustResult => {
+const useWheelToAdjust = ({ dragAreaRef, sensitivity = 100 }: UseWheelToAdjustProps): UseWheelToAdjustResult => {
   const lastWheelEventTime = useRef<number>(0);
   const [wheelDelta, setWheelDelta] = useState<number>(0);
 
@@ -108,4 +108,5 @@ const useWheelToAdjust = ({ dragAreaRef, sensitivity = 100 }: useWheelToAdjustPr
   return { wheelDelta, isScrolling: wheelDelta != 0 };
 };
 
-export default useWheelToAdjust;
+export { useWheelToAdjust };
+export type { UseWheelToAdjustProps, UseWheelToAdjustResult };

@@ -178,4 +178,5 @@ const useDragToAdjust = ({
   return { dragAdjust, isDragAdjusting: dragAdjust != 0 };
 };
 
-export default useDragToAdjust;
+export { useDragToAdjust };
+export type { UseDragToAdjustProps, UseDragToAdjustResult };

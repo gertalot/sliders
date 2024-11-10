@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useState } from "react";
-import useWheelToAdjust from "./useWheelToAdjust";
-import useDragToMove from "./useDragToMove";
+import { useWheelToAdjust } from "./useWheelToAdjust";
+import { useDragToMove } from "./useDragToMove";
 
 interface UseSliderProps {
   targetRef: RefObject<Element>;
@@ -86,4 +86,5 @@ const useSlider = ({
   return { value, isAdjusting: isScrolling || isDragging, isOnTarget, isOnDragArea };
 };
 
-export default useSlider;
+export { useSlider };
+export type { UseSliderProps, UseSliderResult };
