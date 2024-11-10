@@ -1,5 +1,5 @@
 /**
- * A point {x,y} in 2D space
+ * A point `{x,y}` in 2D space
  */
 type Point2D = {
   x: number;
@@ -56,7 +56,7 @@ function valueToAngle(value: number, minValue: number, maxValue: number, minAngl
  * Convert an angle in radians to a 2D point on a circle with `origin` as its center and radius `radius`.
  *
  * @param angle the angle in radians
- * @param origin {x,y} coordinates of the origin of the circle
+ * @param origin `{x,y}` coordinates of the origin of the circle
  * @param radius the radius of the circle
  * @returns a point on a circle with specified origin and radius that corresponds to the angle
  *
@@ -73,8 +73,8 @@ function angleToPoint(angle: number, origin: Point2D, radius: number): Point2D {
 /**
  * Returns the angle in radians of a vector from origin to point
  *
- * @param point {x,y} coordinates of a point
- * @param origin {x,y} coordinates of
+ * @param point `{x,y}` coordinates of a point
+ * @param origin `{x,y}` coordinates of
  * @returns the angle in radians of a vector from origin to point
  *
  * @example pointToAngle({x:-0.7071, y: 0.7071}, {x:0, y:0}) // returns 1.1781 (== 3/8 * Math.PI)

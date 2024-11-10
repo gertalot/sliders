@@ -37,12 +37,12 @@ const config: Config = {
 
   presets: [
     [
-      "classic",
+      "@docusaurus/preset-classic",
       {
         docs: {
-          routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
-
+          routeBasePath: "/",
+          path: "docs",
           remarkPlugins: [require("remark-mdx")],
         },
         theme: {
@@ -50,18 +50,45 @@ const config: Config = {
         },
       } satisfies Preset.Options,
     ],
-    // [
-    //   "docusaurus-plugin-typedoc",
-    //   {
-    //     out: "./docs/api",
-    //     entryPoints: ["../sliders/src/index.ts"],
-    //     tsconfig: "../sliders/tsconfig.json",
-    //     hideBreadcrumbs: true,
-    //     hidePageHeader: true,
-    //     entryFileName: "index.md",
-    //   },
-    // ],
   ],
+
+  themeConfig: {
+    navbar: {
+      title: "@gertalot/sliders",
+      logo: {
+        alt: "Sliders Logo",
+        src: "img/sliders-logo.svg",
+      },
+      items: [
+        {
+          type: "docSidebar",
+          sidebarId: "mainSidebar",
+          position: "left",
+          label: "Docs",
+        },
+        {
+          href: "https://github.com/gertalot/sliders",
+          label: "GitHub",
+          position: "right",
+        },
+      ],
+    },
+    liveCodeBlock: {
+      /**
+       * The position of the live playground, above or under the editor
+       * Possible values: "top" | "bottom"
+       */
+      playgroundPosition: "top",
+    },
+    footer: {
+      style: "dark",
+      copyright: `Copyright © ${new Date().getFullYear()} Gert Verhoog. Built with Docusaurus.`,
+    },
+    prism: {
+      theme: prismThemes.github,
+      darkTheme: prismThemes.dracula,
+    },
+  } satisfies Preset.ThemeConfig,
 
   plugins: [
     async function resolveAliasesPlugin(_context, _options) {
@@ -90,49 +117,6 @@ const config: Config = {
       };
     },
   ],
-
-  themeConfig: {
-    navbar: {
-      title: "@gertalot/sliders",
-      logo: {
-        alt: "Sliders Logo",
-        src: "img/sliders-logo.svg",
-      },
-      items: [
-        {
-          type: "docSidebar",
-          sidebarId: "docsSidebar",
-          position: "left",
-          label: "Docs",
-        },
-        {
-          to: "api/",
-          label: "API",
-          position: "left",
-        },
-        {
-          href: "https://github.com/gertalot/sliders",
-          label: "GitHub",
-          position: "right",
-        },
-      ],
-    },
-    liveCodeBlock: {
-      /**
-       * The position of the live playground, above or under the editor
-       * Possible values: "top" | "bottom"
-       */
-      playgroundPosition: "top",
-    },
-    footer: {
-      style: "dark",
-      copyright: `Copyright © ${new Date().getFullYear()} Gert Verhoog. Built with Docusaurus.`,
-    },
-    prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
-    },
-  } satisfies Preset.ThemeConfig,
 };
 
 export default config;
