@@ -7,9 +7,18 @@ type Point2D = {
 };
 
 /**
+ * a generic type that is maybe null or undefined
+ */
+type Nullable<T> = T | null | undefined;
+
+/**
  * Convenience constant equal to `2*Math.PI`; useful when working with radians
  */
 const TAU = 2 * Math.PI;
+
+const clamp = (value: Nullable<number>, min: number, max: number): number => {
+  return Math.min(Math.max(value ?? min, min), max);
+};
 
 /**
  * Takes an angle in radians, possibly negative, and normalises it to be between 0 and 2*Math.PI
@@ -107,5 +116,15 @@ const isPointInRect = (point: Point2D, rect?: DOMRect) => {
   );
 };
 
-export { TAU, normalisedAngle, angleToValue, valueToAngle, angleToPoint, pointEquals, pointToAngle, isPointInRect };
-export type { Point2D };
+export {
+  TAU,
+  clamp,
+  normalisedAngle,
+  angleToValue,
+  valueToAngle,
+  angleToPoint,
+  pointEquals,
+  pointToAngle,
+  isPointInRect
+};
+export type { Point2D, Nullable };

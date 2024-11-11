@@ -1,28 +1,43 @@
-import { useEffect, RefObject, useState, useMemo, useCallback } from "react";
+import { useEffect, RefObject, useState, useMemo, useCallback, useLayoutEffect } from "react";
 import { useDragToMove } from "./useDragToMove";
 import { useWheelToAdjust } from "./useWheelToAdjust";
 import { useDragToAdjust } from "./useDragToAdjust";
-import { Point2D, TAU, normalisedAngle, pointEquals, pointToAngle } from "../utils";
+import {
+  Nullable,
+  Point2D,
+  TAU,
+  angleToValue,
+  clamp,
+  normalisedAngle,
+  pointEquals,
+  pointToAngle,
+  valueToAngle
+} from "../utils";
 
-/**
- * Interface for the `useRotateToAdjust` hook
- */
-interface UseRotateToAdjustProps {
-  /** When the pointer is over this element, this hook will respond to dragging */
+type UseRotateToAdjustBaseProps = {
   dragAreaRef: RefObject<Element>;
-  /** The target element whose position is being adjusted */
   targetRef: RefObject<Element>;
-  /** Initial angle of the position of the target element relative to the origin, in radians from 0 to 2*Math.PI
-   * @default 0
-   */
-  initialAngle?: number;
-  /** coordinates of the center of rotation, relative to the dragArea bounding box. This can
-   * either be a Point2D or a function that returns a Point2D. In the latter case, the function
-   * will be called when the window resizes
-   * @default null - will use the center of the dragArea
-   */
-  origin?: Point2D | (() => Point2D | null | undefined) | null;
-}
+  origin?: Nullable<Point2D> | Nullable<() => Nullable<Point2D>>;
+};
+
+type UseRotateToAdjustPropsWithRangedAngle = UseRotateToAdjustBaseProps & {
+  minAngle: number;
+  maxAngle: number;
+  angle?: number;
+};
+
+type UseRotateToAdjustPropsWithRangedValue = UseRotateToAdjustBaseProps & {
+  minAngle: number;
+  maxAngle: number;
+  minValue: number;
+  maxValue: number;
+  value?: number;
+};
+
+type UseRotateToAdjustProps =
+  | UseRotateToAdjustBaseProps
+  | UseRotateToAdjustPropsWithRangedAngle
+  | UseRotateToAdjustPropsWithRangedValue;
 
 /**
  * Interface for the result of the `useRotateToAdjust` hook
@@ -33,6 +48,7 @@ interface UseRotateToAdjustResult {
   angle: number;
   fullRotations: number;
   totalAngle: number;
+  value: number | null;
 }
 
 /**
@@ -85,13 +101,40 @@ interface UseRotateToAdjustResult {
  *  );
  *}
  */
-const useRotateToAdjust = ({
-  dragAreaRef,
-  targetRef,
-  initialAngle = 0,
-  origin = { x: 0, y: 0 }
-}: UseRotateToAdjustProps): UseRotateToAdjustResult => {
-  const [totalAngle, setTotalAngle] = useState<number>(initialAngle);
+const useRotateToAdjust = (props: UseRotateToAdjustProps): UseRotateToAdjustResult => {
+  // Type narrowing to parse the props. Start with the basics:
+  const { dragAreaRef, targetRef, origin } = props;
+
+  // we may have min/max angles
+  const minAngle = "minAngle" in props ? props.minAngle : -Infinity;
+  const maxAngle = "maxAngle" in props ? props.maxAngle : Infinity;
+
+  // we may have min/max values
+  const minValue = "minValue" in props ? props.minValue : -Infinity;
+  const maxValue = "maxValue" in props ? props.maxValue : Infinity;
+
+  // if we have minValue we have maxValue and we should use values instead of angles
+  const hasValue = "minValue" in props;
+
+  // if we have a value we set it, otherwise we set it to null and ignore it - we
+  // just use angles instead. If we do have a value, we also have min/max values.
+  const value = hasValue ? clamp(props.value, minValue, maxValue) : null;
+
+  // if we have a value, we have min and max values and angles, so map it to the angle.
+  // Otherwise, we just use angles. If we have min/max angles, clamp the angle to that range.
+  // If we only have an angle, use that.
+  const angle = ((): number => {
+    if (hasValue) {
+      return valueToAngle(value ?? 0, minValue, maxValue, minAngle, maxAngle);
+    } else if ("minAngle" in props) {
+      return clamp(props.angle, minAngle, maxAngle);
+    } else {
+      return "angle" in props ? ((props.angle as number | null) ?? 0) : 0;
+    }
+  })();
+
+  // we track the angle, and maybe map it to a value when we return from this hook
+  const [totalAngle, setTotalAngle] = useState<number>(angle);
   const [origin_, setOrigin] = useState<Point2D>({ x: 0, y: 0 });
 
   // allow the user to change the angle by either dragging the target element, or
@@ -102,46 +145,59 @@ const useRotateToAdjust = ({
   const { wheelDelta, isScrolling } = useWheelToAdjust({ dragAreaRef, sensitivity: 100 });
   const { dragAdjust, isDragAdjusting } = useDragToAdjust({ dragAreaRef, sensitivity: 100, verticalDragging: true });
 
+  // If we weren't passed an origin, default to using the center of the dragArea as
+  // the origin, which is probably what the user wants (instead of using 0,0 which is
+  // the top-left corner).
+  const defaultOriginFunction = useCallback(() => {
+    if (dragAreaRef.current) {
+      const rect = dragAreaRef.current.getBoundingClientRect();
+      const newOrigin: Point2D = { x: rect.width / 2, y: rect.height / 2 };
+      return newOrigin;
+    }
+  }, [dragAreaRef]);
+
   // The updateOrigin function and the useEffect below update the origin of rotation
   // when the dragArea element resizes if the origin is a function.
   // It doesn't do anything otherwise.
   const updateOrigin = useCallback(() => {
-    if (typeof origin === "function") {
-      const newOrigin = origin();
-      if (!pointEquals(newOrigin, origin_)) setOrigin(newOrigin || { x: 0, y: 0 });
-    }
-  }, [origin, origin_]);
+    // get a function that returns the origin. If we were passed a function, use that.
+    // if we were passed a Point2D instead, return a function that returns that point.
+    // Otherwise, origin is null or undefined, so we use the defaultOriginFunction above.
+    const originFunction = typeof origin === "function" ? origin : origin ? () => origin : defaultOriginFunction;
 
-  useEffect(() => {
+    setOrigin((prev) => {
+      const newOrigin = originFunction();
+      if (!pointEquals(newOrigin, prev)) return newOrigin || { x: 0, y: 0 };
+      else return prev;
+    });
+  }, [defaultOriginFunction, origin]);
+
+  useLayoutEffect(() => {
     const dragArea = dragAreaRef.current;
-    if (typeof origin === "function") {
-      // use ResizeObserver on modern browsers or fall back to
-      // window.addEventListener if it's not supported
-      if (typeof ResizeObserver === "undefined") {
-        updateOrigin();
-        window.addEventListener("resize", updateOrigin);
-        return () => window.removeEventListener("resize", updateOrigin);
-      } else {
-        const observer = new ResizeObserver((entries) => {
-          for (const entry of entries) {
-            if (entry.target === dragAreaRef.current) {
-              updateOrigin();
-            }
-          }
-        });
-
-        if (dragArea) observer.observe(dragArea);
-
-        return () => {
-          if (dragArea) observer.unobserve(dragArea);
-          observer.disconnect();
-        };
-      }
+    // use ResizeObserver on modern browsers or fall back to
+    // window.addEventListener if it's not supported
+    if (typeof ResizeObserver === "undefined") {
+      updateOrigin();
+      window.addEventListener("resize", updateOrigin);
+      return () => window.removeEventListener("resize", updateOrigin);
     } else {
-      if (!pointEquals(origin, origin_)) setOrigin(origin || { x: 0, y: 0 });
-    }
-  }, [dragAreaRef, origin, origin_, updateOrigin]);
+      const observer = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.target === dragAreaRef.current) {
+            updateOrigin();
+          }
+        }
+      });
+      if (dragArea) observer.observe(dragArea);
 
+      return () => {
+        if (dragArea) observer.unobserve(dragArea);
+        observer.disconnect();
+      };
+    }
+  }, [dragAreaRef, origin, updateOrigin]);
+
+  // update the angle based on user actions
   useEffect(() => {
     setTotalAngle((prevTotalAngle) => {
       // pick apart the total angle into an angle between 0-2*PI,
@@ -167,9 +223,9 @@ const useRotateToAdjust = ({
 
       // finally we can determine the new angle
       const newTotalAngle = newNormalisedAngle + TAU * newFullRotations;
-      return newTotalAngle;
+      return clamp(newTotalAngle, minAngle, maxAngle);
     });
-  }, [wheelDelta, dragAdjust, position, isDragging, origin_]);
+  }, [wheelDelta, dragAdjust, position, isDragging, origin_, minAngle, maxAngle]);
 
   const returnValue = useMemo(
     () => ({
@@ -177,9 +233,10 @@ const useRotateToAdjust = ({
       isOnTarget,
       angle: normalisedAngle(totalAngle),
       fullRotations: Math.floor(totalAngle / TAU),
-      totalAngle
+      totalAngle,
+      value: hasValue ? angleToValue(totalAngle, minValue, maxValue, minAngle, maxAngle) : null
     }),
-    [isDragging, isScrolling, isDragAdjusting, isOnTarget, totalAngle]
+    [isDragging, isScrolling, isDragAdjusting, isOnTarget, totalAngle, hasValue, minValue, maxValue, minAngle, maxAngle]
   );
 
   return returnValue;
