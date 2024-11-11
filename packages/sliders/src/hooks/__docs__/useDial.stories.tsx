@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from "@storybook/react";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { useDial } from "..";
 import { angleToPoint, Point2D, pointEquals, TAU } from "../../utils";
 
@@ -16,22 +16,15 @@ export const UseDialExample: StoryObj<BasicComponent> = {
   render: () => {
     const dragAreaRef = useRef<SVGSVGElement>(null);
     const targetRef = useRef<SVGCircleElement>(null);
-    const [origin, setOrigin] = useState<Point2D>({ x: 0, y: 0 });
 
-    // update the rotation origin to the center of the drag area, even when
-    // the window resizes
-    useEffect(() => {
-      const updateOrigin = () => {
-        if (dragAreaRef.current) {
-          const rect = dragAreaRef.current.getBoundingClientRect();
-          const newOrigin = { x: rect.width / 2, y: rect.height / 2 };
-          setOrigin(newOrigin);
-        }
-      };
-
-      updateOrigin();
-      window.addEventListener("resize", updateOrigin);
-      return () => window.removeEventListener("resize", updateOrigin);
+    // useCallback to get the same function every time
+    const updateOrigin = useCallback(() => {
+      if (dragAreaRef.current) {
+        const rect = dragAreaRef.current.getBoundingClientRect();
+        const newOrigin: Point2D = { x: rect.width / 2, y: rect.height / 2 };
+        console.log(newOrigin);
+        return newOrigin;
+      }
     }, []);
 
     const { isRotating, isOnTarget, angle, totalAngle, fullRotations } = useDial({
@@ -39,7 +32,7 @@ export const UseDialExample: StoryObj<BasicComponent> = {
       targetRef,
       minAngle: (3 / 8) * TAU,
       maxAngle: (9 / 8) * TAU,
-      origin
+      origin: updateOrigin
     });
 
     const [position, setPosition] = useState<Point2D | null>(null);
@@ -51,7 +44,7 @@ export const UseDialExample: StoryObj<BasicComponent> = {
 
     return (
       <>
-        <div className="relative w-96 h-72 bg-gray-900 p-0 border-white border-solid border-2 touch-none">
+        <div className="relative w-1/2 h-1/2 bg-gray-900 p-0 border-white border-solid border-2 touch-none resize overflow-auto">
           <svg className="w-full h-full" viewBox="-1 -1 2 2" ref={dragAreaRef}>
             <line
               x1={0}

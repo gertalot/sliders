@@ -9,7 +9,7 @@ interface UseDialProps {
   value?: number;
   minAngle?: number;
   maxAngle?: number;
-  origin?: Point2D;
+  origin?: Point2D | (() => Point2D | null | undefined) | null;
 }
 const useDial = ({
   targetRef,

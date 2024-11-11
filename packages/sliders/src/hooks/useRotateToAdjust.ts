@@ -1,8 +1,8 @@
-import { useEffect, RefObject, useState, useMemo } from "react";
+import { useEffect, RefObject, useState, useMemo, useCallback } from "react";
 import { useDragToMove } from "./useDragToMove";
 import { useWheelToAdjust } from "./useWheelToAdjust";
 import { useDragToAdjust } from "./useDragToAdjust";
-import { Point2D, TAU, normalisedAngle, pointToAngle } from "../utils";
+import { Point2D, TAU, normalisedAngle, pointEquals, pointToAngle } from "../utils";
 
 /**
  * Interface for the `useRotateToAdjust` hook
@@ -16,10 +16,12 @@ interface UseRotateToAdjustProps {
    * @default 0
    */
   initialAngle?: number;
-  /** coordinates of the center of rotation, relative to the dragArea bounding box
-   * @default the center of the dragArea
+  /** coordinates of the center of rotation, relative to the dragArea bounding box. This can
+   * either be a Point2D or a function that returns a Point2D. In the latter case, the function
+   * will be called when the window resizes
+   * @default null - will use the center of the dragArea
    */
-  origin?: Point2D;
+  origin?: Point2D | (() => Point2D | null | undefined) | null;
 }
 
 /**
@@ -90,7 +92,7 @@ const useRotateToAdjust = ({
   origin = { x: 0, y: 0 }
 }: UseRotateToAdjustProps): UseRotateToAdjustResult => {
   const [totalAngle, setTotalAngle] = useState<number>(initialAngle);
-  // const [origin_, setOrigin] = useState<Point2D | null>(null);
+  const [origin_, setOrigin] = useState<Point2D>({ x: 0, y: 0 });
 
   // allow the user to change the angle by either dragging the target element, or
   // by using the scroll wheel, or by dragging up or down in the dragArea. Use these
@@ -99,6 +101,46 @@ const useRotateToAdjust = ({
   const { isDragging, isOnTarget, position } = useDragToMove({ dragAreaRef, targetRef });
   const { wheelDelta, isScrolling } = useWheelToAdjust({ dragAreaRef, sensitivity: 100 });
   const { dragAdjust, isDragAdjusting } = useDragToAdjust({ dragAreaRef, sensitivity: 100, verticalDragging: true });
+
+  // The updateOrigin function and the useEffect below update the origin of rotation
+  // when the dragArea element resizes if the origin is a function.
+  // It doesn't do anything otherwise.
+  const updateOrigin = useCallback(() => {
+    if (typeof origin === "function") {
+      const newOrigin = origin();
+      if (!pointEquals(newOrigin, origin_)) setOrigin(newOrigin || { x: 0, y: 0 });
+    }
+  }, [origin, origin_]);
+
+  useEffect(() => {
+    const dragArea = dragAreaRef.current;
+    if (typeof origin === "function") {
+      // use ResizeObserver on modern browsers or fall back to
+      // window.addEventListener if it's not supported
+      if (typeof ResizeObserver === "undefined") {
+        updateOrigin();
+        window.addEventListener("resize", updateOrigin);
+        return () => window.removeEventListener("resize", updateOrigin);
+      } else {
+        const observer = new ResizeObserver((entries) => {
+          for (const entry of entries) {
+            if (entry.target === dragAreaRef.current) {
+              updateOrigin();
+            }
+          }
+        });
+
+        if (dragArea) observer.observe(dragArea);
+
+        return () => {
+          if (dragArea) observer.unobserve(dragArea);
+          observer.disconnect();
+        };
+      }
+    } else {
+      if (!pointEquals(origin, origin_)) setOrigin(origin || { x: 0, y: 0 });
+    }
+  }, [dragAreaRef, origin, origin_, updateOrigin]);
 
   useEffect(() => {
     setTotalAngle((prevTotalAngle) => {
@@ -112,7 +154,7 @@ const useRotateToAdjust = ({
       // - a difference in scroll wheel rotation from useWheelToAdjust
       // - a difference in cursor position from useDragToAdjust if the user is dragging up or down
       const newNormalisedAngle = normalisedAngle(
-        isDragging ? pointToAngle(position || { x: 0, y: 0 }, origin) : angle + wheelDelta + dragAdjust
+        isDragging ? pointToAngle(position || { x: 0, y: 0 }, origin_) : angle + wheelDelta + dragAdjust
       );
 
       // If the new angle is "past" the point where angle=0, the user has rotated past a full rotation,
@@ -127,7 +169,7 @@ const useRotateToAdjust = ({
       const newTotalAngle = newNormalisedAngle + TAU * newFullRotations;
       return newTotalAngle;
     });
-  }, [wheelDelta, dragAdjust, position, isDragging, origin]);
+  }, [wheelDelta, dragAdjust, position, isDragging, origin_]);
 
   const returnValue = useMemo(
     () => ({

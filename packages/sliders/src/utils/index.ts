@@ -91,7 +91,7 @@ function pointToAngle(point: Point2D, origin: Point2D): number {
  * @param otherPoint
  * @returns
  */
-function pointEquals(point: Point2D | null, otherPoint: Point2D | null): boolean {
+function pointEquals(point: Point2D | null | undefined, otherPoint: Point2D | null): boolean {
   return point?.x == otherPoint?.x && point?.y == otherPoint?.y;
 }
 
