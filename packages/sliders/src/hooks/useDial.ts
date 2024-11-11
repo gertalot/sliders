@@ -15,33 +15,33 @@ import {
 } from "../utils";
 
 /**
- * type for the props of the `useRotateToAdjust` hook. This is the most basic
+ * type for the props of the `useDial` hook. This is the most basic
  * version, without minimum or maximum angles. It will just return the total
  * angle.
  */
-type UseRotateToAdjustBaseProps = {
+type UseDialBaseProps = {
   dragAreaRef: RefObject<Element>;
   targetRef: RefObject<Element>;
   origin?: Nullable<Point2D> | Nullable<() => Nullable<Point2D>>;
 };
 
 /**
- * type for the props of the `useRotateToAdjust` hook. This allows for setting
+ * type for the props of the `useDial` hook. This allows for setting
  * minimum and maximum angles, and optionally the current angle.
  */
-type UseRotateToAdjustPropsWithRangedAngle = UseRotateToAdjustBaseProps & {
+type UseDialPropsWithRangedAngle = UseDialBaseProps & {
   minAngle: number;
   maxAngle: number;
   angle?: number;
 };
 
 /**
- * type for the props of the `useRotateToAdjust` hook. This allows for working
+ * type for the props of the `useDial` hook. This allows for working
  * with values mapped to angles, so instead of using the angle in the result
  * of this hook, you can use a mapped value, e.g. to model a percentage, volume
  * setting, temperature on a thermostat, etc.
  */
-type UseRotateToAdjustPropsWithRangedValue = UseRotateToAdjustBaseProps & {
+type UseDialPropsWithRangedValue = UseDialBaseProps & {
   minAngle: number;
   maxAngle: number;
   minValue: number;
@@ -50,19 +50,16 @@ type UseRotateToAdjustPropsWithRangedValue = UseRotateToAdjustBaseProps & {
 };
 
 /**
- * type for the props of the `useRotateToAdjust` hook. The hook accepts either
+ * type for the props of the `useDial` hook. The hook accepts either
  * a basic set of props, a set of props that specify min/max angles, or props
  * that map an angle to a value.
  */
-type UseRotateToAdjustProps =
-  | UseRotateToAdjustBaseProps
-  | UseRotateToAdjustPropsWithRangedAngle
-  | UseRotateToAdjustPropsWithRangedValue;
+type UseDialProps = UseDialBaseProps | UseDialPropsWithRangedAngle | UseDialPropsWithRangedValue;
 
 /**
- * Interface for the result of the `useRotateToAdjust` hook
+ * Interface for the result of the `useDial` hook
  */
-interface UseRotateToAdjustResult {
+interface UseDialResult {
   isRotating: boolean;
   isOnTarget: boolean;
   angle: number;
@@ -71,15 +68,15 @@ interface UseRotateToAdjustResult {
   value: number | null;
 }
 
-type InitializedProps = UseRotateToAdjustPropsWithRangedValue & {
+type InitializedProps = UseDialPropsWithRangedValue & {
   hasValue: boolean;
   angle: number | null;
 };
 /**
- * Utility function that parses the props of the `useRotateToAdjust` hook and returns
+ * Utility function that parses the props of the `useDial` hook and returns
  * an object with properties that make sense
  */
-const parseUseRotateToAdjustProps = (props: UseRotateToAdjustProps): InitializedProps => {
+const parseUseDialProps = (props: UseDialProps): InitializedProps => {
   // Type narrowing to parse the props. Start with the basics:
   const { dragAreaRef, targetRef, origin } = props;
 
@@ -115,7 +112,7 @@ const parseUseRotateToAdjustProps = (props: UseRotateToAdjustProps): Initialized
 };
 
 /**
- * utility function (custom hook) to handle updating the origin of rotation for the `useRotateToAdjust` hook
+ * utility function (custom hook) to handle updating the origin of rotation for the `useDial` hook
  */
 const useUpdateOrigin = ({ dragAreaRef, origin }: InitializedProps): Point2D => {
   const [origin_, setOrigin] = useState<Point2D>({ x: 0, y: 0 });
@@ -176,7 +173,7 @@ const useUpdateOrigin = ({ dragAreaRef, origin }: InitializedProps): Point2D => 
  * This custom hook allows for creating UI elements such as knobs and dials that can be adjusted by dragging
  * or using the mouse wheel.
  *
- * @param {UseRotateToAdjustProps} props - the configuration options for this hook
+ * @param {UseDialProps} props - the configuration options for this hook
  * @param {RefObject<Element>} props.dragAreaRef - this hook will register dragging actions that occur on this element.
  * @param {RefObject<Element>} props.targetRef - the target element, i.e. the element that the user is rotating
  * @param {Point2D} [props.origin=null] - the center of rotation, relative to the dragArea bounding box. This can be an
@@ -184,7 +181,7 @@ const useUpdateOrigin = ({ dragAreaRef, origin }: InitializedProps): Point2D => 
  * the origin when the size of the component changes, for example. If the origin is not provided, it will automatically
  * set it to the center of the dragArea element.
  *
- * @returns {UseRotateToAdjustResult} Properties that indicate the current state of the hook, such as whether the user
+ * @returns {UseDialResult} Properties that indicate the current state of the hook, such as whether the user
  * is currently rotating, and the angle of the target element relative to the origin:
  * `result.isRotating` - `true` if the user is currently performing a dragging action;
  * `result.isOnTarget` - `true` if the pointer is currently over the target element;
@@ -202,7 +199,7 @@ const useUpdateOrigin = ({ dragAreaRef, origin }: InitializedProps): Point2D => 
  *  const dragAreaRef = useRef<SVGSVGElement>(null);
  *  const targetRef = useRef<SVGCircleElement>(null);
  *
- *  const { isRotating, isOnTarget, angle, totalAngle } = useRotateToAdjust({
+ *  const { isRotating, isOnTarget, angle, totalAngle } = useDial({
  *    dragAreaRef,
  *    targetRef
  *  });
@@ -231,8 +228,8 @@ const useUpdateOrigin = ({ dragAreaRef, origin }: InitializedProps): Point2D => 
  *  );
  *}
  */
-const useRotateToAdjust = (props: UseRotateToAdjustProps): UseRotateToAdjustResult => {
-  const initializedProps = parseUseRotateToAdjustProps(props);
+const useDial = (props: UseDialProps): UseDialResult => {
+  const initializedProps = parseUseDialProps(props);
   const { dragAreaRef, targetRef, minAngle, maxAngle, minValue, maxValue, hasValue, angle } = initializedProps;
 
   // we track the angle, and maybe map it to a value when we return from this hook
@@ -294,5 +291,5 @@ const useRotateToAdjust = (props: UseRotateToAdjustProps): UseRotateToAdjustResu
   return returnValue;
 };
 
-export { useRotateToAdjust };
-export type { UseRotateToAdjustProps, UseRotateToAdjustResult };
+export { useDial };
+export type { UseDialProps, UseDialResult };

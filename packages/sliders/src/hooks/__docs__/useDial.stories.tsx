@@ -1,24 +1,24 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from "@storybook/react";
 import { FC, useCallback, useEffect, useRef, useState } from "react";
-import { useRotateToAdjust } from "..";
+import { useDial } from "..";
 import { angleToPoint, Point2D, pointEquals, TAU } from "../../utils";
 
 // there are no props or anything, so this is simple
 type BasicComponent = FC;
 
 const meta: Meta<BasicComponent> = {
-  title: "useRotateToAdjust example"
+  title: "useDial example"
 };
 
 export default meta;
 
-export const UseRotateToAdjustExample: StoryObj<BasicComponent> = {
+export const UseDialBasicExample: StoryObj<BasicComponent> = {
   render: () => {
     const dragAreaRef = useRef<SVGSVGElement>(null);
     const targetRef = useRef<SVGCircleElement>(null);
 
-    const { isRotating, isOnTarget, angle, totalAngle, fullRotations } = useRotateToAdjust({
+    const { isRotating, isOnTarget, angle, totalAngle, fullRotations } = useDial({
       dragAreaRef,
       targetRef
     });
@@ -81,7 +81,7 @@ export const UseDialExample: StoryObj<BasicComponent> = {
       }
     }, []);
 
-    const { isRotating, isOnTarget, angle, value } = useRotateToAdjust({
+    const { isRotating, isOnTarget, angle, value } = useDial({
       dragAreaRef,
       targetRef,
       minAngle: (3 / 8) * TAU,
