@@ -116,6 +116,24 @@ const isPointInRect = (point: Point2D, rect?: DOMRect) => {
   );
 };
 
+/**
+ * Converts radians to degrees
+ * @param radians
+ * @returns degrees
+ */
+const rad2deg = (radians: number): number => {
+  return (radians * 180) / Math.PI;
+};
+
+/**
+ * Converts degrees to radians
+ * @param degrees
+ * @returns radians
+ */
+const deg2rad = (degrees: number): number => {
+  return (degrees * Math.PI) / 180;
+};
+
 export {
   TAU,
   clamp,
@@ -125,6 +143,8 @@ export {
   angleToPoint,
   pointEquals,
   pointToAngle,
-  isPointInRect
+  isPointInRect,
+  rad2deg,
+  deg2rad
 };
 export type { Point2D, Nullable };
