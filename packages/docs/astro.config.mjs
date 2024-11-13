@@ -6,6 +6,8 @@ import react from "@astrojs/react";
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://gertalot.github.io",
+  base: "/sliders",
   integrations: [
     starlight({
       title: "@gertalot/sliders",
