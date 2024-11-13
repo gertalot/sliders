@@ -1,0 +1,37 @@
+---
+title: "@gertalot/sliders"
+description: React custom hooks for sliders, knobs, and dials.
+template: splash
+hero:
+  tagline: React custom hooks for sliders, knobs, and dials.
+  image:
+    file: ../../assets/sliders-hero.png
+  actions:
+    - text: Get Started
+      link: /guides/example/
+      icon: right-arrow
+    - text: To the Source!
+      link: "https://github.com/gertalot/sliders"
+      icon: github
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+import VolumeSlider from "../../components/VolumeSlider";
+import VolumeDial from "../../components/VolumeDial";
+
+## Demo
+
+<CardGrid>
+  <Card title="Slider" icon="star">
+    Drag the slider, or use the mouse wheel. This component is created with
+    a simple SVG, and uses the `useSlider` custom hook.
+    <VolumeSlider client:idle />
+  </Card>
+  <Card title="Dial" icon="star">
+    Turn the dial to go up to eleven! Or use the mousewheel, or drag vertically.
+    This component is an SVG and uses the `useDial` custom hook to handle all
+    user interaction and returns an angle and a value to the component.
+    <VolumeDial client:idle />
+  </Card>
+
+</CardGrid>

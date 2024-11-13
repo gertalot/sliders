@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --sl-color-accent-low: hsl(228, 14%, 14%);
+  --sl-color-accent: hsl(34, 100%, 50%);
+  --sl-color-accent-high: hsl(34, 100%, 60%);
+}
+
+:root[data-theme="light"] {
+  --sl-color-accent-low: hsl(228, 14%, 14%);
+  --sl-color-accent: hsl(34, 100%, 50%);
+  --sl-color-accent-high: hsl(34, 100%, 85%);
+}
+
+.hero {
+  display: grid;
+  align-items: start;
+  gap: 1rem;
+  padding-bottom: 1rem;
+}
+
+.hero > img,
+.hero > .hero-html {
+  object-fit: contain;
+  /* width: min(70%, 20rem); */
+  height: 500;
+  margin-inline: 500;
+}

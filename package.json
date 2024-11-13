@@ -14,7 +14,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "yarn run sliders:build && yarn run docs:build",
+    "build": "yarn run sliders:build",
     "clean": "yarn workspaces run clean",
     "dev": "concurrently \"yarn workspace @gertalot/sliders dev\" \"yarn workspace @gertalot/sliders-docs start\"",
     "lint": "eslint .",
@@ -33,7 +33,12 @@
     "sliders:storybook": "yarn workspace @gertalot/sliders run storybook dev -p 6006",
     "sliders:test-watch": "yarn workspace @gertalot/sliders run vitest",
     "sliders:test:ui": "yarn workspace @gertalot/sliders run vitest --ui",
-    "sliders:test": "yarn workspace @gertalot/sliders run vitest run"
+    "sliders:test": "yarn workspace @gertalot/sliders run vitest run",
+    "docs:dev": "yarn workspace @gertalot/sliders-docs dev",
+    "docs:start": "yarn workspace @gertalot/sliders-docs start",
+    "docs:build": "yarn workspace @gertalot/sliders-docs build",
+    "docs:preview": "yarn workspace @gertalot/sliders-docs preview",
+    "docs:astro": "yarn workspace @gertalot/sliders-docs astro"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.2",

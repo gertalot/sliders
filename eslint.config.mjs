@@ -84,4 +84,14 @@ export default [
   {
     files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
   },
+  {
+    files: ["packages/docs/**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+    rules: {
+      "@typescript-eslint/triple-slash-reference": [
+        {
+          path: "never",
+        },
+      ],
+    },
+  },
 ];
