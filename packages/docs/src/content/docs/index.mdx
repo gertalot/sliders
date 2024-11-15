@@ -6,32 +6,75 @@ hero:
   tagline: React custom hooks for sliders, knobs, and dials.
   image:
     file: ../../assets/sliders-hero.png
-  # actions:
-  #   - text: Get Started
-  #     link: /guides/example/
-  #     icon: right-arrow
+  actions:
+    - text: Get Started
+      link: /sliders/quickstart
+      icon: right-arrow
   #   - text: To the Source!
   #     link: "https://github.com/gertalot/sliders"
   #     icon: github
 ---
 
-import { Card, CardGrid } from "@astrojs/starlight/components";
+import { Card, CardGrid, Tabs, TabItem, Code } from "@astrojs/starlight/components";
 import VolumeSlider from "../../components/VolumeSlider";
 import VolumeDial from "../../components/VolumeDial";
+import VolumeSliderCode from "../../components/VolumeSlider.tsx?raw";
+import VolumeDialCode from "../../components/VolumeDial.tsx?raw";
+
+## What is this?
+
+@gertalot/sliders is a small React library with a number of custom hooks that make it easy to build sliders, dials, and
+other components that respond to dragging and sliding actions from the user. The hooks take care of all user
+interaction, such as dragging, rotating, using the mouse wheel, or two-finger scrolling.
 
 ## Demo
 
 <CardGrid>
-  <Card title="Slider" icon="star">
-    Drag the slider, or use the mouse wheel. This component is created with
-    a simple SVG, and uses the `useSlider` custom hook.
+  <Card title="Slider">
+    Drag the slider, or use the mouse wheel. This component is created with a simple SVG, and uses the `useSlider`
+    custom hook.
     <VolumeSlider client:idle />
   </Card>
-  <Card title="Dial" icon="star">
-    Turn the dial to go up to eleven! Or use the mousewheel, or drag vertically.
-    This component is an SVG and uses the `useDial` custom hook to handle all
-    user interaction and returns an angle and a value to the component.
+  <Card title="Dial">
+    Turn the dial to go up to eleven! Or use the mousewheel, or drag vertically. This component is an SVG and uses the
+    `useDial` custom hook to handle all user interaction and returns an angle and a value to the component.
     <VolumeDial client:idle />
   </Card>
-
 </CardGrid>
+
+## Why does it exist?
+
+For a project involving a climate-controlled environment, I needed something to control temperature and humidity,
+preferrably from my phone. This was an excellent excuse to learn more about React and all the useful tools of modern
+frontend development. Moving the code that handles the user's dragging, rotating, and scrolling actions out of my
+components and into reusable hooks seemed sensible, and I am sharing this in the hope it might be useful or educational
+for others.
+
+## Example
+
+Here's a minimal example of one of the custom hooks, `useWheelToAdjust`. These hooks take care of all user interaction
+and return properties you can use in your components. In this example, the hook returns a `wheelDelta` value
+representing the speed at which the user is rotating the mouse wheel.
+
+```tsx {5}
+const MyComponent = () => {
+  const dragAreaRef = useRef<HTMLDivElement>(null);
+  const [value, setValue] = useState(0);
+
+  const { wheelDelta, isScrolling } = useWheelToAdjust({ dragAreaRef });
+
+  useEffect(() => {
+    if (isScrolling) {
+      setValue((prev) => prev + wheelDelta);
+    }
+  }, [wheelDelta, isScrolling]);
+
+  return (
+    <div style={{ width: "90vw", height: "90vh", backgroundColor: "#333" }} ref={dragAreaRef}>
+      <h1 style={{ textAlign: "center" }}>{value.toFixed(1)}</h1>
+    </div>
+  );
+};
+```
+
+To learn more about the hooks and how to use them, check out [the docs](/sliders/quickstart)!
