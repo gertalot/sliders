@@ -1,0 +1,76 @@
+---
+title: Quickstart
+description: Install @gertalot/sliders
+---
+
+import { Steps, Tabs, TabItem } from "@astrojs/starlight/components";
+import QuickStartComponent from "../../components/QuickStartComponent";
+
+<Steps>
+
+1. Add @gertalot/sliders to your project:
+
+   <Tabs syncKey="pkg">
+
+   <TabItem label="npm">
+
+   ```sh
+   npm install @gertalot/sliders
+   ```
+
+   </TabItem>
+
+   <TabItem label="pnpm">
+
+   ```sh
+   pnpm add @gertalot/sliders
+   ```
+
+   </TabItem>
+
+   <TabItem label="Yarn">
+
+   ```sh
+   yarn add @gertalot/sliders
+   ```
+
+   </TabItem>
+
+   </Tabs>
+
+2. Create a component:
+
+   ```tsx
+   import { useRef, useState, useEffect } from "react";
+   import { useWheelToAdjust } from "@gertalot/sliders";
+
+   const MyComponent = () => {
+     const dragAreaRef = useRef<HTMLDivElement>(null);
+     const [value, setValue] = useState(0);
+
+     const { wheelDelta, isScrolling } = useWheelToAdjust({
+       dragAreaRef,
+     });
+
+     useEffect(() => {
+       if (isScrolling) {
+         setValue((prev) => prev + wheelDelta);
+       }
+     }, [wheelDelta, isScrolling]);
+
+     return (
+       <div style={{ backgroundColor: "#333" }} ref={dragAreaRef}>
+         <h1>Use mousewheel to change value!</h1>
+         <h2 style={{ textAlign: "center" }}>{value.toFixed(1)}</h2>
+       </div>
+     );
+   };
+
+   export default MyComponent;
+   ```
+
+3. Profit!
+
+   <QuickStartComponent />
+
+</Steps>
