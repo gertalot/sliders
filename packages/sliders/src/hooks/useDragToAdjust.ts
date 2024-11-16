@@ -1,4 +1,5 @@
 import { useEffect, useState, RefObject, useCallback, useRef } from "react";
+import { isPointInRect } from "../utils";
 
 /**
  * Interface for `useDragToAdjust`
@@ -94,10 +95,16 @@ const useDragToAdjust = ({
   const handleMouseDown = useCallback(
     (e: unknown) => {
       const event = e as MouseEvent;
-      const rect = dragAreaRef.current;
-      if (rect) {
+      const dragAreaRect = dragAreaRef.current?.getBoundingClientRect();
+      const position = { x: event.clientX, y: event.clientY };
+
+      // there might be other elements the pointer is over, so we can't rely
+      // on event.target or event.composedPath to determine if we're on the dragArea
+      const onDragArea = isPointInRect(position, dragAreaRect);
+      if (onDragArea) {
+        event.preventDefault();
         // track where the user started dragging by storing the relevant coordinate
-        // of the pointer. The
+        // of the pointer.
         setDragging(true);
         setDragAdjust(0);
         dragStartRef.current = verticalDragging ? event.clientY : event.clientX;
@@ -113,11 +120,19 @@ const useDragToAdjust = ({
       const rect = dragAreaRef.current;
       if (rect && event.touches.length === dragTouches) {
         const touch = event.touches[0];
-        // track where the user started dragging by storing the relevant coordinate
-        // of the pointer. The
-        setDragging(true);
-        setDragAdjust(0);
-        dragStartRef.current = verticalDragging ? touch.clientY : touch.clientX;
+        const dragAreaRect = dragAreaRef.current?.getBoundingClientRect();
+        const position = { x: touch.clientX, y: touch.clientY };
+        const onDragArea = isPointInRect(position, dragAreaRect);
+
+        if (onDragArea) {
+          event.preventDefault();
+
+          // track where the user started dragging by storing the relevant coordinate
+          // of the pointer.
+          setDragging(true);
+          setDragAdjust(0);
+          dragStartRef.current = verticalDragging ? touch.clientY : touch.clientX;
+        }
       }
     },
     [dragAreaRef, verticalDragging, dragTouches]
@@ -155,9 +170,7 @@ const useDragToAdjust = ({
   );
 
   useEffect(() => {
-    const dragArea = dragAreaRef.current;
-
-    const dragAreaEvents = {
+    const events = {
       mousedown: handleMouseDown,
       mouseup: handleStopDragging,
       touchstart: handleTouchStart,
@@ -166,16 +179,16 @@ const useDragToAdjust = ({
       mousemove: handleMouseMove,
       touchmove: handleTouchMove
     };
-    for (const [event, handler] of Object.entries(dragAreaEvents)) {
-      dragArea?.addEventListener(event, handler);
+    for (const [event, handler] of Object.entries(events)) {
+      window.addEventListener(event, handler);
     }
     return () => {
-      for (const [event, handler] of Object.entries(dragAreaEvents)) {
-        dragArea?.removeEventListener(event, handler);
+      for (const [event, handler] of Object.entries(events)) {
+        window.removeEventListener(event, handler);
       }
     };
   }, [dragAreaRef, handleMouseDown, handleMouseMove, handleTouchMove, handleTouchStart]);
-  return { dragAdjust, isDragAdjusting: dragAdjust != 0 };
+  return { dragAdjust, isDragAdjusting: isDragging };
 };
 
 export { useDragToAdjust };
