@@ -1,0 +1,33 @@
+---
+title: useSlider
+description: A custom hook for building horizontal or vertical sliders
+sidebar:
+  order: 2
+---
+
+# `useSlider`
+
+A custom React hook that registers horizontal or vertical dragging actions from the user that start on the element
+referenced by `dragAreaRef`. This hook responds to touch and mouse events, and will return a value between `minValue`
+and `maxValue` corresponding to the distance of the dragging action relative to the drag area.
+
+This hook responds to the user dragging the target, clicking or touching along the drag area, or using the mouse
+wheel.
+
+This hook can be configured to return a value between `minValue` and `maxValue` inclusive (defaults to 0-1), and the
+sensitivity of the mouse wheel can be configured as well. Finally, the hook can be configured to respond to horizontal
+or vertical dragging motions.
+
+## Usage
+
+```ts
+const { value, isAdjusting, isOnTarget, isOnDragArea } = useSlider({
+  targetRef,
+  dragAreaRef,
+  minValue = 0,
+  maxValue = 1,
+  initialValue = 0,
+  sensitivity = 100,
+  isVertical = true,
+});
+```

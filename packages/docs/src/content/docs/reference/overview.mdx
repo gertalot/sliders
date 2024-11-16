@@ -1,0 +1,36 @@
+---
+title: Overview
+description: Sliders custom hooks overview.
+sidebar:
+  order: 1
+---
+
+# Sliders - Custom Hooks Overview
+
+The following custom hooks are available:
+
+| <div style="width:200px">Custom Hook</div>                | Description                                                                                 |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| [`useSlider`](/sliders/reference/useSlider)               | A custom hook for building horizontal or vertical sliders                                   |
+| [`useDial`](/sliders/reference/useDial)                   | A custom hook for building rotating dials                                                   |
+| [`useDragToAdjust`](/sliders/reference/useDragToAdjust)   | A lower-level custom hook that handles the user draggin vertically or horizontally          |
+| [`useWheelToAdjust`](/sliders/reference/useWheelToAdjust) | A lower-level custom hook that handles mouse wheel actions                                  |
+| [`useDragToMove`](/sliders/reference/useDragToMove)       | A lower-level custom hook that tracks the position of a target element the user is dragging |
+
+These hooks are all you need to build sliders, knobs, and dials. These hooks use a few helper functions that are also available, should you need them:
+
+| <div style="width:200px">Helper Function</div>                  | Description                                                                                                 |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| [type `Point2D`](/sliders/reference/helpers#point2d)            | A generic 2D point type                                                                                     |
+| [type `Nullable`](/sliders/reference/helpers#nullable)          | A generic type that is maybe null or undefined                                                              |
+| [const `TAU`](/sliders/reference/helpers#tau)                   | The number of radians in a circle; useful when working with radians instead of using `Math.PI*2` everywhere |
+| [`clamp`](/sliders/reference/helpers#clamp)                     | Clamp a value between a min and max value                                                                   |
+| [`normalisedAngle`](/sliders/reference/helpers#normalisedangle) | Takes an angle in radians, possibly negative, and normalises it to be between 0 and 2\*Math.PI              |
+| [`angleToValue`](/sliders/reference/helpers#angletovalue)       | Maps an angle in radians to a numeric value                                                                 |
+| [`valueToAngle`](/sliders/reference/helpers#valuetovalue)       | Maps a value, and returns a corresponding angle in radians, based on the parameters                         |
+| [`angleToPoint`](/sliders/reference/helpers#angletoPoint)       | Convert an angle in radians to a 2D point on a circle with `origin` as its center and radius `radius`.      |
+| [`pointToAngle`](/sliders/reference/helpers#pointtoangle)       | Returns the angle in radians of a vector from origin to point                                               |
+| [`pointEquals`](/sliders/reference/helpers#pointequals)         | Checks if two points are equal                                                                              |
+| [`isPointInRect`](/sliders/reference/helpers#isPointInRect)     | Checks if a point is inside a rectangle                                                                     |
+| [`rad2deg`](/sliders/reference/helpers#rad2deg)                 | Converts radians to degrees                                                                                 |
+| [`deg2rad`](/sliders/reference/helpers#deg2rad)                 | Converts degrees to radians                                                                                 |
