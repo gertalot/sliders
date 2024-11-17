@@ -22,6 +22,22 @@ This hook can be configured to return a value between `minValue` and `maxValue` 
 sensitivity of the mouse wheel can be configured as well. Finally, the hook can be configured to respond to horizontal
 or vertical dragging motions.
 
+## Example: A Volume Slider
+
+The example below shows a volume slider that uses the `useSlider` hook.
+
+<Tabs>
+  <TabItem label="Demo">
+    <VolumeSlider client:load />
+  </TabItem>
+  <TabItem label="VolumeSlider Component">
+    <Code code={VolumeSliderCode} lang="tsx" title="VolumeSlider.tsx" mark={{ range: "15-22" }} />
+  </TabItem>
+  <TabItem label="Speaker Component">
+    <Code code={SpeakerCode} lang="tsx" title="Speaker.tsx" />
+  </TabItem>
+</Tabs>
+
 ## Usage
 
 ```ts
@@ -71,19 +87,3 @@ The `useSlider` hook returns an object with the following properties:
   Note that this actually checks if the pointer coordinates are within the bounding rect of the
   dragArea elements; it doesn't use the pointer event target or composed path, in case the element
   is obscured by another element.
-
-## Example
-
-The example below shows a volume slider that uses the `useSlider` hook.
-
-<Tabs>
-  <TabItem label="Demo">
-    <VolumeSlider client:load />
-  </TabItem>
-  <TabItem label="VolumeSlider Component">
-    <Code code={VolumeSliderCode} lang="tsx" title="VolumeSlider.tsx" mark={{ range: "15-22" }} />
-  </TabItem>
-  <TabItem label="Speaker Component">
-    <Code code={SpeakerCode} lang="tsx" title="Speaker.tsx" />
-  </TabItem>
-</Tabs>

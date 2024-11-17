@@ -13,12 +13,12 @@ const VolumeDial = () => {
   const targetRef = useRef<SVGCircleElement>(null);
 
   // The limits of rotation. `TAU` is defined as `2*Math.PI` and is a useful shorthand when
-  // working with radians. 3/8 TAU is "7 o'clock", 9/8 TAU is "5 o'clock". This corresponds
-  // to a volume from 0-11.
+  // working with radians. 3/8 TAU is roughly "7 o'clock", 9/8 TAU is roughly "5 o'clock".
+  // This corresponds to a volume from 0-11.
   const props = { minAngle: (3 / 8) * TAU, maxAngle: (9 / 8) * TAU, minValue: 0, maxValue: 11 };
 
   // We use various radii, for the ticks, the dial, and the volume numbers, for example. They are
-  // all relative to the the `radius` value.
+  // all relative to the `radius` value.
   const radius = 0.9;
 
   const { angle, value } = useDial({

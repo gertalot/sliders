@@ -23,6 +23,46 @@ the dial through rotating the mouse wheel or dragging vertically when the pointe
 The hook will use the position of the pointer while dragging to calculate an angle relative to an origin
 (which is the center of rotation).
 
+## Example: A Volume Dial
+
+This is all much easier to show than to describe, so here is a full example that models a volume
+dial that goes from 0-11. The user can change the volume by rotating the knob, using the mouse wheel,
+or dragging vertically in the component's area.
+
+<Tabs>
+  <TabItem label="Demo">
+    <VolumeDial client:load />
+  </TabItem>
+  <TabItem label="VolumeDial component">
+    <Code code={VolumeDialCode} lang="tsx" title="VolumeDial.tsx" mark={{ range: "24-29" }} />
+  </TabItem>
+  <TabItem label="VolumeDialTicks component">
+    <Code code={VolumeDialTicksCode} lang="tsx" title="VolumeDialTicks.tsx" />
+  </TabItem>
+</Tabs>
+
+## Usage
+
+```tsx
+const {
+  isRotating, // true if the user is rotating
+  isOnTarget, // true if the pointer is over the target
+  angle, // the angle of rotation, 0-2π
+  fullRotations, // the number of full rotations
+  totalAngle, // the total angle, including full rotations
+  value, // the value corresponding to the angle
+} = useDial({
+  dragAreaRef, // the element that functions as the "active" area
+  targetRef, // the target element that is rotated
+  origin, // a point or a function returning a point - the center of rotation
+  minAngle, // minimum allowed angle
+  maxAngle, // maximum allowed angle
+  minValue, // minimum value - corresponds with minAngle
+  maxValue, // maximum value - corresponds with maxAngle
+  value, // initial value
+});
+```
+
 ## Props
 
 This hook accepts a few different combinations of props (the valid combinations are described in types
@@ -83,21 +123,3 @@ This custom hook returns an object with the following properties:
 - `totalAngle` - this is the total angle, taking full rotations into account.
 - `value` - the mapped value, if `minValue`, `maxValue`, `minAngle`, and `maxAngle` were specified
   in the props.
-
-## Example
-
-This is all much easier to show than to describe, so here is a full example that models a volume
-dial that goes from 0-11. The user can change the volume by rotating the knob, using the mouse wheel,
-or dragging vertically in the component's area.
-
-<Tabs>
-  <TabItem label="Demo">
-    <VolumeDial client:load />
-  </TabItem>
-  <TabItem label="VolumeDial component">
-    <Code code={VolumeDialCode} lang="tsx" title="VolumeDial.tsx" mark={{ range: "24-29" }} />
-  </TabItem>
-  <TabItem label="VolumeDialTicks component">
-    <Code code={VolumeDialTicksCode} lang="tsx" title="VolumeDialTicks.tsx" />
-  </TabItem>
-</Tabs>
