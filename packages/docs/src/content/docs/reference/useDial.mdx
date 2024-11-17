@@ -5,4 +5,99 @@ sidebar:
   order: 3
 ---
 
-# `useDial`
+import { Card, CardGrid, Tabs, TabItem, Code } from "@astrojs/starlight/components";
+import VolumeDialTicks from "../../../components/VolumeDialTicks";
+import VolumeDialTicksCode from "../../../components/VolumeDialTicks.tsx?raw";
+import VolumeDial from "../../../components/VolumeDial";
+import VolumeDialCode from "../../../components/VolumeDial.tsx?raw";
+
+A custom react hook that registers dragging and mouse wheel actions and returns an angle representing
+a rotation of the target element relative to the origin.
+
+This custom hook allows for creating UI elements such as knobs and dials that can be adjusted by dragging
+or using the mouse wheel.
+
+This hook registers dragging actions from the user of the `targetRef` element, and also handles adjusting
+the dial through rotating the mouse wheel or dragging vertically when the pointer is over the `dragAreaRef` element.
+
+The hook will use the position of the pointer while dragging to calculate an angle relative to an origin
+(which is the center of rotation).
+
+## Props
+
+This hook accepts a few different combinations of props (the valid combinations are described in types
+so if your editor is set up to autocomplete based on type it will help you).
+
+### Basic props for "infinite" rotation
+
+In its most basic form, this hook allows for infitie rotations clockwise or counterclockwise, and will
+return just the angle (in radians from 0-2π, where 0 is "3 o'clock"), and the total angle (in radians,
+but taking into account the number of full rotations). The props are:
+
+- `dragAreaRef` - (required) the element that is "active", i.e. the hook's event listeners will register
+  mouse wheel rotation and vertical dragging actions when the pointer is over this element.
+- `targetRef` - (required) the target element that can be dragged around an origin
+- `origin` - This optional prop should, when specified, be either a point or a function. When
+  specified as a point of type `Point2D`, they are the `{x,y}` coordinates of the center of
+  rotation, \_relative to the `dragAreaRef` element's bounding rect.
+  When a function is passed, the function will be called when the `dragAreaRef` changes size,
+  and can be used to dynamically change the center of rotation.
+  If `origin` is not specified, it will be dynamically set to the center of the `dragAreaRef`
+  element.
+
+### Limit the possible angles
+
+The second form takes the basic props described above, and allows the following in addition:
+
+- `minAngle` and `maxAngle` - specifies the minimum and maximum allowed angles of rotation.
+  If the user tries to drag past these angles, the angle will be clamped to
+  the minimum or maximum angle.
+- `angle` - optionally specify the initial angle that the hook should use. If not specified,
+  uses `minAngle`. Note: if no angles are specified at all, the initial angle will be 0.
+
+### Map rotation to values
+
+The most complete set of props linearly map an angle of rotation to a value, and this is probably
+the most likely way you'll use this hook. The "volume knob" example below uses these props, to
+limit the possible angles to betwee "7 o'clock" and "5 o'clock" (going clockwise), and map the
+angle to a value between 0-11. You specify the following:
+
+- `minAngle` and `maxAngle` as above;
+- `minValue` and `maxValue` - the minimum and maximum values. These correspond to the minimum
+  and maximum angles.
+- `value` - an optional initial value, which will be mapped to the corresponding angle. If not
+  specified, the minimum value will be used.
+
+## Returns
+
+This custom hook returns an object with the following properties:
+
+- `isRotating` - `true` if the user is actively rotating the dial, either through dragging the
+  target, using the mouse wheel, or dragging vertically on the `dragAreaRef` element.
+- `isOnTarget` - `true` if the pointer is currently over the `targetRef` element.
+- `angle` - the angle of rotation, between 0-2π, where 0 is "3 o'clock" and values increase
+  clockwise. This can be used to position the target element, transform elements, or otherwise
+  indicate the angle of rotation visually.
+- `fullRotations` - the number of full, 360° rotations the user has made. This starts at 0,
+  and clockwise rotations will be positive, anti-clockwise is negative.
+- `totalAngle` - this is the total angle, taking full rotations into account.
+- `value` - the mapped value, if `minValue`, `maxValue`, `minAngle`, and `maxAngle` were specified
+  in the props.
+
+## Example
+
+This is all much easier to show than to describe, so here is a full example that models a volume
+dial that goes from 0-11. The user can change the volume by rotating the knob, using the mouse wheel,
+or dragging vertically in the component's area.
+
+<Tabs>
+  <TabItem label="Demo">
+    <VolumeDial client:load />
+  </TabItem>
+  <TabItem label="VolumeDial component">
+    <Code code={VolumeDialCode} lang="tsx" title="VolumeDial.tsx" mark={{ range: "24-29" }} />
+  </TabItem>
+  <TabItem label="VolumeDialTicks component">
+    <Code code={VolumeDialTicksCode} lang="tsx" title="VolumeDialTicks.tsx" />
+  </TabItem>
+</Tabs>
