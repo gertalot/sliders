@@ -2,7 +2,13 @@ import { useRef } from "react";
 import { useSlider } from "../../../sliders/src/";
 import Speaker from "./Speaker";
 
+/**
+ * A horizontal volume slider that uses the `useSlider` hook.
+ */
 const VolumeSlider = () => {
+  // The dragArea is an invisible rect placed over the slider giving us an "active"
+  // area that the `useSlider` hook uses to determine if the user is dragging the
+  // slider. The target is the slidey bit that the user can drag around.
   const dragAreaRef = useRef<SVGRectElement>(null);
   const targetRef = useRef<SVGPathElement>(null);
 
@@ -17,7 +23,10 @@ const VolumeSlider = () => {
 
   return (
     <div>
+      <p>Drag the slider to adjust the volume, or use the mouse wheel</p>
       <div className="w-full h-64 mt-0 flex items-center justify-center touch-none select-none">
+        {/* show the loudspeaker icon. The `--sl-color-accent-*` variables are from the Astro
+            Starlight theme that is used to generate this site */}
         <Speaker
           volume={value}
           color={isAdjusting || isOnDragArea ? "var(--sl-color-accent)" : "var(--sl-color-accent-high)"}
@@ -31,6 +40,8 @@ const VolumeSlider = () => {
         >
           {/* This rect, placed directly over the slider, is the active drag area */}
           <rect x="8" y="0" width="240" height="32" fill="transparent" ref={dragAreaRef} />
+
+          {/* the grey background line for the slider */}
           <path
             style={{
               stroke: "#666",
@@ -39,6 +50,8 @@ const VolumeSlider = () => {
             }}
             d="M 8,16 248,16"
           />
+
+          {/* the slidey bit that the user can drag around */}
           <path
             ref={targetRef}
             style={{

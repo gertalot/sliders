@@ -1,3 +1,7 @@
+/**
+ * A simple component that renders a loud speaker icon as an SVG. The number of
+ * bars is determined by the `volume` prop.
+ */
 const Speaker = ({
   volume,
   width = 32,
@@ -11,8 +15,11 @@ const Speaker = ({
 }) => {
   return (
     <svg className="px-1" width={width} height={height} viewBox="0 0 512 512">
+      {/* Draw the speaker cone */}
       <rect style={{ fill: color, stroke: "none" }} width="48" height="128" x="48" y="192" />
       <path style={{ fill: color, stroke: "none" }} d="m 112,192 96,-64 v 272 l -96,-80 z" />
+
+      {/* Draw the volume bars */}
       {volume == 0.0 && (
         <path
           style={{ fill: "none", stroke: color, strokeWidth: 32, strokeLinecap: "round" }}
