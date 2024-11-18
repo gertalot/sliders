@@ -241,7 +241,11 @@ const useDial = (props: UseDialProps): UseDialResult => {
   // that they return
   const { isDragging, isOnTarget, position } = useDragToMove({ dragAreaRef, targetRef });
   const { wheelDelta, isScrolling } = useWheelToAdjust({ dragAreaRef, sensitivity: 100 });
-  const { dragAdjust, isDragAdjusting } = useDragToAdjust({ dragAreaRef, sensitivity: 100, verticalDragging: true });
+  const { dragAdjust, isDragAdjusting } = useDragToAdjust({
+    dragAreaRef,
+    sensitivity: 100,
+    measureVerticalDragging: true
+  });
 
   // use a utility custom hook to handle updating the origin
   const origin_ = useUpdateOrigin(initializedProps);

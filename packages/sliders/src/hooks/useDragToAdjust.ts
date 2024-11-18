@@ -18,7 +18,7 @@ interface UseDragToAdjustProps {
    * Determines if this hook responds to horizontal or vertical dragging actions.
    * @default true
    */
-  verticalDragging?: boolean;
+  measureVerticalDragging?: boolean;
   /**
    * The number of touches required to register as a dragging action.
    * @default 2
@@ -51,7 +51,7 @@ interface UseDragToAdjustResult {
  * @param {UseDragToAdjustProps} props - the configuration options for this hook
  * @param {RefObject<Element>} props.dragAreaRef - when the pointer is over this element, this hook will respond to dragging
  * @param {number} [props.sensitivity=100] - determines quickly the resulting value changes in response to the user dragging
- * @param {boolean} [props.verticalDragging=true] - determines if this hook responds to horizontal or vertical dragging actions
+ * @param {boolean} [props.measureVerticalDragging=true] - determines if this hook responds to horizontal or vertical dragging actions
  * @param {number} [props.dragTouches=2] - the number of touches required to register as a dragging action
  *
  * @returns {UseDragToAdjustResult} An object containing the current drag speed and whether the user is currently dragging
@@ -84,7 +84,7 @@ interface UseDragToAdjustResult {
 const useDragToAdjust = ({
   dragAreaRef,
   sensitivity = 100,
-  verticalDragging = true,
+  measureVerticalDragging = true,
   dragTouches = 2
 }: UseDragToAdjustProps): UseDragToAdjustResult => {
   const [isDragging, setDragging] = useState(false);
@@ -107,10 +107,10 @@ const useDragToAdjust = ({
         // of the pointer.
         setDragging(true);
         setDragAdjust(0);
-        dragStartRef.current = verticalDragging ? event.clientY : event.clientX;
+        dragStartRef.current = measureVerticalDragging ? event.clientY : event.clientX;
       }
     },
-    [dragAreaRef, verticalDragging]
+    [dragAreaRef, measureVerticalDragging]
   );
 
   // event listener responding to the user touching
@@ -131,11 +131,11 @@ const useDragToAdjust = ({
           // of the pointer.
           setDragging(true);
           setDragAdjust(0);
-          dragStartRef.current = verticalDragging ? touch.clientY : touch.clientX;
+          dragStartRef.current = measureVerticalDragging ? touch.clientY : touch.clientX;
         }
       }
     },
-    [dragAreaRef, verticalDragging, dragTouches]
+    [dragAreaRef, measureVerticalDragging, dragTouches]
   );
 
   const handleStopDragging = () => {
@@ -148,12 +148,14 @@ const useDragToAdjust = ({
     (e: unknown) => {
       const event = e as MouseEvent;
       if (dragStartRef.current && isDragging) {
-        const delta = verticalDragging ? event.clientY - dragStartRef.current : dragStartRef.current - event.clientX;
+        const delta = measureVerticalDragging
+          ? event.clientY - dragStartRef.current
+          : dragStartRef.current - event.clientX;
         setDragAdjust(-delta / (sensitivity * 2));
-        dragStartRef.current = verticalDragging ? event.clientY : event.clientX;
+        dragStartRef.current = measureVerticalDragging ? event.clientY : event.clientX;
       }
     },
-    [dragStartRef, isDragging, sensitivity, verticalDragging]
+    [dragStartRef, isDragging, sensitivity, measureVerticalDragging]
   );
 
   const handleTouchMove = useCallback(
@@ -161,12 +163,14 @@ const useDragToAdjust = ({
       const event = e as TouchEvent;
       if (dragStartRef.current && isDragging && event.touches.length === dragTouches) {
         const touch = event.touches[0];
-        const delta = verticalDragging ? touch.clientY - dragStartRef.current : touch.clientX - dragStartRef.current;
+        const delta = measureVerticalDragging
+          ? touch.clientY - dragStartRef.current
+          : touch.clientX - dragStartRef.current;
         setDragAdjust(-delta / (sensitivity * 2));
-        dragStartRef.current = verticalDragging ? touch.clientY : touch.clientX;
+        dragStartRef.current = measureVerticalDragging ? touch.clientY : touch.clientX;
       }
     },
-    [dragStartRef, isDragging, sensitivity, verticalDragging, dragTouches]
+    [dragStartRef, isDragging, sensitivity, measureVerticalDragging, dragTouches]
   );
 
   useEffect(() => {

@@ -14,6 +14,10 @@ export default defineConfig({
       social: {
         github: "https://github.com/withastro/starlight",
       },
+      tableOfContents: {
+        minHeadingLevel: 2,
+        maxHeadingLevel: 4,
+      },
       sidebar: [
         {
           label: "Getting Started",

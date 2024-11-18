@@ -5,4 +5,77 @@ sidebar:
   order: 4
 ---
 
-# `useDial`
+import { Tabs, TabItem, Code } from "@astrojs/starlight/components";
+import UseDragToAdjustComponent from "../../../components/UseDragToAdjustComponent";
+import UseDragToAdjustComponentCode from "../../../components/UseDragToAdjustComponent.tsx?raw";
+
+A custom React hook that registers "dragging" actions from the user that start on the element
+referenced by `dragAreaRef`. This hook responds to touch and mouse events, and will return a
+value corresponding to the distance of the dragging motion in the `dragAdjust` property.
+
+This hook can be configured to register horizontal or vertical dragging motions, and for touch
+events, the number of touches required to start dragging can be configured.
+
+This custom hooks allows for creating UI elements that can be adjusted by dragging, such as
+sliders, or values that change in response to user input.
+
+This is a lower-level custom hook that is used by [`useDial`](/sliders/reference/usedial).
+
+## Example
+
+<Tabs>
+  <TabItem label="Demo">
+    <UseDragToAdjustComponent client:load />
+  </TabItem>
+  <TabItem label="Code">
+    <Code code={UseDragToAdjustComponentCode} lang="tsx" title="UseDragToAdjust.tsx" mark={8} />
+  </TabItem>
+</Tabs>
+
+## Usage
+
+```tsx
+const {
+  dragAdjust, // a value indicating how much the user is dragging
+  isDragAdjusting, // true if the user is dragging
+} = useDragtoAdjust({
+  dragAreaRef, // "active" element that listens to dragging actions
+  sensitivity, // larger values = slower changes in output. Default is 100
+  measureVerticalDragging, // true if the hook measures vertical pointer distance, false if horizontal
+  dragTouches, // the number of touches on touch devices that count as dragging
+});
+```
+
+## Props
+
+### `dragAreaRef`
+
+(required) A `RefObject` referencing a DOM element that functions as the
+"active" area. Any dragging or sliding action that happens when the pointer is over this
+element is registered as dragging the target.
+
+### `sensitivity`
+
+Determines quickly the resulting value changes in response to the user dragging
+Higher sensitivity values result in smaller adjustments for the same dragging distance.
+Default value is 100.
+
+### `measureVerticalDragging`
+
+Determines if this hook responds to horizontal or vertical dragging actions.
+Default is true.
+
+### `dragTouches`
+
+For touch devices, specifies the number of touches that will register as dragging.
+Defaults to 2.
+
+## Returns
+
+### `dragAdjust`
+
+A value corresponding to the current drag distance.
+
+### `isDragAdjusting`
+
+True if the user is currently dragging.

@@ -7,12 +7,13 @@ const QuickStartComponent = () => {
 
   const { wheelDelta, isScrolling } = useWheelToAdjust({
     dragAreaRef,
+    sensitivity: 10,
   });
 
   const { dragAdjust, isDragAdjusting } = useDragToAdjust({
     dragAreaRef,
     dragTouches: 2,
-    sensitivity: 1,
+    sensitivity: 10,
   });
 
   useEffect(() => {
@@ -28,11 +29,12 @@ const QuickStartComponent = () => {
         touchAction: "none",
         userSelect: "none",
         textAlign: "center",
+        padding: "2rem",
       }}
       ref={dragAreaRef}
     >
       <p>Use mousewheel or drag to change value!</p>
-      <p>{value.toFixed(0)}</p>
+      <h2>{value.toFixed(0)}</h2>
     </div>
   );
 };

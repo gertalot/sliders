@@ -52,38 +52,69 @@ const { value, isAdjusting, isOnTarget, isOnDragArea } = useSlider({
 });
 ```
 
-### Props
+## Props
 
 The following props can be passed to the custom hook:
 
-- `targetRef` - (required) A `RefObject` referencing a DOM element in your component.
-  This is the "target" element of your slider, i.e. the thing you slide.
-- `dragAreaRef` - (required) A `RefObject` referencing a DOM element that functions as the
-  "active" area. Any dragging or sliding action that happens when the pointer is over this
-  element is registered as dragging the target.
-- `minValue` - a `number` representing the minimum possible value. If the user keeps dragging
-  beyond the minimum value, the hook's `value` will stay at `minValue`. Default is 0.
-- `maxValue` - a `number` representing the maximum possible value. If the user keeps dragging
-  beyond the maximum value, the hook's `value` will stay at `maxValue`. Default is 1.
-- `initialValue` - a `number` that is used as the initial value when rendering the component.
-  Defaults to 0.
-- `sensitivity` - a `number` that is a measure of how much rotating the mouse wheel will
-  change the slider. Larger numbers mean slower changes. This uses [`useWheelToAdjust`](/sliders/reference/useWheelToAdjust)
-  under the hood.
-- `isVertical` - `true` if the custom hook should register vertical dragging motion, `false`
-  for horizontal dragging motion. Defaults to `true`.
+### `targetRef`
+
+(required) A `RefObject` referencing a DOM element in your component.
+This is the "target" element of your slider, i.e. the thing you slide.
+
+### `dragAreaRef`
+
+(required) A `RefObject` referencing a DOM element that functions as the
+"active" area. Any dragging or sliding action that happens when the pointer is over this
+element is registered as dragging the target.
+
+### `minValue`
+
+a `number` representing the minimum possible value. If the user keeps dragging
+beyond the minimum value, the hook's `value` will stay at `minValue`. Default is 0.
+
+### `maxValue`
+
+a `number` representing the maximum possible value. If the user keeps dragging
+beyond the maximum value, the hook's `value` will stay at `maxValue`. Default is 1.
+
+### `initialValue`
+
+a `number` that is used as the initial value when rendering the component.
+Defaults to 0.
+
+### `sensitivity`
+
+a `number` that is a measure of how much rotating the mouse wheel will
+change the slider. Larger numbers mean slower changes. This uses [`useWheelToAdjust`](/sliders/reference/usewheeltoadjust)
+under the hood.
+
+### `isVertical`
+
+`true` if the custom hook should register vertical dragging motion, `false`
+for horizontal dragging motion. Defaults to `true`.
 
 ### Returns
 
 The `useSlider` hook returns an object with the following properties:
 
-- `value` - A value between `minValue` and `maxValue` that represents the current value of
-  the slider object. Use this to set the position of the target element or otherwise indicate
-  the value.
-- `isAdjusting` - `true` if the user is actively dragging or using the wheel. This can be used
-  to conditionally render the component in a particular way.
-- `isOnTarget` - `true` if the pointer is currently over the target element referenced by `targetAreaRef`.
-- `isOnDragArea` - `true` if the pointer is currently over the element referenced by `dragAreaRef`.
-  Note that this actually checks if the pointer coordinates are within the bounding rect of the
-  dragArea elements; it doesn't use the pointer event target or composed path, in case the element
-  is obscured by another element.
+### `value`
+
+A value between `minValue` and `maxValue` that represents the current value of
+the slider object. Use this to set the position of the target element or otherwise indicate
+the value.
+
+### `isAdjusting`
+
+`true` if the user is actively dragging or using the wheel. This can be used
+to conditionally render the component in a particular way.
+
+### `isOnTarget`
+
+`true` if the pointer is currently over the target element referenced by `targetAreaRef`.
+
+### `isOnDragArea`
+
+`true` if the pointer is currently over the element referenced by `dragAreaRef`.
+Note that this actually checks if the pointer coordinates are within the bounding rect of the
+dragArea elements; it doesn't use the pointer event target or composed path, in case the element
+is obscured by another element.
