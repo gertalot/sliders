@@ -15,7 +15,7 @@ export default defineConfig({
         src: "./src/assets/sliders-logo.png",
       },
       social: {
-        github: "https://github.com/withastro/starlight",
+        github: "https://github.com/gertalot/sliders",
       },
       tableOfContents: {
         minHeadingLevel: 2,

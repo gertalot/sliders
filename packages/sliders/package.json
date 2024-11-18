@@ -1,6 +1,6 @@
 {
   "name": "@gertalot/sliders",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "React library with custom hooks to build all kinds of sliders, knobs, and dials",
   "author": "Gert Verhoog <me@gertalot.com> (https://github.com/gertalot)",
   "keywords": [
@@ -9,28 +9,26 @@
     "hook",
     "slider"
   ],
-  "homepage": "https://github.com/gertalot/sliders#readme",
+  "homepage": "https://gertalot.github.io/sliders/",
   "repository": "github:gertalot/sliders",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/gertalot"
-  },
   "license": "ISC",
-  "private": true,
+  "private": false,
   "type": "module",
   "main": "dist/index.umd.cjs",
-  "module": "dist/index.js",
+  "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist/**"
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.js",
+      "import": "./dist/index.es.js",
       "require": "./dist/index.umd.cjs"
     }
   },
   "scripts": {
-    "build": "vite build",
+    "type-check": "tsc --noEmit",
+    "build": "yarn run type-check && vite build",
     "test": "vitest run",
     "test-watch": "vitest",
     "test:ui": "vitest --ui",
