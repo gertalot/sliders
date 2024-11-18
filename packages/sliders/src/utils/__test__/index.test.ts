@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { angleToPoint, angleToValue, Point2D, pointEquals, pointToAngle, TAU, valueToAngle } from "../index";
+import { angleToPoint, angleToValue, type Point2D, pointEquals, pointToAngle, TAU, valueToAngle } from "../index.js";
 
 test("angleToValue: [0, 360] maps to [0, 2*pi]", () => {
   expect(angleToValue(TAU * (0 / 4), 0, 360, 0, TAU)).toBe(0);

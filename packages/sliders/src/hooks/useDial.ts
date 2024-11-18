@@ -1,10 +1,10 @@
-import { useEffect, RefObject, useState, useMemo, useCallback, useLayoutEffect } from "react";
-import { useDragToMove } from "./useDragToMove";
-import { useWheelToAdjust } from "./useWheelToAdjust";
-import { useDragToAdjust } from "./useDragToAdjust";
+import { useEffect, type RefObject, useState, useMemo, useCallback, useLayoutEffect } from "react";
+import { useDragToMove } from "./useDragToMove.js";
+import { useWheelToAdjust } from "./useWheelToAdjust.js";
+import { useDragToAdjust } from "./useDragToAdjust.js";
 import {
-  Nullable,
-  Point2D,
+  type Nullable,
+  type Point2D,
   TAU,
   angleToValue,
   clamp,
@@ -12,7 +12,7 @@ import {
   pointEquals,
   pointToAngle,
   valueToAngle
-} from "../utils";
+} from "../utils/index.js";
 
 /**
  * type for the props of the `useDial` hook. This is the most basic
@@ -123,6 +123,7 @@ const useUpdateOrigin = ({ dragAreaRef, origin }: InitializedProps): Point2D => 
       const newOrigin: Point2D = { x: rect.width / 2, y: rect.height / 2 };
       return newOrigin;
     }
+    return null;
   }, [dragAreaRef]);
 
   const updateOrigin = useCallback(() => {

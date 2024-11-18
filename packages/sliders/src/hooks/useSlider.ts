@@ -1,6 +1,6 @@
-import { RefObject, useEffect, useState } from "react";
-import { useWheelToAdjust } from "./useWheelToAdjust";
-import { useDragToMove } from "./useDragToMove";
+import { type RefObject, useEffect, useState } from "react";
+import { useWheelToAdjust } from "./useWheelToAdjust.js";
+import { useDragToMove } from "./useDragToMove.js";
 
 interface UseSliderProps {
   targetRef: RefObject<Element>;

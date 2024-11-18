@@ -1,5 +1,5 @@
-import { RefObject, useEffect, useState, useCallback, useLayoutEffect } from "react";
-import { Point2D, isPointInRect } from "../utils";
+import { type RefObject, useEffect, useState, useCallback, useLayoutEffect } from "react";
+import { type Point2D, isPointInRect } from "../utils/index.js";
 
 /**
  * Interface for `useDragToMove`

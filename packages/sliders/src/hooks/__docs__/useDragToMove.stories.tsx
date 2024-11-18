@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from "@storybook/react";
-import { FC, useEffect, useRef } from "react";
-import { useDragToMove } from "..";
+import { type FC, useEffect, useRef } from "react";
+import { useDragToMove } from "../useDragToMove.js";
 
 // there are no props or anything, so this is simple
 type BasicComponent = FC;

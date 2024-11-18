@@ -1,5 +1,5 @@
-import { useEffect, useState, RefObject, useCallback, useRef } from "react";
-import { isPointInRect } from "../utils";
+import { useEffect, useState, type RefObject, useCallback, useRef } from "react";
+import { isPointInRect } from "../utils/index.js";
 
 /**
  * Interface for the `useWheelToAdjust` hook

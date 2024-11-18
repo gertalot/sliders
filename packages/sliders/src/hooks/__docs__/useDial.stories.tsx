@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from "@storybook/react";
-import { FC, useEffect, useMemo, useRef, useState } from "react";
-import { useDial } from "..";
-import { angleToPoint, Point2D, pointEquals, rad2deg, TAU, valueToAngle } from "../../utils";
+import { type FC, useEffect, useMemo, useRef, useState } from "react";
+import { useDial } from "../useDial.js";
+import { angleToPoint, type Point2D, pointEquals, rad2deg, TAU, valueToAngle } from "../../utils/index.js";
 
 // there are no props or anything, so this is simple
 type BasicComponent = FC;
