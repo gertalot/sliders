@@ -1,5 +1,5 @@
-import { useRef, useMemo } from "react";
-import { useDial, TAU, angleToPoint, valueToAngle, rad2deg } from "../../../sliders/src/";
+import { useRef } from "react";
+import { useDial, TAU, angleToPoint, valueToAngle, rad2deg } from "@gertalot/sliders";
 import VolumeDialTicks from "./VolumeDialTicks";
 
 /**

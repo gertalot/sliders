@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { valueToAngle, angleToPoint } from "../../../sliders/src";
+import { valueToAngle, angleToPoint } from "@gertalot/sliders";
 
 /**
  * Draw tick marks and numbers to indicate volume around the dial

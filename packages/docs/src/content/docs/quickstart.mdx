@@ -41,48 +41,7 @@ import QuickStartComponentCode from "../../components/QuickStartComponent.tsx?ra
 
 2. Create a component and use one of the custom hooks:
 
-   ```tsx {8-16} title="QuickStartComponent.tsx"
-   import { useRef, useState, useEffect } from "react";
-   import { useDragToAdjust, useWheelToAdjust } from "@gertalot/sliders";
-
-   const QuickStartComponent = () => {
-     const dragAreaRef = useRef<HTMLDivElement>(null);
-     const [value, setValue] = useState(0);
-
-     const { wheelDelta, isScrolling } = useWheelToAdjust({
-       dragAreaRef,
-     });
-
-     const { dragAdjust, isDragAdjusting } = useDragToAdjust({
-       dragAreaRef,
-       dragTouches: 2,
-       sensitivity: 1,
-     });
-
-     useEffect(() => {
-       if (isScrolling || isDragAdjusting) {
-         setValue((prev) => prev + wheelDelta + dragAdjust);
-       }
-     }, [wheelDelta, dragAdjust, isScrolling, isDragAdjusting]);
-
-     return (
-       <div
-         style={{
-           backgroundColor: "#333",
-           touchAction: "none",
-           userSelect: "none",
-           textAlign: "center",
-         }}
-         ref={dragAreaRef}
-       >
-         <p>Use mousewheel or drag to change value!</p>
-         <p>{value.toFixed(0)}</p>
-       </div>
-     );
-   };
-
-   export default QuickStartComponent;
-   ```
+   <Code code={QuickStartComponentCode} lang="tsx" mark={{ range: "8-16" }} />
 
 3. Profit!
 

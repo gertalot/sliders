@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { useDragToAdjust, useWheelToAdjust } from "../../../sliders/src";
+import { useDragToAdjust, useWheelToAdjust } from "@gertalot/sliders";
 
 const QuickStartComponent = () => {
   const dragAreaRef = useRef<HTMLDivElement>(null);

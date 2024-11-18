@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { useDragToAdjust } from "../../../sliders/src";
+import { useDragToAdjust } from "@gertalot/sliders";
 
 const UseDragToAdjustComponent = () => {
   const dragAreaRef = useRef<HTMLDivElement>(null);

@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { useWheelToAdjust } from "../../../sliders/src";
+import { useWheelToAdjust } from "@gertalot/sliders";
 
 const UseWheelToAdjustComponent = () => {
   const dragAreaRef = useRef<HTMLDivElement>(null);

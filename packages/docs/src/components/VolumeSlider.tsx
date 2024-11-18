@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useSlider } from "../../../sliders/src/";
+import { useSlider } from "@gertalot/sliders";
 import Speaker from "./Speaker";
 
 /**

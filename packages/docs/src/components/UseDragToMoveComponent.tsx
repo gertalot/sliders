@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { useDragToMove } from "../../../sliders/src";
+import { useDragToMove } from "@gertalot/sliders";
 
 const UseDragToMoveComponent = () => {
   const dragAreaRef = useRef(null);

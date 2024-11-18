@@ -18,8 +18,6 @@ hero:
 import { Card, CardGrid, Tabs, TabItem, Code } from "@astrojs/starlight/components";
 import VolumeSlider from "../../components/VolumeSlider";
 import VolumeDial from "../../components/VolumeDial";
-import VolumeSliderCode from "../../components/VolumeSlider.tsx?raw";
-import VolumeDialCode from "../../components/VolumeDial.tsx?raw";
 
 ## What is this?
 
@@ -32,12 +30,13 @@ interaction, such as dragging, rotating, using the mouse wheel, or two-finger sc
 <CardGrid>
   <Card title="Slider">
     Drag the slider, or use the mouse wheel. This component is created with a simple SVG, and uses the `useSlider`
-    custom hook.
+    custom hook. The code for this component is on the [`useSlider` documentation](/sliders/docs/reference/useslider).
     <VolumeSlider client:idle />
   </Card>
   <Card title="Dial">
     Turn the dial to go up to eleven! Or use the mousewheel, or drag vertically. This component is an SVG and uses the
-    `useDial` custom hook to handle all user interaction and returns an angle and a value to the component.
+    `useDial` custom hook to handle all user interaction and returns an angle and a value to the component. The code for
+    this component is on the [`useDial` documentation](/sliders/docs/reference/usedial).
     <VolumeDial client:idle />
   </Card>
 </CardGrid>
