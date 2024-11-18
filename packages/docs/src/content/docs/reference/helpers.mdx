@@ -5,4 +5,119 @@ sidebar:
   order: 7
 ---
 
-# Helper functions
+Various helper functions and types that are used throughout this package. Some of these functions
+might be useful when you're creating your own components, especially ones that use rotation.
+
+## Constants
+
+### `TAU`
+
+Defined as 2π, useful when working with radians.
+
+### Functions
+
+### `clamp`
+
+```ts
+declare const clamp: (value: Nullable<number>, min: number, max: number) => number;
+```
+
+- Returns `value` if it is between `minValue` and `maxValue`;
+- Returns `minValue` if `value` is a number smaller than `minValue`, `null`, or `undefined`;
+- Returns `maxValue` if `value` is larger than `maxValue`
+
+### `normalisedAngle`
+
+```ts
+declare const normalisedAngle: (angle: number) => number;
+```
+
+`angle` is an angle in radians, possibly negative, and returns a normalised angle in radians, where
+0 &le; `angle` &ge; 2π.
+
+### `angleToValue`
+
+```ts
+declare function angleToValue(
+  angle: number,
+  minValue: number,
+  maxValue: number,
+  minAngle: number,
+  maxAngle: number,
+): number;
+```
+
+Converts `angle` in radians to a value by linear mapping from the range `minAngle` - `maxAngle` to `minValue` - `maxValue`.
+
+### `valueToAngle`
+
+```ts
+declare function valueToAngle(
+  value: number,
+  minValue: number,
+  maxValue: number,
+  minAngle: number,
+  maxAngle: number,
+): number;
+```
+
+Maps `value`, and returns a corresponding angle in radians, by linear mapping from `minValue` - `maxValue` to `minAngle` - `maxAngle`.
+
+### `angleToPoint`
+
+```ts
+declare function angleToPoint(angle: number, origin: Point2D, radius: number): Point2D;
+```
+
+Takes `angle` in radians between 0-2π, `radius` as the radius of a circle with center `origin`, and returns
+the point `{x, y}` that lies on the circle and a line from the origin at angle. Examples:
+
+```ts
+angletoPoint(0, { x: 0, y: 0 }, 1); // returns {x:1, y:0 }
+angletoPoint((5 / 8) * Math.PI, { x: 0, y: 0 }, 1); // returns {x:-0.7071, y:-0.7071 }
+```
+
+### `pointToAngle`
+
+```ts
+declare function pointToAngle(point: Point2D, origin: Point2D): number;
+```
+
+Returns the angle in radians of a vector from `origin` to `point`. Example:
+
+```ts
+pointToAngle({ x: -0.7071, y: 0.7071 }, { x: 0, y: 0 }); // returns 1.1781 == 3/8 * Math.PI
+```
+
+### `pointEquals`
+
+```ts
+declare function pointEquals(point: Nullable<Point2D>, otherPoint: Nullable<Point2D>): boolean;
+```
+
+Returns `true` if `point` and `otherPoint` have equal `x` and `y` coordinates, or if both points are `null`.
+
+### `isPointInRect`
+
+```ts
+declare const isPointInRect: (point: Point2D, rect: Nullable<DOMRect>) => boolean;
+```
+
+Returns `true` if `point` is within rectangle `rect` (inclusive).
+Returns `false` if `rect` is `null` or `undefined`.
+
+### `rad2deg`
+
+```ts
+declare const rad2deg: (radians: number) => number;
+```
+
+Converts radians to degrees, which is useful for CSS transforms.
+
+### `deg2rad`
+
+```ts
+declare const deg2rad: (degrees: number) => number;
+```
+
+Converts degrees to radians.

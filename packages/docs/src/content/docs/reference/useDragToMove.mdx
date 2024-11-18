@@ -5,4 +5,94 @@ sidebar:
   order: 6
 ---
 
-# `useDragToMove`
+import { Tabs, TabItem, Code } from "@astrojs/starlight/components";
+import UseDragToMoveComponent from "../../../components/UseDragToMoveComponent";
+import UseDragToMoveComponentCode from "../../../components/UseDragToMoveComponent.tsx?raw";
+
+A custom React hook that registers "dragging" actions from the user that occur on the target element
+referenced by `targetRef`. This hook responds to touch and mouse events, and will return the position
+of the pointer relative to the `dragAreaRef` element, where top-left is `{x:0, y:0}`.
+
+This hook can be configured to only respond to dragging actions that started on the target element, or
+to respond to dragging actions anywhere on the `dragAreaRef` element. In the latter scenario, the `position`
+that is returned represents the position of the pointer relative to the `dragArearef` element. This can
+be used, for example, to immediately move the target to the position indicated by the location where
+the mouse was clicked or the screen was touched.
+
+This custom hooks allows for creating UI elements that can be adjusted by dragging, such as
+sliders, or values that change in response to user input. It handles all event listeners and logic to
+detect dragging actions, and forms the basis for the other custom hooks in this library.
+
+Note that the `dragAreaRef` and `targetRef` elements don't necessarily have to be the target of the pointer
+events, or be in the composed path of the event. As long as the relevant events occur within the bounds
+of these elements, dragging actions will be registered.
+
+## Example
+
+<Tabs>
+  <TabItem label="Demo">
+    <UseDragToMoveComponent client:load />
+  </TabItem>
+  <TabItem label="Code">
+    <Code code={UseDragToMoveComponentCode} lang="tsx" title="UseDragToMove.tsx" mark={{ range: "8-12" }} />
+  </TabItem>
+</Tabs>
+
+## Usage
+
+```tsx
+const {
+  isOnTarget, // true if the pointer is over the target
+  isOnDragArea, // true if the pointer is over the dragAreaRef element
+  isDragging, // true if the user is actively dragging the target
+  isStartDragOnTarget, // true if the dragging action started on the target
+  position, // the position as `{x,y}` coordinates relative to the dragAreaRef client rect
+} = useDragToMove({
+  dragAreaRef, // the "active" element that registers dragging actions
+  targetRef, // the target element that can be dragged around
+  shouldStartDragOnTarget, // if true, dragging must start on the target element
+});
+```
+
+### Props
+
+#### `dragAreaRef`
+
+(required) A `RefObject` referencing a DOM element that functions as the
+"active" area. Any dragging or sliding action that happens when the pointer is over this
+element is registered as dragging the target.
+
+#### `targetRef`
+
+(required) A `RefObject` referencing a DOM element in your component.
+This is the "target" element of your slider, i.e. the thing you slide.
+
+#### `shouldStartDragOnTarget`
+
+If `true`, only register dragging actions that started on the target element. Defaults to true.
+If this value it true, clicking and dragging anywhere on the `dragAreaRef` element will immediately
+update the position. If set to `false`, the hook will only register a dragging action (and update
+the position) if the action started with the pointer over the target element.
+
+### Returns
+
+#### `isOnTarget`
+
+True if the pointer is hovering or dragging over the target element.
+
+#### `isOnDragArea`
+
+True if the pointer is over the element references by `dragAreaRef`.
+
+#### `isDragging`
+
+True if the user is actively dragging the target element.
+
+#### `isStartDragOnTarget`
+
+True if the user started dragging with the pointer over the target.
+
+#### `position`
+
+The most recent `{x, y}` position of the pointer during a dragging action, relative to the `dragAreaRef`
+element's client rect.

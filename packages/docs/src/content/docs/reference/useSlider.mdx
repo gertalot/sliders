@@ -56,16 +56,16 @@ const { value, isAdjusting, isOnTarget, isOnDragArea } = useSlider({
 
 The following props can be passed to the custom hook:
 
-### `targetRef`
-
-(required) A `RefObject` referencing a DOM element in your component.
-This is the "target" element of your slider, i.e. the thing you slide.
-
 ### `dragAreaRef`
 
 (required) A `RefObject` referencing a DOM element that functions as the
 "active" area. Any dragging or sliding action that happens when the pointer is over this
 element is registered as dragging the target.
+
+### `targetRef`
+
+(required) A `RefObject` referencing a DOM element in your component.
+This is the "target" element of your slider, i.e. the thing you slide.
 
 ### `minValue`
 
