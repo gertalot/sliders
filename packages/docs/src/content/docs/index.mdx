@@ -18,6 +18,8 @@ hero:
 import { Card, CardGrid, Tabs, TabItem, Code } from "@astrojs/starlight/components";
 import VolumeSlider from "../../components/VolumeSlider";
 import VolumeDial from "../../components/VolumeDial";
+import UseWheelToAdjustComponent from "../../components/UseWheelToAdjustComponent";
+import UseWheelToAdjustComponentCode from "../../components/UseWheelToAdjustComponent.tsx?raw";
 
 ## What is this?
 
@@ -30,13 +32,13 @@ interaction, such as dragging, rotating, using the mouse wheel, or two-finger sc
 <CardGrid>
   <Card title="Slider">
     Drag the slider, or use the mouse wheel. This component is created with a simple SVG, and uses the `useSlider`
-    custom hook. The code for this component is on the [`useSlider` documentation](/sliders/docs/reference/useslider).
+    custom hook. The code for this component is on the [`useSlider` documentation](/sliders/reference/useslider).
     <VolumeSlider client:idle />
   </Card>
   <Card title="Dial">
     Turn the dial to go up to eleven! Or use the mousewheel, or drag vertically. This component is an SVG and uses the
     `useDial` custom hook to handle all user interaction and returns an angle and a value to the component. The code for
-    this component is on the [`useDial` documentation](/sliders/docs/reference/usedial).
+    this component is on the [`useDial` documentation](/sliders/reference/usedial).
     <VolumeDial client:idle />
   </Card>
 </CardGrid>
@@ -54,25 +56,13 @@ Here's a minimal example of one of the custom hooks, `useWheelToAdjust`. These h
 and return properties you can use in your components. In this example, the hook returns a `wheelDelta` value
 representing the speed at which the user is rotating the mouse wheel.
 
-```tsx {5}
-const MyComponent = () => {
-  const dragAreaRef = useRef<HTMLDivElement>(null);
-  const [value, setValue] = useState(0);
-
-  const { wheelDelta, isScrolling } = useWheelToAdjust({ dragAreaRef });
-
-  useEffect(() => {
-    if (isScrolling) {
-      setValue((prev) => prev + wheelDelta);
-    }
-  }, [wheelDelta, isScrolling]);
-
-  return (
-    <div style={{ width: "90vw", height: "90vh", backgroundColor: "#333" }} ref={dragAreaRef}>
-      <h1 style={{ textAlign: "center" }}>{value.toFixed(1)}</h1>
-    </div>
-  );
-};
-```
+<Tabs>
+  <TabItem label="Demo">
+    <UseWheelToAdjustComponent client:load />
+  </TabItem>
+  <TabItem label="Code">
+    <Code code={UseWheelToAdjustComponentCode} lang="tsx" title="UseWheelToAdjust.tsx" mark={8} />
+  </TabItem>
+</Tabs>
 
 To learn more about the hooks and how to use them, check out [the docs](/sliders/quickstart)!

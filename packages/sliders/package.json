@@ -12,7 +12,6 @@
   "homepage": "https://gertalot.github.io/sliders/",
   "repository": "github:gertalot/sliders",
   "license": "ISC",
-  "private": false,
   "type": "module",
   "main": "dist/index.umd.cjs",
   "module": "dist/index.es.js",

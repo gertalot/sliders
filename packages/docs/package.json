@@ -4,6 +4,8 @@
   "version": "1.0.0",
   "license": "ISC",
   "scripts": {
+    "clean": "git clean -fXd -e \\!node_modules -e \\!node_modules/**/*",
+    "distclean": "git clean -fXd",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",

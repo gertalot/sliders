@@ -82,7 +82,7 @@ const useWheelToAdjust = ({ dragAreaRef, sensitivity = 100 }: UseWheelToAdjustPr
         // it is rotating. Compute a new speed delta based on rotation speed
         const currentTime = performance.now();
         const timeDelta = currentTime - lastWheelEventTime.current;
-        const delta = timeDelta == 0 ? 0 : -event.deltaY / timeDelta / sensitivity;
+        const delta = timeDelta == 0 ? 0 : event.deltaY / timeDelta / sensitivity;
 
         setWheelDelta((prev) => (delta == prev ? prev : delta));
         lastWheelEventTime.current = currentTime;

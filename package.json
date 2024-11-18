@@ -10,11 +10,12 @@
     "slider"
   ],
   "license": "ISC",
+  "private": true,
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "build": "yarn run sliders:build",
+    "build": "yarn workspace @gertalot/sliders run build && yarn workspace @gertalot/sliders-docs run build",
     "clean": "yarn workspaces run clean",
     "dev": "concurrently \"yarn workspace @gertalot/sliders dev\" \"yarn workspace @gertalot/sliders-docs start\"",
     "lint": "eslint .",
