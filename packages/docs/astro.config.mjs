@@ -11,6 +11,9 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "@gertalot/sliders",
+      logo: {
+        src: "./src/assets/sliders-logo.png",
+      },
       social: {
         github: "https://github.com/withastro/starlight",
       },
