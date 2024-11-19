@@ -47,7 +47,7 @@ This is a monorepo, with the following packages:
 
 - `packages/sliders`: The library itself.
 - `packages/docs`: An [Astro](https://astro.build/) [Starlight](https://starlight.astro.build/)
-  website that generates [the documentation](https://gertalot.github.io/sliders-docs/).
+  website that generates [the documentation](https://gertalot.github.io/sliders/).
 
 ### Building
 
