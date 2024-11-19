@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Build sliders and docs
+        run: yarn build
+
       - name: Install, build, and upload your site
         uses: withastro/action@v3
         with:
