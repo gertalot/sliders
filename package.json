@@ -1,6 +1,6 @@
 {
   "name": "@gertalot/sliders-monorepo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "React library with custom hooks to build all kinds of sliders, knobs, and dials",
   "author": "Gert Verhoog <me@gertalot.com> (https://gertalot.github.io/sliders/)",
   "keywords": [
