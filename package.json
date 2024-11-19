@@ -19,7 +19,7 @@
     "clean": "yarn workspaces run clean",
     "dev": "concurrently \"yarn workspace @gertalot/sliders dev\" \"yarn workspace @gertalot/sliders-docs start\"",
     "lint": "eslint .",
-    "test": "yarn workspaces run test",
+    "test": "yarn workspace @gertalot/sliders run test",
     "distclean": "yarn workspaces run distclean",
     "sliders:build-storybook": "yarn workspace @gertalot/sliders run storybook build",
     "sliders:build": "yarn workspace @gertalot/sliders run vite build",
