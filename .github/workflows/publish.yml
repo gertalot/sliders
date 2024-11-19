@@ -16,19 +16,13 @@ jobs:
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
-      - name: Enable corepack
-        run: corepack enable
       - name: Install dependencies
         run: yarn install
-      - name: Debug Workspace
-        run: |
-          yarn workspaces info
-          yarn why @gertalot/sliders
-          ls -R
       - name: Build
         run: yarn build
+        working-directory: ./packages/sliders
       - name: Publish
-        run: yarn npm publish
+        run: yarn publish
         working-directory: ./packages/sliders
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
