@@ -1,14 +1,12 @@
-name: Build and Publish Sliders Package
+name: Build on develop
 
 on:
   push:
     branches:
-      - main
-    paths:
-      - "packages/sliders/**"
+      - develop
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,15 +18,7 @@ jobs:
         run: corepack enable
       - name: Install dependencies
         run: yarn install
-      - name: Debug Workspace
-        run: |
-          yarn workspaces info
-          yarn why @gertalot/sliders
-          ls -R
+      - name: test
+        run: yarn test
       - name: Build
         run: yarn build
-      - name: Publish
-        run: yarn npm publish
-        working-directory: ./packages/sliders
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
